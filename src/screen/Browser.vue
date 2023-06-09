@@ -1,9 +1,10 @@
 <script setup>
+import {ref} from "vue";
 
 </script>
 
 <template>
-  <router-view id="main-container" class="light-theme"></router-view>
+  <a-empty />
 </template>
 
 <style scoped>
