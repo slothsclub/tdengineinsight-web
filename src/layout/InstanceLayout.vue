@@ -11,10 +11,10 @@ import Separator from "../components/Separator.vue";
   <a-layout>
     <a-layout-header class="header">
       <a-row>
-        <a-col class="logo-container" :span="2">
+        <a-col class="logo-container">
           <Logo class=""></Logo>
         </a-col>
-        <a-col :span="22" class="dropdown-container">
+        <a-col class="dropdown-container">
           <DatabaseSelector />
           <Separator />
           <PageTitle></PageTitle>
