@@ -12,8 +12,8 @@ const {pageInfo} = useAppStore()
 
 <template>
   <div class="title-and-description">
-    <span class="title">{{ $t(pageInfo.title) }}</span>
-    <span class="description">{{ $t(pageInfo.description) }}</span>
+    <span class="title">{{ pageInfo.title }}</span>
+    <span class="description">{{ pageInfo.description }}</span>
   </div>
 </template>
 

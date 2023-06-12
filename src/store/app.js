@@ -12,7 +12,7 @@ export const useAppStore = defineStore('app', () => {
     })
 
     watch(pageInfo.value, (n) => {
-        document.title = `${i18n.global.t(pageInfo.value.title)} | ${appName.value}`
+        document.title = `${pageInfo.value.title} | ${appName.value}`
     })
 
     return {appName, selectedInstance, pageInfo}
