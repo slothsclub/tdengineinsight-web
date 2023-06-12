@@ -1,0 +1,235 @@
+.header {
+  border: @default-border;
+  box-shadow: 0 2.5px 5px 0.1px @header-shadow-color;
+  background: @default-background;
+  z-index: 10;
+  padding: 5px 0;
+  line-height: 1;
+  .ant-row {
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+  position: fixed;
+  width: 100%;
+  height: @header-height;
+}
+.main-container {
+  margin-top: @header-height;
+}
+.sider {
+  box-shadow: @sider-shadow-color 0 1px 6px, @sider-shadow-color 0 1px 4px;
+  background-color: @sider-background;
+  color: @sider-color;
+}
+
+.component-content {
+  background-color: @content-background;
+}
+main.ant-layout-content {
+  padding: @default-content-padding;
+  background-color: @content-background;
+}
+
+.logo-container {
+  display: flex;
+  border-right: solid 1px @default-border-color;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 @sider-width;
+  height: 50px;
+  img {
+    width: 24px;
+    margin-top: -10px;
+    margin-right: 5px;
+  }
+  font-size: 18px;
+}
+.dropdown-container {
+  padding-left: @default-content-padding;
+  display: flex;
+  align-items: center;
+  .ant-dropdown-trigger {
+    color: @menu-database-dropdown-color !important;
+    font-size: 18px;
+    .anticon-down {
+      font-size: 14px;
+      margin-left: 5px;
+      font-weight: bold;
+    }
+  }
+}
+
+.title-and-description {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  white-space: nowrap;
+  min-width: fit-content;
+  span {
+    line-height: 1;
+  }
+  .title {
+    font-size: 18px;
+    font-weight: 700;
+    color: @page-title-color;
+    padding: 3px 0;
+  }
+  .description {
+    font-size: 12px;
+    opacity: .8;
+    color: @page-description-color;
+  }
+}
+
+a.logo {
+  color: @logo-color;
+}
+
+.instances-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.instance-card {
+  margin-right: @default-margin;
+  margin-bottom: @default-margin;
+  width: 280px;
+
+  .ant-card-actions {
+    border-top: none;
+    li .anticon {
+      color: transparent;
+    }
+    li:not(:last-child) {
+      border-right: none;
+    }
+  }
+
+  &:hover {
+    .ant-card-actions {
+      border-top: 1px solid @instance-border-color;
+      li .anticon {
+        color: @instance-hover-txt-color;
+      }
+      li:not(:last-child) {
+        border-right: 1px solid @instance-border-color;
+      }
+      li:hover .anticon {
+        color: @instance-hover-icon-color;
+      }
+    }
+  }
+}
+
+.guide {
+  button {
+    margin-right: @default-margin;
+  }
+}
+.menu {
+  a {
+    color: @menu-color;
+    &.clickable {
+      cursor: pointer;
+    }
+  }
+  hr {
+    margin: -1px 0 0;
+    height: 1px;
+    border: none;
+    background-color: @menu-hr-background;
+  }
+  .menu-section {
+    font-weight: bold;
+    font-size: 16px !important;
+    opacity: 1 !important;
+  }
+  .menu-item {
+    padding: 0.3rem 1rem;
+    opacity: 0.7;
+    font-size: 14px;
+    &.menu-section {
+      padding: 0.5rem 1rem;
+    }
+  }
+  .menu-item.selected {
+    opacity: 1;
+    background-color: @selected-background;
+  }
+  .menu-item.clickable:hover {
+    background-color: @selected-background;
+  }
+}
+
+.browser-schema-container {
+  flex: 0 0 300px;
+  margin-right: @default-margin;
+}
+.browser-data-container {
+  flex-grow: 1;
+  min-height: 100%;
+}
+
+.table-list {
+  background-color: @default-background;
+  border: 1px solid @default-border-color;
+  .ant-list-item {
+    padding: 5px 10px;
+    cursor: pointer;
+    &:hover {
+      background-color: @selected-background;
+    }
+    &.selected {
+      background-color: @selected-background;
+    }
+  }
+}
+
+.browser-tabs {
+  border-top: none !important;
+  .ant-tabs-tab {
+    border-bottom: none !important;
+  }
+  .ant-tabs-nav {
+    margin-bottom: 0;
+    &:before {
+      border-bottom: none !important;
+    }
+  }
+  .ant-tabs-content-holder {
+    background-color: @tab-background;
+    padding: 10px !important;
+    border: 1px solid @default-border-color;
+  }
+  .ant-tabs-tab-active {
+    background-color: @tab-active-background;
+    .ant-tabs-tab-btn {
+      color: @tab-active-color;
+    }
+  }
+}
+
+.query-result {
+  .ant-alert {
+    border-bottom: none !important;
+  }
+  .sql-outer {
+    background: @sql-background;
+    padding: 10px 15px;
+  }
+}
+
+.bordered {
+  border: 1px solid @default-border-color;
+}
+
+.ant-btn[disabled] {
+  background-color: @btn-disabled-background;
+  color: @btn-disabled-color;
+  pointer-events: none;
+}
+
+.divider {
+  border-bottom: 2px dashed @divider-border-color;
+  width: 100%;
+  margin: @default-margin 0;
+}

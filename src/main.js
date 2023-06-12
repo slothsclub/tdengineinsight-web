@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import './assets/less/light.less'
+import './assets/less/themes.less'
 import App from './App.vue'
 import router from "./router"
 import { createPinia } from 'pinia'

@@ -7,7 +7,6 @@ import QueryResult from "../components/QueryResult.vue";
 import TableStructure from "../components/TableStructure.vue";
 import TablePrivileges from "../components/TablePrivileges.vue";
 import QueryBuilder from "../components/QueryBuilder.vue";
-import WindowClauseBuilder from "../components/clause/QuickTimeRangeClauseSelector.vue";
 import QuickTimeRangeClauseSelector from "../components/clause/QuickTimeRangeClauseSelector.vue";
 const val = ref("db2")
 const activeKey = ref("1")
@@ -15,7 +14,7 @@ const viewMode = ref("a")
 </script>
 
 <template>
-  <a-row :gutter="[0, 0]" class="min-h">
+  <a-row :gutter="[0, 0]" class="min-h browser-container">
     <a-col class="browser-schema-container">
       <a-select size="large" v-model:value="val">
         <a-select-option value="db1">DB1</a-select-option>
@@ -26,7 +25,7 @@ const viewMode = ref("a")
       <TableList></TableList>
     </a-col>
     <a-col class="browser-data-container">
-      <a-tabs v-model:activeKey="activeKey" type="card" class="browser-tabs bordered min-h">
+      <a-tabs v-model:activeKey="activeKey" type="card" class="browser-tabs min-h">
         <a-tab-pane key="1">
           <template #tab>
             <span>
@@ -102,6 +101,9 @@ const viewMode = ref("a")
 </template>
 
 <style scoped>
+  .browser-container {
+    flex-wrap: nowrap;
+  }
   .ant-select {
     min-width: 100px;
     width: 100%;
