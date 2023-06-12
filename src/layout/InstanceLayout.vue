@@ -21,11 +21,11 @@ import Separator from "../components/Separator.vue";
         </a-col>
       </a-row>
     </a-layout-header>
-    <a-layout class="main-container">
+    <a-layout>
       <a-layout-sider width="200" class="sider">
         <Menu></Menu>
       </a-layout-sider>
-      <a-layout style="">
+      <a-layout style="margin-left: 200px;margin-top: 64px">
         <a-layout-content>
           <router-view></router-view>
         </a-layout-content>
