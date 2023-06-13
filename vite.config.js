@@ -11,4 +11,15 @@ export default defineConfig({
             resolvers: [AntDesignVueResolver()],
         })
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks(id, {getModuleInfo, getModuleIds}) {
+                    if (id.includes('node_modules')) {
+                        return 'vendor';
+                    }
+                },
+            },
+        },
+    },
 })
