@@ -8,7 +8,7 @@ const enUS = {
             query: "Query",
             cluster: "Cluster",
             subscribe: "Subscribe",
-            export: "Export",
+            schema: "Schema",
             privileges: "Privileges",
             configuration: "Configuration",
             clientList: "Client List"
@@ -20,7 +20,7 @@ const enUS = {
             query: "Execute your TDengine SQL",
             cluster: "View your TDengine cluster info",
             subscribe: "",
-            export: "",
+            schema: "Manage your databases and tables",
             privileges: "Manage your users and permissions",
             configuration: "List of configurations in your TDengine database",
             clientList: "List of clients connected to TDengine database"

@@ -41,13 +41,13 @@ const menus = [
     },
     {
         type: "item",
-        name: "subscribe",
-        label: "Subscribe"
+        name: "schema",
+        label: "Schema"
     },
     {
         type: "item",
-        name: "export",
-        label: "Export"
+        name: "subscribe",
+        label: "Subscribe"
     },
     {
         type: "hr",
