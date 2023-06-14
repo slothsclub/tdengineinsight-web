@@ -25,7 +25,7 @@ const viewMode = ref("a")
       <TableList></TableList>
     </a-col>
     <a-col class="browser-data-container">
-      <a-tabs v-model:activeKey="activeKey" type="card" class="browser-tabs min-h">
+      <a-tabs v-model:activeKey="activeKey" type="card" class="tabs min-h">
         <a-tab-pane key="1">
           <template #tab>
             <span>
