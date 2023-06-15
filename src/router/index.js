@@ -12,6 +12,7 @@ import Configuration from "../screen/Configuration.vue";
 import ClientList from "../screen/ClientList.vue";
 import usePageTitle from "../support/pageTitle.js";
 import Schema from "../screen/Schema.vue";
+import Connections from "../screen/Connections.vue";
 
 const routes = [
     {
@@ -32,6 +33,7 @@ const routes = [
             {path: 'privileges', component: Privileges, name: "privileges"},
             {path: 'configuration', component: Configuration, name: "configuration"},
             {path: 'client-list', component: ClientList, name: "clientList"},
+            {path: 'connections', component: Connections, name: "connections"},
         ]
     },
 ]

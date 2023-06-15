@@ -11,7 +11,8 @@ const enUS = {
             schema: "Schema",
             privileges: "Privileges",
             configuration: "Configuration",
-            clientList: "Client List"
+            clientList: "Client List",
+            connections: "Connections"
         },
         description: {
             overview: "Real time statistics for this TDengine database",
@@ -23,7 +24,8 @@ const enUS = {
             schema: "Manage your databases and tables",
             privileges: "Manage your users and permissions",
             configuration: "List of configurations in your TDengine database",
-            clientList: "List of clients connected to TDengine database"
+            clientList: "List of clients connected to TDengine database",
+            connections: "List of connections to TDengine database"
         }
     }
 }

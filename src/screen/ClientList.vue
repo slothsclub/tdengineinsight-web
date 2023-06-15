@@ -1,4 +1,6 @@
 <script setup>
+import {ref} from "vue";
+
 const data = [{
   app_id: 1,
   ip: "",
@@ -79,11 +81,20 @@ const columns = [{
   dataIndex: 'last_access'
 }
 ];
+
+const checked = ref(true)
 </script>
 
 <template>
-  <a-table class="client-list" :columns="columns" :data-source="data" bordered :pagination="false" size="small">
-  </a-table>
+  <a-row :gutter="[0, 5]">
+    <a-col :span="24" class="txt-right">
+      <a-checkbox v-model:checked="checked">Auto refresh</a-checkbox>
+    </a-col>
+    <a-col :span="24">
+      <a-table class="client-list" :columns="columns" :data-source="data" bordered :pagination="false" size="small">
+      </a-table>
+    </a-col>
+  </a-row>
 </template>
 
 <style scoped>

@@ -74,5 +74,10 @@ const menus = [
         name: "clientList",
         label: "Client List"
     },
+    {
+        type: "item",
+        name: "connections",
+        label: "Connections"
+    },
 ]
 export default menus
