@@ -2,18 +2,24 @@
 import { PlusCircleOutlined } from '@ant-design/icons-vue';
 import InstanceCard from "../components/InstanceCard.vue";
 import {ref} from "vue";
+import AddInstanceForm from "../components/form/AddInstanceForm.vue";
 
 const value = ref("")
+const form = ref(null)
 
 function onSearch() {}
+const handleEdit = () => {
+  form.value.edit({protocol: "TAOS-RS"})
+}
 </script>
 
 <template>
+  <AddInstanceForm ref="form" />
   <a-row>
     <a-col :span="14" :offset="5">
       <a-row>
         <a-col :span="12">
-          <a-button type="primary" shape="round" size="large">
+          <a-button type="primary" shape="round" size="large" @click="form.show()">
             <template #icon>
               <PlusCircleOutlined />
             </template>
@@ -34,7 +40,7 @@ function onSearch() {}
   <br>
   <a-row>
     <a-col :span="14" :offset="5" class="instances-container">
-      <InstanceCard v-for="i in 10"></InstanceCard>
+      <InstanceCard v-for="i in 10" @edit="handleEdit"></InstanceCard>
     </a-col>
   </a-row>
   <a-row>

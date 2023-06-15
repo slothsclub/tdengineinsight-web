@@ -1,28 +1,21 @@
 <template>
   <a-card class="instance-card" hoverable>
     <template #actions>
-      <setting-outlined key="setting" />
-      <edit-outlined key="edit" />
+      <EditOutlined key="edit" @click="emit('edit')" />
+      <SettingOutlined key="setting" />
     </template>
     <a-card-meta title="Localost" description="127.0.0.1:6030" @click="openInstance">
 
     </a-card-meta>
   </a-card>
 </template>
-<script>
+<script setup>
 import { SettingOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/icons-vue';
-import { defineComponent } from 'vue';
-export default defineComponent({
-  components: {
-    SettingOutlined,
-    EditOutlined,
-    EllipsisOutlined,
-  },
+import {useRouter} from "vue-router";
+const router = useRouter()
 
-  methods: {
-    openInstance() {
-      this.$router.push({name: "overview", params: {id: 1}})
-    }
-  }
-});
+const emit = defineEmits(["edit"])
+const openInstance = () => {
+  router.push({name: "overview", params: {id: 1}})
+}
 </script>
