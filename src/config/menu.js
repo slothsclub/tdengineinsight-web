@@ -61,11 +61,6 @@ const menus = [
     },
     {
         type: "item",
-        name: "privileges",
-        label: "Privileges"
-    },
-    {
-        type: "item",
         name: "configuration",
         label: "Configuration"
     },

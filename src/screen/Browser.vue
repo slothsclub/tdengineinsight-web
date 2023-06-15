@@ -5,7 +5,6 @@ import TableList from "../components/TableList.vue";
 import DataTableView from "../components/DataTableView.vue";
 import QueryResult from "../components/QueryResult.vue";
 import TableStructure from "../components/TableStructure.vue";
-import TablePrivileges from "../components/TablePrivileges.vue";
 import QueryBuilder from "../components/QueryBuilder.vue";
 import QuickTimeRangeClauseSelector from "../components/clause/QuickTimeRangeClauseSelector.vue";
 const val = ref("db2")
@@ -85,15 +84,6 @@ const viewMode = ref("a")
               <DataTableView />
             </a-col>
           </a-row>
-        </a-tab-pane>
-        <a-tab-pane key="4">
-          <template #tab>
-            <span>
-              <UserOutlined />
-              Privileges
-            </span>
-          </template>
-          <TablePrivileges />
         </a-tab-pane>
       </a-tabs>
     </a-col>

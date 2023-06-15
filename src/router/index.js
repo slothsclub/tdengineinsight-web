@@ -7,7 +7,6 @@ import Browser from "../screen/Browser.vue";
 import Query from "../screen/Query.vue";
 import Cluster from "../screen/Cluster.vue";
 import Subscribe from "../screen/Subscribe.vue";
-import Privileges from "../screen/Privileges.vue";
 import Configuration from "../screen/Configuration.vue";
 import ClientList from "../screen/ClientList.vue";
 import usePageTitle from "../support/pageTitle.js";
@@ -30,7 +29,6 @@ const routes = [
             {path: 'cluster', component: Cluster, name: "cluster"},
             {path: 'schema', component: Schema, name: "schema"},
             {path: 'subscribe', component: Subscribe, name: "subscribe"},
-            {path: 'privileges', component: Privileges, name: "privileges"},
             {path: 'configuration', component: Configuration, name: "configuration"},
             {path: 'client-list', component: ClientList, name: "clientList"},
             {path: 'connections', component: Connections, name: "connections"},
