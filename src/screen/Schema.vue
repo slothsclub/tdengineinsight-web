@@ -3,7 +3,9 @@ import {LeftOutlined} from "@ant-design/icons-vue"
 import Databases from "./schema/Databases.vue";
 import Tables from "./schema/Tables.vue";
 import {computed, ref} from "vue";
+import CreateDatabaseForm from "../components/form/CreateDatabaseForm.vue";
 
+const createDatabaseFormRef = ref()
 const selectedDatabase = ref("")
 const value = ref("")
 
@@ -38,7 +40,8 @@ const onSearch = () => {
       </a-space>
     </a-col>
     <a-col :span="24" class="mrg-top" v-if="!selectedDatabase">
-      <a-button type="primary">Create database</a-button>
+      <a-button type="primary" @click="createDatabaseFormRef.show()">Create database</a-button>
+      <CreateDatabaseForm ref="createDatabaseFormRef" />
     </a-col>
     <a-col :span="24" class="mrg-top" v-if="!!selectedDatabase">
       <a-card>

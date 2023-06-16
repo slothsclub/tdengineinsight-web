@@ -2,7 +2,7 @@
 import { PlusCircleOutlined } from '@ant-design/icons-vue';
 import InstanceCard from "../components/InstanceCard.vue";
 import {ref} from "vue";
-import AddInstanceForm from "../components/form/AddInstanceForm.vue";
+import InstanceForm from "../components/form/InstanceForm.vue";
 
 const value = ref("")
 const form = ref(null)
@@ -14,7 +14,7 @@ const handleEdit = () => {
 </script>
 
 <template>
-  <AddInstanceForm ref="form" />
+  <InstanceForm ref="form" />
   <a-row>
     <a-col :span="14" :offset="5">
       <a-row>

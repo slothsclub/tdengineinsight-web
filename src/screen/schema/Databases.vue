@@ -1,7 +1,10 @@
 <script setup>
 import DatabaseExtraInfo from "./DatabaseExtraInfo.vue";
+import AlterDatabaseForm from "../../components/form/AlterDatabaseForm.vue";
+import {ref} from "vue";
 
 const emit = defineEmits(['update:database'])
+const alterDatabaseFormRef = ref()
 
 const data = [{
   name: "DB 1",
@@ -77,19 +80,22 @@ const handleSelectDatabase = (name) => {
 </script>
 
 <template>
-  <a-table class="client-list" :columns="columns" :data-source="data" bordered :pagination="false" size="small">
-    <template #bodyCell="{ column, text }">
-      <template v-if="column.dataIndex === 'name'">
-        <a @click="handleSelectDatabase(text)">{{ text }}</a>
+  <div>
+    <a-table class="client-list" :columns="columns" :data-source="data" bordered :pagination="false" size="small">
+      <template #bodyCell="{ column, text }">
+        <template v-if="column.dataIndex === 'name'">
+          <a @click="handleSelectDatabase(text)">{{ text }}</a>
+        </template>
+        <template v-if="column.key === 'action'">
+          <a-button @click="alterDatabaseFormRef.show()">Edit</a-button>
+        </template>
       </template>
-      <template v-if="column.key === 'action'">
-        <a>Delete</a>
+      <template #expandedRowRender="{ record }">
+        <DatabaseExtraInfo :database="record"/>
       </template>
-    </template>
-    <template #expandedRowRender="{ record }">
-      <DatabaseExtraInfo :database="record"/>
-    </template>
-  </a-table>
+    </a-table>
+    <AlterDatabaseForm ref="alterDatabaseFormRef"></AlterDatabaseForm>
+  </div>
 </template>
 
 <style scoped>
