@@ -1,5 +1,9 @@
 <script setup>
+import AlterTableForm from "../../components/form/AlterTableForm.vue";
+import {ref} from "vue";
+
 const emit = defineEmits(['update:stable'])
+const alterTableFormRef = ref()
 
 const data = [{
   stable_name: "Stable 1",
@@ -52,13 +56,16 @@ const columns = [{
 </script>
 
 <template>
-  <a-table class="schema-stable-list" :columns="columns" :data-source="data" :pagination="false" size="small">
-    <template #bodyCell="{ column, text }">
-      <template v-if="column.key === 'action'">
-        <a>Delete</a>
+  <div>
+    <a-table class="schema-stable-list" :columns="columns" :data-source="data" :pagination="false" size="small">
+      <template #bodyCell="{ column, text }">
+        <template v-if="column.key === 'action'">
+          <a-button @click="alterTableFormRef.show()">Edit</a-button>
+        </template>
       </template>
-    </template>
-  </a-table>
+    </a-table>
+    <AlterTableForm ref="alterTableFormRef" />
+  </div>
 </template>
 
 <style scoped>
