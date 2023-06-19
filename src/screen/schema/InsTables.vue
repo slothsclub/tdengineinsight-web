@@ -1,12 +1,15 @@
 <script setup>
 import AlterTableForm from "../../components/form/AlterTableForm.vue";
 import {ref} from "vue";
+import AlterSubtableForm from "../../components/form/AlterSubtableForm.vue";
+import {DeleteOutlined, EditOutlined, InfoOutlined, TableOutlined} from "@ant-design/icons-vue";
 
 const emit = defineEmits(['update:table'])
 const alterTableFormRef = ref()
+const alterSubtableFormRef = ref()
 
 const data = [{
-  table_name: "Stable 1",
+  table_name: "table 1",
   db_name: "",
   create_time: "",
   columns: "",
@@ -15,7 +18,18 @@ const data = [{
   table_comment: "",
   vgroup_id: "",
   ttl: "",
-  type: ""
+  type: "table"
+},{
+  table_name: "Subtable 1",
+  db_name: "",
+  create_time: "",
+  columns: "",
+  stable_name: "",
+  uid: "",
+  table_comment: "",
+  vgroup_id: "",
+  ttl: "",
+  type: "subtable"
 }];
 const columns = [{
   title: 'Name',
@@ -52,19 +66,44 @@ const columns = [{
   key: 'action',
 }
 ];
+
+const handleEdit = (column) => {
+  if(column.type === 'subtable') {
+    alterSubtableFormRef.value.show()
+  } else {
+    alterTableFormRef.value.show()
+  }
+}
 </script>
 
 <template>
   <div>
     <a-table class="schema-table-list" :columns="columns" :data-source="data" :pagination="false" size="small">
-      <template #bodyCell="{ column, text }">
+      <template #bodyCell="{ text, record, index, column }">
         <template v-if="column.key === 'action'">
-          <a-button @click="alterTableFormRef.show()">edit</a-button>
+          <a-space>
+            <a-button shape="circle" size="small">
+              <template #icon>
+                <InfoOutlined />
+              </template>
+            </a-button>
+            <a-button shape="circle" size="small" @click="handleEdit(record)">
+              <template #icon>
+                <EditOutlined />
+              </template>
+            </a-button>
+            <a-button shape="circle" size="small" danger>
+              <template #icon>
+                <DeleteOutlined />
+              </template>
+            </a-button>
+          </a-space>
         </template>
       </template>
     </a-table>
 
     <AlterTableForm ref="alterTableFormRef" mode="table" />
+    <AlterSubtableForm ref="alterSubtableFormRef" />
   </div>
 </template>
 

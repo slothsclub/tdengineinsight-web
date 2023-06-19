@@ -1,9 +1,12 @@
 <script setup>
 import AlterTableForm from "../../components/form/AlterTableForm.vue";
-import {ref} from "vue";
+import {reactive, ref} from "vue";
+import CreateSubtableForm from "../../components/form/CreateSubtableForm.vue";
+import {EditOutlined, TableOutlined, DeleteOutlined, InfoOutlined} from "@ant-design/icons-vue"
 
 const emit = defineEmits(['update:stable'])
 const alterTableFormRef = ref()
+const createSubtableFormRef = ref()
 
 const data = [{
   stable_name: "Stable 1",
@@ -52,7 +55,17 @@ const columns = [{
   key: 'action',
 }
 ];
-
+const tags = reactive([
+  {
+    name: "tag1"
+  },
+  {
+    name: "tag2"
+  },
+  {
+    name: "tag3"
+  }
+])
 </script>
 
 <template>
@@ -60,11 +73,36 @@ const columns = [{
     <a-table class="schema-stable-list" :columns="columns" :data-source="data" :pagination="false" size="small">
       <template #bodyCell="{ column, text }">
         <template v-if="column.key === 'action'">
-          <a-button @click="alterTableFormRef.show()">Edit</a-button>
+          <a-space>
+            <a-button shape="circle" size="small">
+              <template #icon>
+                <InfoOutlined />
+              </template>
+            </a-button>
+            <a-button shape="circle" size="small" @click="alterTableFormRef.show()">
+              <template #icon>
+                <EditOutlined />
+              </template>
+            </a-button>
+            <a-tooltip>
+              <template #title>Create Subtables</template>
+              <a-button shape="circle" size="small" @click="createSubtableFormRef.show()">
+                <template #icon>
+                  <TableOutlined />
+                </template>
+              </a-button>
+            </a-tooltip>
+            <a-button shape="circle" size="small" danger>
+              <template #icon>
+                <DeleteOutlined />
+              </template>
+            </a-button>
+          </a-space>
         </template>
       </template>
     </a-table>
     <AlterTableForm ref="alterTableFormRef" />
+    <CreateSubtableForm ref="createSubtableFormRef" :tags="tags" />
   </div>
 </template>
 
