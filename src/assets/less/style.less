@@ -182,9 +182,15 @@ a.logo {
     cursor: pointer;
     &:hover {
       background-color: @selected-background;
+      .ant-list-item-action {
+        display: inline;
+      }
     }
     &.selected {
       background-color: @selected-background;
+    }
+    .ant-list-item-action {
+      display: none;
     }
   }
 }
@@ -266,5 +272,63 @@ a.logo {
 .ant-collapse.no-padding-left {
   .ant-collapse-content-box, .ant-collapse-header {
     padding-left: 0 !important;
+  }
+}
+
+.subscription-card {
+  min-height: 100px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  &:hover {
+    .ant-card-bordered {
+      background-color: @subscription-hover-background;
+    }
+    .actions {
+      display: flex;
+    }
+  }
+  &.selected {
+    .ant-card-bordered {
+      background-color: @subscription-selected-background;
+    }
+  }
+  .ant-card {
+    height: 100%;
+  }
+  .ant-card-body {
+    height: 100%;
+    display: flex;
+    align-items: start;
+    padding: 0;
+    padding-left: 20px;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .actions {
+    position: absolute;
+    display: none;
+    height: 100%;
+    align-items: center;
+    right: 20px;
+    top: 0;
+  }
+  .consumer-id {
+    position: absolute;
+    top: 0px;
+    left: 10px;
+    height: 20px;
+    background-color: @subscription-id-background;
+    color: @subscription-id-color;
+    font-size: 0.8rem;
+    padding: 2px 5px;
+    z-index: 10;
+    border-radius: 2px;
+  }
+  .group-name {
+    font-size: 1.1rem;
+  }
+  .group-id {
+    color: @subscription-id-color;
   }
 }

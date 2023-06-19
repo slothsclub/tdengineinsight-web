@@ -20,7 +20,7 @@ const enUS = {
             browser: "Real time view of data in your TDengine database",
             query: "Execute your TDengine SQL",
             cluster: "View your TDengine cluster info",
-            subscribe: "",
+            subscribe: "Manage subscriptions and consumers in your database",
             schema: "Manage your databases and tables",
             privileges: "Manage your users and permissions",
             configuration: "List of configurations in your TDengine database",
