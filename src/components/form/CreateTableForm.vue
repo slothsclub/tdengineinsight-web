@@ -4,6 +4,15 @@ import {SettingOutlined, TableOutlined, TagsOutlined} from "@ant-design/icons-vu
 import {PlusOutlined} from "@ant-design/icons-vue"
 import DataType from "../DataType.vue";
 
+const props = defineProps({
+  mode: {
+    type: String,
+    default() {
+      return "stable"
+    }
+  }
+})
+const mode = computed(() => props.mode)
 const visible = ref(false);
 const loading = ref(false);
 const retentionsEnabled = ref(true);
@@ -47,7 +56,9 @@ const formState = reactive({
   ]
 });
 const activeKey = ref("options")
-
+const title = computed(() => {
+  return "Create " + mode.value
+})
 const show = () => {
   visible.value = true
 };
@@ -94,7 +105,7 @@ defineExpose({
 </script>
 
 <template>
-  <a-modal v-model:visible="visible" title="Create Stable" @ok="handleOk" :width="800"
+  <a-modal v-model:visible="visible" :title="title" @ok="handleOk" :width="800"
            :bodyStyle="{height: '650px', 'overflow-y': 'auto'}">
     <template #footer>
       <a-button key="back" @click="handleCancel">Cancel</a-button>
@@ -212,7 +223,7 @@ defineExpose({
           </a-row>
 
         </a-tab-pane>
-        <a-tab-pane key="tags">
+        <a-tab-pane key="tags" v-if="mode === 'stable'">
           <template #tab>
             <span>
               <TagsOutlined/>

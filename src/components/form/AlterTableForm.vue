@@ -1,9 +1,17 @@
 <script setup>
-import {reactive, ref, toRaw} from "vue";
+import {computed, reactive, ref, toRaw} from "vue";
 import {SettingOutlined, TableOutlined, TagsOutlined, DeleteOutlined} from "@ant-design/icons-vue";
 import {PlusOutlined} from "@ant-design/icons-vue"
 import DataType from "../DataType.vue";
-
+const props = defineProps({
+  mode: {
+    type: String,
+    default() {
+      return "stable"
+    }
+  }
+})
+const mode = computed(() => props.mode)
 const visible = ref(false);
 const loading = ref(false);
 const formState = reactive({
@@ -46,7 +54,9 @@ const formState = reactive({
   ]
 });
 const activeKey = ref("options")
-
+const title = computed(() => {
+  return "Alter " + mode.value
+})
 const show = () => {
   visible.value = true
 };
@@ -97,7 +107,7 @@ defineExpose({
 </script>
 
 <template>
-  <a-modal v-model:visible="visible" title="Alter Stable" @ok="handleOk" :width="900"
+  <a-modal v-model:visible="visible" :title="title" @ok="handleOk" :width="900"
            :bodyStyle="{height: '650px', 'overflow-y': 'auto'}">
     <template #footer>
       <a-button key="back" @click="handleCancel">Cancel</a-button>
@@ -115,6 +125,12 @@ defineExpose({
             </span>
           </template>
 
+          <a-form-item label="TTL" v-show="mode === 'table'">
+            <a-input-group compact>
+              <a-input-number v-model:value="formState.ttl" :min="0" :max="365000" placeholder="3650"/>
+              <a-button disabled>Days</a-button>
+            </a-input-group>
+          </a-form-item>
           <a-form-item label="Comment">
             <a-textarea v-model:value="formState.comment" placeholder="" :rows="6"/>
           </a-form-item>
@@ -158,7 +174,7 @@ defineExpose({
           </a-row>
 
         </a-tab-pane>
-        <a-tab-pane key="tags">
+        <a-tab-pane key="tags" v-if="mode === 'stable'">
           <template #tab>
             <span>
               <TagsOutlined/>

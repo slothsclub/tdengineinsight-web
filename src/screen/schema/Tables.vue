@@ -37,7 +37,7 @@ const createTableFormRef = ref()
       </a-tabs>
     </a-col>
 
-    <CreateTableForm ref="createTableFormRef" />
+    <CreateTableForm ref="createTableFormRef" :mode="activeKey" />
   </a-row>
 </template>
 
