@@ -2,9 +2,12 @@
 import DatabaseExtraInfo from "./DatabaseExtraInfo.vue";
 import AlterDatabaseForm from "../../components/form/AlterDatabaseForm.vue";
 import {ref} from "vue";
+import {useRouter} from "vue-router";
+import {EditOutlined} from "@ant-design/icons-vue";
 
 const emit = defineEmits(['update:database'])
 const alterDatabaseFormRef = ref()
+const router = useRouter()
 
 const data = [{
   name: "DB 1",
@@ -75,7 +78,7 @@ const columns = [{
 ];
 
 const handleSelectDatabase = (name) => {
-  emit("update:database", name)
+  router.push({name: "schema", query: {db: name}})
 }
 </script>
 
@@ -87,7 +90,11 @@ const handleSelectDatabase = (name) => {
           <a @click="handleSelectDatabase(text)">{{ text }}</a>
         </template>
         <template v-if="column.key === 'action'">
-          <a-button @click="alterDatabaseFormRef.show()">Edit</a-button>
+          <a-button shape="circle" size="small" @click="alterDatabaseFormRef.show()">
+            <template #icon>
+              <EditOutlined />
+            </template>
+          </a-button>
         </template>
       </template>
       <template #expandedRowRender="{ record }">

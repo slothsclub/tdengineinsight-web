@@ -1,0 +1,34 @@
+<script setup>
+import {MoreOutlined, SettingOutlined, QuestionCircleOutlined, InfoCircleOutlined} from "@ant-design/icons-vue"
+</script>
+
+<template>
+  <a-dropdown class="about-links">
+    <div>
+      <MoreOutlined />
+    </div>
+    <template #overlay>
+      <a-menu>
+        <a-menu-item>
+          <SettingOutlined /> Settings
+        </a-menu-item>
+        <a-menu-item key="0">
+          <QuestionCircleOutlined />
+          <a target="_blank" rel="noopener noreferrer" href="https://github.com/slothsclub/TDengineInsight/issues">
+            Feedback
+          </a>
+        </a-menu-item>
+        <a-menu-item key="1">
+          <InfoCircleOutlined />
+          <a target="_blank" rel="noopener noreferrer" href="https://github.com/slothsclub/TDengineInsight">
+            About
+          </a>
+        </a-menu-item>
+      </a-menu>
+    </template>
+  </a-dropdown>
+</template>
+
+<style scoped>
+
+</style>

@@ -4,9 +4,14 @@ import Databases from "./schema/Databases.vue";
 import Tables from "./schema/Tables.vue";
 import {computed, ref} from "vue";
 import CreateDatabaseForm from "../components/form/CreateDatabaseForm.vue";
+import {useRoute, useRouter} from "vue-router";
+const route = useRoute()
+const router = useRouter()
 
 const createDatabaseFormRef = ref()
-const selectedDatabase = ref("")
+const selectedDatabase = computed(() => {
+  return route.query.db
+})
 const value = ref("")
 
 const view = computed(() => {
@@ -25,13 +30,16 @@ const title = computed(() => {
 const onSearch = () => {
 
 }
+const gotoDatabaseView = () => {
+  router.push({name: "schema"})
+}
 </script>
 
 <template>
   <a-row :gutter="[0, 10]">
     <a-col :span="24">
       <a-space align="center">
-        <a-button shape="circle" size="small" @click="selectedDatabase=null" v-if="!!selectedDatabase">
+        <a-button shape="circle" size="small" @click="gotoDatabaseView" v-if="!!selectedDatabase">
           <template #icon>
             <LeftOutlined/>
           </template>

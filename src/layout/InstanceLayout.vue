@@ -5,6 +5,7 @@ import DatabaseSelector from "../components/DatabaseSelector.vue";
 import Logo from "../components/Logo.vue";
 import Menu from "../components/Menu.vue";
 import Separator from "../components/Separator.vue";
+import About from "../components/About.vue";
 </script>
 
 <template>
@@ -14,10 +15,13 @@ import Separator from "../components/Separator.vue";
         <a-col class="logo-container">
           <Logo class=""></Logo>
         </a-col>
-        <a-col class="dropdown-container">
+        <a-col class="dropdown-container flex-grow">
           <DatabaseSelector />
           <Separator />
           <PageTitle></PageTitle>
+        </a-col>
+        <a-col>
+          <About />
         </a-col>
       </a-row>
     </a-layout-header>
