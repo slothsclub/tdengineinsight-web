@@ -1,11 +1,12 @@
 <script setup>
 import series from "../../config/sampleChartData.js";
 import {useChart} from "../../support/chart.js";
+import i18n from "../../locale/i18n.js";
 const props = defineProps({
   instanceId: String
 })
 
-const {options} = useChart("chart3", "Trans")
+const {options} = useChart("chart3", i18n.global.t('common.transaction'))
 </script>
 
 <template>

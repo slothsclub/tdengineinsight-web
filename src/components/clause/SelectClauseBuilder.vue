@@ -9,7 +9,7 @@ const alias = ref("")
 <template>
 <a-space>
   <a-input-group compact>
-    <a-button disabled>Function</a-button>
+    <a-button disabled>{{ $t('common.function') }}</a-button>
     <a-select v-model:value="func">
       <a-select-option value="avg">AVG</a-select-option>
       <a-select-option value="count">COUNT</a-select-option>
@@ -17,7 +17,7 @@ const alias = ref("")
   </a-input-group>
 
   <a-input-group compact>
-    <a-button disabled>Column</a-button>
+    <a-button disabled>{{ $t('common.column') }}</a-button>
     <a-select v-model:value="column">
       <a-select-option value="col1">Col 1</a-select-option>
       <a-select-option value="col2">Col 2</a-select-option>
@@ -26,7 +26,7 @@ const alias = ref("")
   </a-input-group>
 
   <a-input-group compact>
-    <a-button disabled>Alias</a-button>
+    <a-button disabled>{{ $t('common.alias') }}</a-button>
     <a-input v-model:value="alias" placeholder="" />
   </a-input-group>
 </a-space>

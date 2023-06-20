@@ -1,5 +1,6 @@
 <script setup>
 import {ref} from "vue";
+import i18n from "../locale/i18n.js";
 
 const data = [{
   conn_id: 1,
@@ -19,25 +20,25 @@ const data = [{
   last_access: ""
 }];
 const columns = [{
-  title: 'ID',
+  title: i18n.global.t('common.id'),
   dataIndex: 'conn_id'
 }, {
-  title: 'User',
+  title: i18n.global.t('common.username'),
   dataIndex: 'user'
 }, {
-  title: 'App',
+  title: i18n.global.t('common.app'),
   dataIndex: 'app'
 }, {
-  title: 'PID',
+  title: i18n.global.t('common.pid'),
   dataIndex: 'pid'
 }, {
-  title: 'Endpoint',
+  title: i18n.global.t('common.endpoint'),
   dataIndex: 'end_point'
 }, {
-  title: 'Login time',
+  title: i18n.global.t('common.loginTime'),
   dataIndex: 'login_time'
 }, {
-  title: 'Last access',
+  title: i18n.global.t('common.lastAccess'),
   dataIndex: 'last_access'
 }
 ];
@@ -48,7 +49,7 @@ const checked = ref(true)
 <template>
   <a-row :gutter="[0, 5]">
     <a-col :span="24" class="txt-right">
-      <a-checkbox v-model:checked="checked">Auto refresh</a-checkbox>
+      <a-checkbox v-model:checked="checked">{{ $t('common.autoRefresh') }}</a-checkbox>
     </a-col>
     <a-col :span="24">
       <a-table class="client-list" :columns="columns" :data-source="data" bordered :pagination="false" size="small">

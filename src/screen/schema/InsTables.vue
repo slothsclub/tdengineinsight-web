@@ -3,6 +3,7 @@ import AlterTableForm from "../../components/form/AlterTableForm.vue";
 import {ref} from "vue";
 import AlterSubtableForm from "../../components/form/AlterSubtableForm.vue";
 import {DeleteOutlined, EditOutlined, InfoOutlined, TableOutlined} from "@ant-design/icons-vue";
+import i18n from "../../locale/i18n.js";
 
 const emit = defineEmits(['update:table'])
 const alterTableFormRef = ref()
@@ -32,37 +33,37 @@ const data = [{
   type: "subtable"
 }];
 const columns = [{
-  title: 'Name',
+  title: i18n.global.t('common.name'),
   dataIndex: 'table_name'
 }, {
-  title: 'Database',
+  title: i18n.global.t('common.database'),
   dataIndex: 'db_name'
 }, {
-  title: 'Create time',
+  title: i18n.global.t('common.created'),
   dataIndex: 'create_time'
 }, {
-  title: 'Columns',
+  title: i18n.global.tc('common.column', 2),
   dataIndex: 'columns'
 }, {
-  title: 'Stable',
+  title: i18n.global.t('common.stable'),
   dataIndex: 'stable_name'
 }, {
-  title: 'UID',
+  title: i18n.global.t('common.uid'),
   dataIndex: 'uid'
 }, {
-  title: 'Comment',
+  title: i18n.global.t('common.comment'),
   dataIndex: 'table_comment'
 }, {
-  title: 'vGroup ID',
+  title: i18n.global.t('tdengine.database.vGroupId'),
   dataIndex: 'vgroup_id'
 }, {
-  title: 'TTL',
+  title: i18n.global.t('common.ttl'),
   dataIndex: 'ttl'
 }, {
-  title: 'Type',
+  title: i18n.global.t('common.type'),
   dataIndex: 'type'
 }, {
-  title: 'Action',
+  title: i18n.global.t('common.action'),
   key: 'action',
 }
 ];

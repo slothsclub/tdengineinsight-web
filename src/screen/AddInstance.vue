@@ -23,13 +23,13 @@ const handleEdit = () => {
             <template #icon>
               <PlusCircleOutlined />
             </template>
-            Add TDengine database
+            {{ $t("ui.btn.addInstance") }}
           </a-button>
         </a-col>
         <a-col :span="12" class="txt-right">
           <a-input-search
               v-model:value="value"
-              placeholder="Search by name, host, port"
+              :placeholder="$t('ui.placeholder.searchInstance')"
               style="width: 400px"
               @search="onSearch"
           />
@@ -49,12 +49,12 @@ const handleEdit = () => {
       <a-card class="guide">
         <a-row :gutter="[0, 30]">
           <a-col :span="24" class="txt-center">
-            <h2>Create a new TDengine database?</h2>
+            <h2>{{$t('ui.tips.createTDengine')}}</h2>
           </a-col>
           <a-col :span="24">
-            <a href="https://cloud.tdengine.com/" target="_blank"><a-button type="primary" size="large">Create a free TDengine Database on TDengine Cloud</a-button></a>
-            <a href="https://docs.tdengine.com/get-started/docker/" target="_blank"><a-button type="primary" size="large">Docker</a-button></a>
-            <a href="https://docs.tdengine.com/get-started/package/" target="_blank"><a-button type="primary" size="large">Package</a-button></a>
+            <a :href="$t('links.tdengineCloud.url')" target="_blank"><a-button type="primary" size="large">{{$t('links.tdengineCloud.title')}}</a-button></a>
+            <a :href="$t('links.tdengineDocker')" target="_blank"><a-button type="primary" size="large">{{ $t('common.docker') }}</a-button></a>
+            <a :href="$t('links.tdenginePackage')" target="_blank"><a-button type="primary" size="large">{{ $t('common.package') }}</a-button></a>
           </a-col>
         </a-row>
       </a-card>

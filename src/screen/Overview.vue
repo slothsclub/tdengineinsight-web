@@ -10,16 +10,16 @@ import SlowQueriesChart from "../components/charts/SlowQueriesChart.vue";
 <template>
   <a-row :gutter="[0, 20]">
     <a-col :span="24">
-      <a-typography-title :level="3">Database summary</a-typography-title>
+      <a-typography-title :level="3">{{ $t('ui.title.databaseSummary') }}</a-typography-title>
       <a-descriptions bordered style="width: 600px" size="small" :column="2">
-        <a-descriptions-item label="Cluster ID" :span="2">4578-45</a-descriptions-item>
-        <a-descriptions-item label="Cluster Name" :span="2">Production</a-descriptions-item>
-        <a-descriptions-item label="Created Time" :span="2">2010-10-10 10:10:10</a-descriptions-item>
-        <a-descriptions-item label="MNode Endpoint" :span="2">
+        <a-descriptions-item :label="$t('ui.label.cluster.id')" :span="2">4578-45</a-descriptions-item>
+        <a-descriptions-item :label="$t('ui.label.cluster.name')" :span="2">Production</a-descriptions-item>
+        <a-descriptions-item :label="$t('common.created')" :span="2">2010-10-10 10:10:10</a-descriptions-item>
+        <a-descriptions-item :label="$t('ui.label.cluster.mnode')" :span="2">
           <p>127.0.0.1</p>
           <p>127.0.0.2</p>
         </a-descriptions-item>
-        <a-descriptions-item label="DNode Endpoint" :span="2">
+        <a-descriptions-item :label="$t('ui.label.cluster.dnode')" :span="2">
           <p>127.0.0.3</p>
           <p>127.0.0.4</p>
           <p>127.0.0.5</p>
@@ -29,17 +29,17 @@ import SlowQueriesChart from "../components/charts/SlowQueriesChart.vue";
     <a-col :span="24">
       <a-card>
         <a-row justify="space-around">
-          <a-statistic title="Connected Clients" :precision="0" :value="251"/>
+          <a-statistic :title="$t('ui.label.status.connectedClients')" :precision="0" :value="251"/>
           <Separator size="large"/>
-          <a-statistic title="Connections" :precision="0" :value="2521"/>
+          <a-statistic :title="$t('common.connections')" :precision="0" :value="2521"/>
           <Separator size="large"/>
-          <a-statistic title="Current Requests" :precision="0" :value="2521"/>
+          <a-statistic :title="$t('ui.label.status.currentRequests')" :precision="0" :value="2521"/>
           <Separator size="large"/>
-          <a-statistic title="Total Requests" :precision="0" :value="1251"/>
+          <a-statistic :title="$t('ui.label.status.totalRequests')" :precision="0" :value="1251"/>
           <Separator size="large"/>
-          <a-statistic title="Slow queries" :precision="0" :value="2513"/>
+          <a-statistic :title="$tc('ui.label.status.slowQuery', 2)" :precision="0" :value="2513"/>
           <Separator size="large"/>
-          <a-statistic title="Uptime" :precision="1" :value="251" suffix="h"/>
+          <a-statistic :title="$t('common.uptime')" :precision="1" :value="251" suffix="h"/>
         </a-row>
       </a-card>
     </a-col>

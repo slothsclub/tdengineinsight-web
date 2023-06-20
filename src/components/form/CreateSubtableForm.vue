@@ -88,11 +88,11 @@ defineExpose({
 </script>
 
 <template>
-  <a-modal v-model:visible="visible" title="Create Subtable" @ok="handleOk" :width="1000"
+  <a-modal v-model:visible="visible" :title="$t('ui.label.form.createSubtables')" @ok="handleOk" :width="1000"
            :bodyStyle="{height: '650px', 'overflow-y': 'auto'}">
     <template #footer>
-      <a-button key="back" @click="handleCancel">Cancel</a-button>
-      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">Create Subtable</a-button>
+      <a-button key="back" @click="handleCancel">{{ $t('ui.btn.cancel') }}</a-button>
+      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">{{ $t('ui.btn.createSubtables') }}</a-button>
     </template>
 
     <a-form :model="formState" :label-col="{ span: 6 }" :wrapper-col="{span: 18}" labelAlign="left">
@@ -106,18 +106,18 @@ defineExpose({
             </span>
           </template>
 
-          <a-form-item label="Name">
+          <a-form-item :label="$t('common.name')">
             <a-row align="middle" :gutter="[20, 0]">
               <a-col :span="12">
                 <a-input v-model:value="table.name" placeholder="" @focusin="onFocus"/>
               </a-col>
               <a-col :span="12">
-                <a-checkbox v-model:checked="table.ifNotExists">If not exists</a-checkbox>
+                <a-checkbox v-model:checked="table.ifNotExists">{{ $t('common.ifNotExists') }}</a-checkbox>
               </a-col>
             </a-row>
           </a-form-item>
 
-          <a-form-item label="Tags">
+          <a-form-item :label="$tc('common.tag', 2)">
             <a-tag color="#2db7f5" v-for="tag in table.tags" v-show="tag.value">{{ tag.name }}={{ tag.value }}</a-tag>
           </a-form-item>
           <a-divider/>

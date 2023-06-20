@@ -14,7 +14,7 @@ const activeKey = ref("system");
           <template #tab>
             <span>
               <ControlOutlined/>
-              System Configs
+              {{ $t('ui.label.systemConfigs') }}
             </span>
           </template>
           <Configs/>
@@ -23,7 +23,7 @@ const activeKey = ref("system");
           <template #tab>
             <span>
               <FileTextOutlined/>
-              DNode Configs: 201-3
+              {{ $t('ui.label.dnodeConfigs', [1]) }}
             </span>
           </template>
           <Configs/>

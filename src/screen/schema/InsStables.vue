@@ -3,6 +3,7 @@ import AlterTableForm from "../../components/form/AlterTableForm.vue";
 import {reactive, ref} from "vue";
 import CreateSubtableForm from "../../components/form/CreateSubtableForm.vue";
 import {EditOutlined, TableOutlined, DeleteOutlined, InfoOutlined} from "@ant-design/icons-vue"
+import i18n from "../../locale/i18n.js";
 
 const emit = defineEmits(['update:stable'])
 const alterTableFormRef = ref()
@@ -21,37 +22,37 @@ const data = [{
   rollup: ""
 }];
 const columns = [{
-  title: 'Name',
+  title: i18n.global.t('tdengine.database.stableName'),
   dataIndex: 'stable_name'
 }, {
-  title: 'Database',
+  title: i18n.global.t('common.database'),
   dataIndex: 'db_name'
 }, {
-  title: 'Create time',
+  title: i18n.global.t('common.created'),
   dataIndex: 'create_time'
 }, {
-  title: 'Columns',
+  title: i18n.global.tc('common.column', 2),
   dataIndex: 'columns'
 }, {
-  title: 'Tags',
+  title: i18n.global.tc('common.tag', 2),
   dataIndex: 'tags'
 }, {
-  title: 'Last update',
+  title: i18n.global.t('common.lastUpdate'),
   dataIndex: 'last_update'
 }, {
-  title: 'Comment',
+  title: i18n.global.t('common.comment'),
   dataIndex: 'table_comment'
 }, {
-  title: 'Watermark',
+  title: i18n.global.t('tdengine.database.watermark'),
   dataIndex: 'watermark'
 }, {
-  title: 'Max Delay',
+  title: i18n.global.t('common.maxDelay'),
   dataIndex: 'max_delay'
 }, {
-  title: 'Rollup',
+  title: i18n.global.t('common.rollup'),
   dataIndex: 'rollup'
 }, {
-  title: 'Action',
+  title: i18n.global.t('common.action'),
   key: 'action',
 }
 ];
@@ -85,7 +86,7 @@ const tags = reactive([
               </template>
             </a-button>
             <a-tooltip>
-              <template #title>Create Subtables</template>
+              <template #title>{{ $t('ui.btn.createSubtables') }}</template>
               <a-button shape="circle" size="small" @click="createSubtableFormRef.show()">
                 <template #icon>
                   <TableOutlined />

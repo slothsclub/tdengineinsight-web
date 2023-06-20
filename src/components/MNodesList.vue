@@ -1,4 +1,6 @@
 <script setup>
+import i18n from "../locale/i18n.js";
+
 const data = [{
   id: '1',
   role: 'MNodes',
@@ -13,19 +15,19 @@ const data = [{
   create_time: '2022',
 }];
 const columns = [{
-  title: 'ID',
+  title: i18n.global.t('common.id'),
   dataIndex: 'id'
 }, {
-  title: 'Role',
+  title: i18n.global.t('common.role'),
   dataIndex: 'role'
 }, {
-  title: 'Role Time',
+  title: i18n.global.t('common.roleTime'),
   dataIndex: 'role_time',
 }, {
-  title: 'Endpoint',
+  title: i18n.global.t('common.endpoint'),
   dataIndex: 'endpoint'
 }, {
-  title: 'Create time',
+  title: i18n.global.t('common.created'),
   dataIndex: 'create_time'
 }
 ];

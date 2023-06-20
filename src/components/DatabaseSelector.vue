@@ -7,7 +7,7 @@
     <template #overlay>
       <a-menu class="database-dropdown-item">
         <a-menu-item key="0">
-          All database
+          {{ $t('ui.label.allDatabase') }}
         </a-menu-item>
         <a-menu-divider />
         <a-menu-item key="3">localhost</a-menu-item>

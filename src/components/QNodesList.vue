@@ -1,4 +1,5 @@
 <script setup>
+import i18n from "../locale/i18n.js";
 const data = [{
   id: '1',
   endpoint: 'New York No. 1 Lake Park',
@@ -9,13 +10,13 @@ const data = [{
   create_time: '2022',
 }];
 const columns = [{
-  title: 'ID',
+  title: i18n.global.t('common.id'),
   dataIndex: 'id'
 }, {
-  title: 'Endpoint',
+  title: i18n.global.t('common.endpoint'),
   dataIndex: 'endpoint'
 }, {
-  title: 'Create time',
+  title: i18n.global.t('common.created'),
   dataIndex: 'create_time'
 }
 ];

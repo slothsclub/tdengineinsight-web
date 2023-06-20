@@ -1,6 +1,7 @@
 <script setup>
 import {computed, reactive, ref, toRaw} from "vue";
 import {SettingOutlined, TableOutlined, TagsOutlined, DeleteOutlined} from "@ant-design/icons-vue";
+import i18n from "../../locale/i18n.js";
 
 const visible = ref(false);
 const loading = ref(false);
@@ -23,7 +24,7 @@ const formState = reactive({
 });
 
 const title = computed(() => {
-  return "Alter subtable"
+  return i18n.global.t("ui.label.form.alterSubtable")
 })
 const show = () => {
   visible.value = true
@@ -58,23 +59,23 @@ defineExpose({
   <a-modal v-model:visible="visible" :title="title" @ok="handleOk" :width="900"
            :bodyStyle="{height: '650px', 'overflow-y': 'auto'}">
     <template #footer>
-      <a-button key="back" @click="handleCancel">Cancel</a-button>
-      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">Alter subtable</a-button>
+      <a-button key="back" @click="handleCancel">{{ $t('ui.btn.cancel') }}</a-button>
+      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">{{ $t('ui.btn.alterSubtable') }}</a-button>
     </template>
 
     <a-form :model="formState" :label-col="{ span: 6 }" :wrapper-col="{span: 18}" labelAlign="left">
 
-      <a-form-item label="TTL">
+      <a-form-item :label="$t('common.ttl')">
         <a-input-group compact>
           <a-input-number v-model:value="formState.ttl" :min="0" :max="365000" placeholder="3650"/>
-          <a-button disabled>Days</a-button>
+          <a-button disabled>{{ $tc('common.days', 2) }}</a-button>
         </a-input-group>
       </a-form-item>
-      <a-form-item label="Comment">
+      <a-form-item :label="$t('common.comment')">
         <a-textarea v-model:value="formState.comment" placeholder="" :rows="6"/>
       </a-form-item>
 
-      <a-form-item label="Tags">
+      <a-form-item :label="$tc('common.tag', 2)">
         <a-tag color="#2db7f5" v-for="tag in formState.tags" v-show="tag.value">{{ tag.name }}={{ tag.value }}</a-tag>
       </a-form-item>
 

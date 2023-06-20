@@ -1,5 +1,6 @@
 <script setup>
 import {computed, ref} from "vue";
+import i18n from "../locale/i18n.js";
 
 const props = defineProps({
   consumerGroup: {
@@ -29,28 +30,28 @@ const data = [{
   rebalance_time: ""
 }];
 const columns = [{
-  title: 'Consumer ID',
+  title: i18n.global.t('common.consumerId'),
   dataIndex: 'consumer_id'
 }, {
-  title: 'Consumer Group',
+  title: i18n.global.t('common.consumerGroup'),
   dataIndex: 'consumer_group'
 }, {
-  title: 'Client ID',
+  title: i18n.global.t('common.clientId'),
   dataIndex: 'client_id'
 }, {
-  title: 'Status',
+  title: i18n.global.t('common.status'),
   dataIndex: 'status'
 }, {
-  title: 'Topics',
+  title: i18n.global.tc('common.topic', 2),
   dataIndex: 'topics'
 }, {
-  title: 'Up time',
+  title: i18n.global.t('common.uptime'),
   dataIndex: 'up_time'
 }, {
-  title: 'Subscribe time',
+  title: i18n.global.t('common.subscribeTime'),
   dataIndex: 'subscribe_time'
 }, {
-  title: 'Rebalance time',
+  title: i18n.global.t('common.reBalanceTime'),
   dataIndex: 'rebalance_time'
 }
 ];
@@ -61,7 +62,7 @@ const checked = ref(true)
 <template>
   <a-row :gutter="[0, 5]">
     <a-col :span="24" class="txt-right">
-      <a-checkbox v-model:checked="checked">Auto refresh</a-checkbox>
+      <a-checkbox v-model:checked="checked">{{ $t('common.autoRefresh') }}</a-checkbox>
     </a-col>
     <a-col :span="24">
       <a-table class="client-list" :columns="columns" :data-source="data" bordered :pagination="false" size="small">

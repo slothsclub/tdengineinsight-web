@@ -60,21 +60,21 @@ const onSelectSubscription = (item) => {
         </template>
 
         <template #header>
-          <a-typography-title :level="5">Topics</a-typography-title>
+          <a-typography-title :level="5">{{ $tc('common.topic', 2) }}</a-typography-title>
         </template>
       </a-list>
     </a-col>
     <a-col class="flex-grow">
       <a-row :gutter="[20, 10]">
         <a-col :span="24">
-          <a-typography-title :level="5">Subscriptions</a-typography-title>
+          <a-typography-title :level="5">{{ $tc('common.subscription', 2) }}</a-typography-title>
         </a-col>
         <SubscriptionCard v-for="i in 15" :class="{selected: i === selectedConsumerGroup}"
                           @selected="onSelectSubscription(i)"/>
       </a-row>
       <a-row class="mrg-top" v-show="selectedConsumerGroup">
         <a-divider></a-divider>
-        <a-typography-title :level="5">Consumers</a-typography-title>
+        <a-typography-title :level="5">{{ $tc('common.consumer', 2) }}</a-typography-title>
         <a-col :span="24">
           <Consumers/>
         </a-col>

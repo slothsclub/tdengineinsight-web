@@ -110,8 +110,8 @@ defineExpose({
   <a-modal v-model:visible="visible" :title="title" @ok="handleOk" :width="900"
            :bodyStyle="{height: '650px', 'overflow-y': 'auto'}">
     <template #footer>
-      <a-button key="back" @click="handleCancel">Cancel</a-button>
-      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">Alter Stable</a-button>
+      <a-button key="back" @click="handleCancel">{{ $t('ui.btn.cancel') }}</a-button>
+      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">{{  title }}</a-button>
     </template>
 
     <a-form :model="formState" :label-col="{ span: 6 }" :wrapper-col="{span: 18}" labelAlign="left">
@@ -121,17 +121,17 @@ defineExpose({
           <template #tab>
             <span>
               <SettingOutlined/>
-              Table Options
+              {{ $t('ui.label.tableOption') }}
             </span>
           </template>
 
-          <a-form-item label="TTL" v-show="mode === 'table'">
+          <a-form-item :label="$t('common.ttl')" v-show="mode === 'table'">
             <a-input-group compact>
               <a-input-number v-model:value="formState.ttl" :min="0" :max="365000" placeholder="3650"/>
               <a-button disabled>Days</a-button>
             </a-input-group>
           </a-form-item>
-          <a-form-item label="Comment">
+          <a-form-item :label="$t('common.comment')">
             <a-textarea v-model:value="formState.comment" placeholder="" :rows="6"/>
           </a-form-item>
 
@@ -140,20 +140,20 @@ defineExpose({
           <template #tab>
             <span>
               <TableOutlined/>
-              Columns
+              {{ $tc('common.column', 2) }}
             </span>
           </template>
 
           <a-row v-for="(col, i) in formState.columns" :gutter="[20, 0]" class="mrg-btm">
             <a-col :span="10">
               <a-input-group compact>
-                <a-button disabled>Name:</a-button>
+                <a-button disabled>{{ $t('common.name') }}:</a-button>
                 <a-input v-model:value="col.name" placeholder=""/>
               </a-input-group>
             </a-col>
             <a-col :span="12">
               <a-input-group compact>
-                <a-button disabled>Type:</a-button>
+                <a-button disabled>{{ $t('common.type') }}:</a-button>
                 <DataType v-model:type="col.type" v-model:length="col.length"></DataType>
               </a-input-group>
             </a-col>
@@ -178,20 +178,20 @@ defineExpose({
           <template #tab>
             <span>
               <TagsOutlined/>
-              Tags
+              {{ $tc('common.tag', 2) }}
             </span>
           </template>
 
           <a-row v-for="(tag, i) in formState.tags" :gutter="[20, 0]" class="mrg-btm">
             <a-col :span="10">
               <a-input-group compact>
-                <a-button disabled>Name:</a-button>
+                <a-button disabled>{{ $t('common.name') }}:</a-button>
                 <a-input v-model:value="tag.name" placeholder=""/>
               </a-input-group>
             </a-col>
             <a-col :span="12">
               <a-input-group compact>
-                <a-button disabled>Type:</a-button>
+                <a-button disabled>{{ $t('common.type') }}:</a-button>
                 <DataType v-model:type="tag.type" v-model:length="tag.length"></DataType>
               </a-input-group>
             </a-col>

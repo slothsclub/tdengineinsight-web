@@ -4,6 +4,7 @@ import AlterDatabaseForm from "../../components/form/AlterDatabaseForm.vue";
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 import {EditOutlined} from "@ant-design/icons-vue";
+import i18n from "../../locale/i18n.js";
 
 const emit = defineEmits(['update:database'])
 const alterDatabaseFormRef = ref()
@@ -42,37 +43,37 @@ const data = [{
   tsdb_pagesize: ""
 }];
 const columns = [{
-  title: 'Name',
+  title: i18n.global.t('tdengine.database.name'),
   dataIndex: 'name'
 }, {
-  title: 'Create time',
+  title: i18n.global.t('common.created'),
   dataIndex: 'create_time'
 }, {
-  title: 'NTables',
+  title: i18n.global.t('tdengine.database.NTables'),
   dataIndex: 'ntables'
 }, {
-  title: 'vGroups',
+  title: i18n.global.t('tdengine.database.vGroups'),
   dataIndex: 'vgroups'
 }, {
-  title: 'Replica',
+  title: i18n.global.t('common.replica'),
   dataIndex: 'replica'
 }, {
-  title: 'Strict',
+  title: i18n.global.t('common.strict'),
   dataIndex: 'strict'
 }, {
-  title: 'Duration',
+  title: i18n.global.t('common.duration'),
   dataIndex: 'duration'
 }, {
-  title: 'Keep',
+  title: i18n.global.t('common.keep'),
   dataIndex: 'keep'
 }, {
-  title: 'Status',
+  title: i18n.global.t('common.status'),
   dataIndex: 'status'
 }, {
-  title: 'Precision',
+  title: i18n.global.t('common.precision'),
   dataIndex: 'precision'
 }, {
-  title: 'Action',
+  title: i18n.global.t('common.action'),
   key: 'action',
 }
 ];

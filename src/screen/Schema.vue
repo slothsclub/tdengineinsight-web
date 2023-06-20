@@ -5,6 +5,7 @@ import Tables from "./schema/Tables.vue";
 import {computed, ref} from "vue";
 import CreateDatabaseForm from "../components/form/CreateDatabaseForm.vue";
 import {useRoute, useRouter} from "vue-router";
+import i18n from "../locale/i18n.js";
 const route = useRoute()
 const router = useRouter()
 
@@ -23,9 +24,9 @@ const view = computed(() => {
 
 const title = computed(() => {
   if (!selectedDatabase.value) {
-    return "Databases"
+    return i18n.global.tc('common.database', 2)
   }
-  return "Tables on " + selectedDatabase.value
+  return i18n.global.t('ui.title.tablesWithDatabase', [selectedDatabase.value])
 })
 const onSearch = () => {
 
@@ -48,16 +49,16 @@ const gotoDatabaseView = () => {
       </a-space>
     </a-col>
     <a-col :span="24" class="mrg-top" v-if="!selectedDatabase">
-      <a-button type="primary" @click="createDatabaseFormRef.show()">Create database</a-button>
+      <a-button type="primary" @click="createDatabaseFormRef.show()">{{ $t('ui.btn.createDatabase') }}</a-button>
       <CreateDatabaseForm ref="createDatabaseFormRef" />
     </a-col>
     <a-col :span="24" class="mrg-top" v-if="!!selectedDatabase">
       <a-card>
         <a-input-group compact>
-          <a-button disabled>Filters</a-button>
+          <a-button disabled>{{ $tc('common.filter', 2) }}</a-button>
           <a-input-search
               v-model:value="value"
-              placeholder="Containing the word"
+              :placeholder="$t('ui.placeholder.searchTables')"
               style="width: 300px"
               @search="onSearch"
           />

@@ -1,5 +1,6 @@
 <script setup>
 import {computed, reactive, ref, toRaw} from "vue";
+import i18n from "../../locale/i18n.js";
 
 const editMode = ref(false)
 const visible = ref(false);
@@ -45,7 +46,7 @@ const onSubmit = () => {
 };
 
 const title = computed(() => {
-  return editMode.value ? "Edit TDengine Database" : "Add TDengine Database"
+  return editMode.value ? i18n.global.t('ui.label.form.editDatabase') : i18n.global.t('ui.label.form.addDatabase')
 })
 
 defineExpose({
@@ -57,48 +58,48 @@ defineExpose({
 <template>
   <a-modal v-model:visible="visible" :title="title" @ok="handleOk">
     <template #footer>
-      <a-button key="back" @click="handleCancel">Cancel</a-button>
-      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">Add Database</a-button>
+      <a-button key="back" @click="handleCancel">{{ $t('ui.btn.cancel') }}</a-button>
+      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">{{ $t('ui.btn.addDatabase') }}</a-button>
     </template>
 
-    <a-form :model="formState" :label-col="{ span: 8 }" :wrapper-col="{span: 14}" labelAlign="left">
-      <a-form-item label="Protocol">
+    <a-form :model="formState" :label-col="{ span: 10 }" :wrapper-col="{span: 14}" labelAlign="left">
+      <a-form-item :label="$t('common.protocol')">
         <a-radio-group v-model:value="formState.protocol" button-style="solid">
-          <a-radio-button value="TAOS">Native</a-radio-button>
-          <a-radio-button value="TAOS-RS">REST</a-radio-button>
+          <a-radio-button value="TAOS">{{ $t('common.native') }}</a-radio-button>
+          <a-radio-button value="TAOS-RS">{{ $t('common.rest') }}</a-radio-button>
         </a-radio-group>
       </a-form-item>
-      <a-form-item label="Host">
+      <a-form-item :label="$t('common.host')">
         <a-input v-model:value="formState.host" placeholder="localhost"/>
       </a-form-item>
-      <a-form-item label="Port">
+      <a-form-item :label="$t('common.port')">
         <a-input-number v-model:value="formState.port" :min="2000" :max="65535" placeholder="6030"/>
       </a-form-item>
-      <a-form-item label="Database">
+      <a-form-item :label="$t('common.database')">
         <a-input v-model:value="formState.database" placeholder="test"/>
       </a-form-item>
 
-      <a-form-item label="Username">
+      <a-form-item :label="$t('common.username')">
         <a-input v-model:value="formState.username" placeholder="root"/>
       </a-form-item>
-      <a-form-item label="Password">
+      <a-form-item :label="$t('common.password')">
         <a-input v-model:value="formState.password" placeholder="taosdata"/>
       </a-form-item>
 
-      <a-form-item label="Batch fetch">
+      <a-form-item :label="$t('common.batchFetch')">
         <a-switch v-model:checked="formState.batchfetch"/>
       </a-form-item>
-      <a-form-item label="Ignore batch error">
+      <a-form-item :label="$t('common.ignoreBatchError')">
         <a-switch v-model:checked="formState.batchErrorIgnore"/>
       </a-form-item>
 
-      <a-form-item label="HTTP connect timeout" v-if="formState.protocol === 'TAOS-RS'">
+      <a-form-item :label="$t('common.httpConnectTimeout')" v-if="formState.protocol === 'TAOS-RS'">
         <a-input v-model:value="formState.httpConnectTimeout"/>
       </a-form-item>
-      <a-form-item label="HTTP socket timeout" v-if="formState.protocol === 'TAOS-RS' && !formState.batchfetch">
+      <a-form-item :label="$t('common.httpSocketTimeout')" v-if="formState.protocol === 'TAOS-RS' && !formState.batchfetch">
         <a-input v-model:value="formState.httpSocketTimeout"/>
       </a-form-item>
-      <a-form-item label="Message wait timeout" v-if="formState.protocol === 'TAOS-RS' && formState.batchfetch">
+      <a-form-item :label="$t('common.messageWaitTimeout')" v-if="formState.protocol === 'TAOS-RS' && formState.batchfetch">
         <a-input v-model:value="formState.messageWaitTimeout"/>
       </a-form-item>
     </a-form>

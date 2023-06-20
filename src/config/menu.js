@@ -2,7 +2,7 @@ const menus = [
     {
         type: "section-item",
         name: "overview",
-        label: "Overview"
+        label: "common.overview"
     },
     {
         type: "hr",
@@ -12,22 +12,22 @@ const menus = [
     {
         type: "section",
         name: "",
-        label: "Browse"
+        label: "common.browse"
     },
     {
         type: "item",
         name: "browser",
-        label: "Browser"
+        label: "common.browser"
     },
     {
         type: "item",
         name: "query",
-        label: "Query"
+        label: "common.query"
     },
     {
         type: "item",
         name: "cluster",
-        label: "Cluster"
+        label: "common.cluster"
     },
     {
         type: "hr",
@@ -37,17 +37,17 @@ const menus = [
     {
         type: "section",
         name: "",
-        label: "Action"
+        label: "common.action"
     },
     {
         type: "item",
         name: "schema",
-        label: "Schema"
+        label: "common.schema"
     },
     {
         type: "item",
         name: "subscribe",
-        label: "Subscribe"
+        label: "common.subscribe"
     },
     {
         type: "hr",
@@ -57,22 +57,22 @@ const menus = [
     {
         type: "section",
         name: "",
-        label: "Database"
+        label: "common.database"
     },
     {
         type: "item",
         name: "configuration",
-        label: "Configuration"
+        label: "common.configuration"
     },
     {
         type: "item",
         name: "clientList",
-        label: "Client List"
+        label: "common.clientList"
     },
     {
         type: "item",
         name: "connections",
-        label: "Connections"
+        label: "common.connections"
     },
 ]
 export default menus

@@ -29,7 +29,7 @@ const viewMode = ref("a")
           <template #tab>
             <span>
               <TableOutlined />
-              Browse
+              {{ $t('common.browse') }}
             </span>
           </template>
           <a-row :gutter="[0, 20]">
@@ -40,13 +40,13 @@ const viewMode = ref("a")
               <a-row>
                 <a-col :span="18">
                   <QuickTimeRangeClauseSelector>
-                    <a-button>Refresh</a-button>
+                    <a-button>{{ $t('common.refresh') }}</a-button>
                   </QuickTimeRangeClauseSelector>
                 </a-col>
                 <a-col :span="6" class="txt-right">
                   <a-radio-group v-model:value="viewMode" button-style="solid">
-                    <a-radio-button value="a">Table</a-radio-button>
-                    <a-radio-button value="b">Chart</a-radio-button>
+                    <a-radio-button value="a">{{ $t('common.table') }}</a-radio-button>
+                    <a-radio-button value="b">{{ $t('common.chart') }}</a-radio-button>
                   </a-radio-group>
                 </a-col>
               </a-row>
@@ -60,7 +60,7 @@ const viewMode = ref("a")
           <template #tab>
             <span>
               <OneToOneOutlined />
-              Structure
+              {{ $t('common.structure') }}
             </span>
           </template>
           <TableStructure/>
@@ -69,13 +69,13 @@ const viewMode = ref("a")
           <template #tab>
             <span>
               <SearchOutlined />
-              Search
+              {{ $t('common.search') }}
             </span>
           </template>
           <a-row :gutter="[0, 20]">
             <a-col :span="24">
               <QueryBuilder />
-              <a-button class="mrg-top" size="large" style="width: 200px">Query</a-button>
+              <a-button class="mrg-top" size="large" style="width: 200px">{{ $t('common.query') }}</a-button>
             </a-col>
             <a-col :span="24">
               <QueryResult />

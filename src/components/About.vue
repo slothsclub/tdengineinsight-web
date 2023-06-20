@@ -10,18 +10,19 @@ import {MoreOutlined, SettingOutlined, QuestionCircleOutlined, InfoCircleOutline
     <template #overlay>
       <a-menu>
         <a-menu-item>
-          <SettingOutlined /> Settings
+          <SettingOutlined />
+          {{ $tc('common.setting', 2) }}
         </a-menu-item>
         <a-menu-item key="0">
           <QuestionCircleOutlined />
           <a target="_blank" rel="noopener noreferrer" href="https://github.com/slothsclub/TDengineInsight/issues">
-            Feedback
+            {{ $t('common.feedback') }}
           </a>
         </a-menu-item>
         <a-menu-item key="1">
           <InfoCircleOutlined />
           <a target="_blank" rel="noopener noreferrer" href="https://github.com/slothsclub/TDengineInsight">
-            About
+            {{ $t('common.about') }}
           </a>
         </a-menu-item>
       </a-menu>

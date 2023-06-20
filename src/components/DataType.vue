@@ -38,7 +38,7 @@ watch(() => props.length, () => {
     <a-select v-model:value="selected.type">
       <a-select-option v-for="t in dataTypes" :value="t.type">{{ t.type }}</a-select-option>
     </a-select>
-    <a-button disabled v-if="userDefinedLength">Length:</a-button>
+    <a-button disabled v-if="userDefinedLength">{{ $t('common.length') }}:</a-button>
     <a-input-number v-model:value="selected.length" v-if="userDefinedLength" :min="1" placeholder=""/>
   </a-input-group>
 </template>

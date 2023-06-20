@@ -17,7 +17,7 @@ const createTableFormRef = ref()
           <template #tab>
             <span>
               <TableOutlined/>
-              Stables
+              {{ $tc('common.stable', 2) }}
             </span>
           </template>
           <InsStables />
@@ -26,13 +26,13 @@ const createTableFormRef = ref()
           <template #tab>
             <span>
               <TableOutlined/>
-              Tables
+              {{ $tc('common.table', 2) }}
             </span>
           </template>
           <InsTables />
         </a-tab-pane>
         <template #rightExtra>
-          <a-button class="outline-primary" @click="createTableFormRef.show()">Create new {{activeKey}}</a-button>
+          <a-button class="outline-primary" @click="createTableFormRef.show()">{{ $t('ui.btn.createNewTable', [activeKey]) }}</a-button>
         </template>
       </a-tabs>
     </a-col>

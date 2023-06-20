@@ -21,7 +21,7 @@ const doQuery = () => {
 <template>
   <a-row :gutter="[0, 10]">
     <a-col :span="24">
-      <a-alert message="Connected to server 127.0.0.1:6030" type="info" show-icon />
+      <a-alert :message="$t('ui.label.connectedToServer', ['127.0.0.1:6030'])" type="info" show-icon />
     </a-col>
     <a-col :span="24">
       <SqlEditor></SqlEditor>
@@ -29,7 +29,7 @@ const doQuery = () => {
     <a-col :span="24">
       <a-button type="primary" @click="doQuery" :loading="querying">
         <template #icon><SearchOutlined /></template>
-        Query
+        {{ $t('common.query') }}
       </a-button>
     </a-col>
 

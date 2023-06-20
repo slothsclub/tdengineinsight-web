@@ -1,5 +1,6 @@
 <script setup>
 import {ref} from "vue";
+import i18n from "../locale/i18n.js";
 
 const data = [{
   app_id: 1,
@@ -35,49 +36,49 @@ const data = [{
   last_access: ""
 }];
 const columns = [{
-  title: 'ID',
+  title: i18n.global.t('common.appId'),
   dataIndex: 'app_id'
 }, {
-  title: 'IP',
+  title: i18n.global.t('common.ip'),
   dataIndex: 'ip'
 }, {
-  title: 'PID',
+  title: i18n.global.t('common.pid'),
   dataIndex: 'pid'
 }, {
-  title: 'Name',
+  title: i18n.global.t('common.name'),
   dataIndex: 'name'
 }, {
-  title: 'Start time',
+  title: i18n.global.t('common.startTime'),
   dataIndex: 'start_time'
 }, {
-  title: 'Insert req',
+  title: i18n.global.t('tdengine.client.insertReq'),
   dataIndex: 'insert_req'
 }, {
-  title: 'Insert row',
+  title: i18n.global.t('tdengine.client.insertRow'),
   dataIndex: 'insert_row'
 }, {
-  title: 'Insert time',
+  title: i18n.global.t('tdengine.client.insertTime'),
   dataIndex: 'insert_time'
 }, {
-  title: 'Insert bytes',
+  title: i18n.global.t('tdengine.client.insertBytes'),
   dataIndex: 'insert_bytes'
 }, {
-  title: 'Fetch bytes',
+  title: i18n.global.t('tdengine.client.fetchBytes'),
   dataIndex: 'fetch_bytes'
 }, {
-  title: 'Query time',
+  title: i18n.global.t('tdengine.client.queryTime'),
   dataIndex: 'query_time'
 }, {
-  title: 'Slow query',
+  title: i18n.global.tc('ui.label.status.slowQuery', 2),
   dataIndex: 'slow_query'
 }, {
-  title: 'Total req',
+  title: i18n.global.t('tdengine.client.totalReq'),
   dataIndex: 'total_req'
 }, {
-  title: 'Current req',
+  title: i18n.global.t('tdengine.client.currentReq'),
   dataIndex: 'current_req'
 }, {
-  title: 'Last access',
+  title: i18n.global.t('common.lastAccess'),
   dataIndex: 'last_access'
 }
 ];
@@ -88,7 +89,7 @@ const checked = ref(true)
 <template>
   <a-row :gutter="[0, 5]">
     <a-col :span="24" class="txt-right">
-      <a-checkbox v-model:checked="checked">Auto refresh</a-checkbox>
+      <a-checkbox v-model:checked="checked">{{ $t('common.autoRefresh') }}</a-checkbox>
     </a-col>
     <a-col :span="24">
       <a-table class="client-list" :columns="columns" :data-source="data" bordered :pagination="false" size="small">

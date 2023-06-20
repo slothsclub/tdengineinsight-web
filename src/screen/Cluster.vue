@@ -18,7 +18,7 @@ const activeKey = ref("cluster");
           <template #tab>
             <span>
               <ClusterOutlined />
-              Cluster
+              {{ $t('common.cluster') }}
             </span>
           </template>
           <ClusterInfo/>
@@ -27,7 +27,7 @@ const activeKey = ref("cluster");
           <template #tab>
             <span>
               <PartitionOutlined />
-              MNodes
+              {{ $t('tdengine.label.mnodes') }}
             </span>
           </template>
           <MNodesList/>
@@ -36,7 +36,7 @@ const activeKey = ref("cluster");
           <template #tab>
             <span>
               <PartitionOutlined />
-              DNodes
+              {{ $t('tdengine.label.dnodes') }}
             </span>
           </template>
           <DNodesList/>
@@ -45,7 +45,7 @@ const activeKey = ref("cluster");
           <template #tab>
             <span>
               <PartitionOutlined />
-              QNodes
+              {{ $t('tdengine.label.qnodes') }}
             </span>
           </template>
           <QNodesList/>

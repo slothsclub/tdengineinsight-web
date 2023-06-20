@@ -1,4 +1,5 @@
 <script setup>
+import i18n from "../locale/i18n.js";
 const data = [{
   id: '1',
   vnodes: 'DNodes',
@@ -17,25 +18,25 @@ const data = [{
   create: '2022',
 }];
 const columns = [{
-  title: 'ID',
+  title: i18n.global.t('common.id'),
   dataIndex: 'id'
 }, {
-  title: 'VNodes',
+  title: i18n.global.t('tdengine.label.vnodes'),
   dataIndex: 'vnodes'
 }, {
-  title: 'Support VNodes',
+  title: i18n.global.t('common.support') + " " + i18n.global.t('tdengine.label.vnodes'),
   dataIndex: 'support_vnodes',
 }, {
-  title: 'Status',
+  title: i18n.global.t('common.status'),
   dataIndex: 'status',
 }, {
-  title: 'Node',
+  title: i18n.global.t('common.note'),
   dataIndex: 'note'
 }, {
-  title: 'Endpoint',
+  title: i18n.global.t('common.endpoint'),
   dataIndex: 'endpoint'
 }, {
-  title: 'Create time',
+  title: i18n.global.t('common.created'),
   dataIndex: 'create'
 }
 ];

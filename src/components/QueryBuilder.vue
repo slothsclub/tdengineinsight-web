@@ -32,7 +32,7 @@
       </a-button>
     </a-descriptions-item>
 
-    <a-descriptions-item label="Timestamp">
+    <a-descriptions-item :label="$t('common.timestamp')">
       <a-space>
         <a-range-picker v-model:value="value2">
           <template #dateRender="{ current }">
@@ -44,7 +44,7 @@
         <a-time-picker />
       </a-space>
     </a-descriptions-item>
-    <a-descriptions-item label="Order by">
+    <a-descriptions-item :label="$t('common.orderBy')">
       <a-space>
         <a-select v-model:value="orderByColumn">
           <a-select-option value="lucy">Lucy</a-select-option>
@@ -56,14 +56,14 @@
         </a-select>
       </a-space>
     </a-descriptions-item>
-    <a-descriptions-item label="Limit">
+    <a-descriptions-item :label="$t('common.limit')">
       <a-select v-model:value="limit">
         <a-select-option value="100">100</a-select-option>
         <a-select-option value="500">500</a-select-option>
       </a-select>
     </a-descriptions-item>
 
-    <a-descriptions-item label="Window" :span="3">
+    <a-descriptions-item :label="$t('common.timeWindow')" :span="3">
       <WindowClauseBuilder/>
     </a-descriptions-item>
   </a-descriptions>
