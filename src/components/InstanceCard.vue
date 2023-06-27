@@ -1,10 +1,10 @@
 <template>
   <a-card class="instance-card" hoverable>
     <template #actions>
-      <EditOutlined key="edit" @click="emit('edit')" />
-      <SettingOutlined key="setting" />
+      <EditOutlined key="edit" @click="emit('edit', instance)" />
+      <SettingOutlined key="setting" @click="emit('delete', instance)" />
     </template>
-    <a-card-meta title="Localost" description="127.0.0.1:6030" @click="openInstance">
+    <a-card-meta :title="instance.name" :description="`${instance.host}:${instance.port}`" @click="emit('open', instance)">
 
     </a-card-meta>
   </a-card>
@@ -12,10 +12,10 @@
 <script setup>
 import { SettingOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/icons-vue';
 import {useRouter} from "vue-router";
+import {reactive, watch} from "vue";
 const router = useRouter()
 
-const emit = defineEmits(["edit"])
-const openInstance = () => {
-  router.push({name: "overview", params: {id: 1}})
-}
+const props = defineProps(["instance"])
+const emit = defineEmits(["edit", "delete", "open"])
+const instance = reactive(props.instance)
 </script>

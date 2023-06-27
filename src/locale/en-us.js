@@ -221,6 +221,7 @@ const enUS = {
             createStable: "Create Stable",
             alterTable: "Alter Table",
             addDatabase: "Add Database",
+            updateDatabase: "Update Database",
         },
         label: {
             status: {

@@ -1,48 +1,25 @@
 <script setup>
 import {computed, reactive, ref, toRaw} from "vue";
 import i18n from "../../locale/i18n.js";
+import {useInstances} from "../../support/instance.js";
+
+const {instanceForm, setFormState, resetFormState, createInstance, updateInstance} = useInstances()
 
 const editMode = ref(false)
-const visible = ref(false);
 const loading = ref(false);
-const formState = reactive({
-  protocol: 'TAOS',
-  host: null,
-  port: null,
-  database: null,
-  username: null,
-  password: "",
-  batchfetch: true,
-  batchErrorIgnore: true,
-  httpConnectTimeout: 5000,
-  httpSocketTimeout: 5000,
-  messageWaitTimeout: 3000
-});
 
-const show = () => {
-  visible.value = true
+const add = () => {
+  resetFormState()
+  instanceForm.visible = true
   editMode.value = false
 };
 const edit = (instance) => {
-  Object.assign(formState, instance)
-  visible.value = true
+  setFormState(instance)
+  instanceForm.visible = true
   editMode.value = true
 }
-
-const handleOk = () => {
-  loading.value = true;
-  setTimeout(() => {
-    loading.value = false;
-    visible.value = false;
-  }, 2000);
-};
 const handleCancel = () => {
-  visible.value = false;
-};
-
-
-const onSubmit = () => {
-  console.log('submit!', toRaw(formState));
+  instanceForm.visible = false;
 };
 
 const title = computed(() => {
@@ -50,57 +27,56 @@ const title = computed(() => {
 })
 
 defineExpose({
-  show,
+  add,
   edit
 })
 </script>
 
 <template>
-  <a-modal v-model:visible="visible" :title="title" @ok="handleOk">
+  <a-modal v-model:visible="instanceForm.visible" :title="title">
     <template #footer>
       <a-button key="back" @click="handleCancel">{{ $t('ui.btn.cancel') }}</a-button>
-      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">{{ $t('ui.btn.addDatabase') }}</a-button>
+      <a-button key="submit" type="primary" :loading="instanceForm.loading" @click="createInstance" v-show="!editMode">
+        {{ $t('ui.btn.addDatabase') }}
+      </a-button>
+      <a-button key="submit" type="primary" :loading="instanceForm.loading" @click="updateInstance" v-show="editMode">
+        {{ $t('ui.btn.updateDatabase') }}
+      </a-button>
     </template>
 
-    <a-form :model="formState" :label-col="{ span: 10 }" :wrapper-col="{span: 14}" labelAlign="left">
-      <a-form-item :label="$t('common.protocol')">
-        <a-radio-group v-model:value="formState.protocol" button-style="solid">
-          <a-radio-button value="TAOS">{{ $t('common.native') }}</a-radio-button>
-          <a-radio-button value="TAOS-RS">{{ $t('common.rest') }}</a-radio-button>
-        </a-radio-group>
+    <a-form :model="instanceForm.state" :label-col="{ span: 10 }" :wrapper-col="{span: 14}" labelAlign="left">
+      <a-form-item :label="$t('common.name')">
+        <a-input v-model:value="instanceForm.state.name" placeholder=""/>
       </a-form-item>
       <a-form-item :label="$t('common.host')">
-        <a-input v-model:value="formState.host" placeholder="localhost"/>
+        <a-input v-model:value="instanceForm.state.host" placeholder="localhost"/>
       </a-form-item>
       <a-form-item :label="$t('common.port')">
-        <a-input-number v-model:value="formState.port" :min="2000" :max="65535" placeholder="6030"/>
-      </a-form-item>
-      <a-form-item :label="$t('common.database')">
-        <a-input v-model:value="formState.database" placeholder="test"/>
+        <a-input-number v-model:value="instanceForm.state.port" :min="2000" :max="65535" placeholder="6030"/>
       </a-form-item>
 
       <a-form-item :label="$t('common.username')">
-        <a-input v-model:value="formState.username" placeholder="root"/>
+        <a-input v-model:value="instanceForm.state.username" placeholder="root"/>
       </a-form-item>
       <a-form-item :label="$t('common.password')">
-        <a-input v-model:value="formState.password" placeholder="taosdata"/>
+        <a-input v-model:value="instanceForm.state.password" placeholder="taosdata"/>
       </a-form-item>
 
       <a-form-item :label="$t('common.batchFetch')">
-        <a-switch v-model:checked="formState.batchfetch"/>
+        <a-switch v-model:checked="instanceForm.state.batchfetch"/>
       </a-form-item>
       <a-form-item :label="$t('common.ignoreBatchError')">
-        <a-switch v-model:checked="formState.batchErrorIgnore"/>
+        <a-switch v-model:checked="instanceForm.state.batchErrorIgnore"/>
       </a-form-item>
 
-      <a-form-item :label="$t('common.httpConnectTimeout')" v-if="formState.protocol === 'TAOS-RS'">
-        <a-input v-model:value="formState.httpConnectTimeout"/>
+      <a-form-item :label="$t('common.httpConnectTimeout')">
+        <a-input v-model:value="instanceForm.state.httpConnectTimeout"/>
       </a-form-item>
-      <a-form-item :label="$t('common.httpSocketTimeout')" v-if="formState.protocol === 'TAOS-RS' && !formState.batchfetch">
-        <a-input v-model:value="formState.httpSocketTimeout"/>
+      <a-form-item :label="$t('common.httpSocketTimeout')" v-if="!instanceForm.state.batchfetch">
+        <a-input v-model:value="instanceForm.state.httpSocketTimeout"/>
       </a-form-item>
-      <a-form-item :label="$t('common.messageWaitTimeout')" v-if="formState.protocol === 'TAOS-RS' && formState.batchfetch">
-        <a-input v-model:value="formState.messageWaitTimeout"/>
+      <a-form-item :label="$t('common.messageWaitTimeout')" v-if="instanceForm.state.batchfetch">
+        <a-input v-model:value="instanceForm.state.messageWaitTimeout"/>
       </a-form-item>
     </a-form>
   </a-modal>
