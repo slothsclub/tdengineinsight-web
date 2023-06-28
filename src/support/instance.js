@@ -67,11 +67,14 @@ export function useInstances() {
     const openInstance = (instance) => {
         addPathVariable("instance", instance.id)
         instanceStore.current.loading = true
-        const {data} = httpPost(apis.openInstance).then(() => {
-            instanceStore.current.instance = data
-            router.push({name: "overview", params: {id: instance.id}})
-        }).finally(() => {
-            instanceStore.current.loading = false
+        return new Promise((resolve, reject) => {
+            const {data} = httpPost(apis.openInstance).then(() => {
+                instanceStore.current.instance = data
+                router.push({name: "overview", params: {id: instance.id}})
+                resolve()
+            }, reject).finally(() => {
+                instanceStore.current.loading = false
+            })
         })
     }
 

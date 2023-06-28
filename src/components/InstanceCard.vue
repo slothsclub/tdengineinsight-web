@@ -1,5 +1,5 @@
 <template>
-  <a-card class="instance-card" hoverable v-loading="loading">
+  <a-card class="instance-card" hoverable v-loading="localLoading" :class="{disabled: isLoadingOther}">
     <template #actions>
       <EditOutlined key="edit" @click="emit('edit', instance)"/>
       <DeleteOutlined key="setting" @click="handleDelete"/>
@@ -25,9 +25,15 @@ const instance = reactive(props.instance)
 
 const {openInstance, deleteInstance, queryInstances} = useInstances()
 const instanceStore = useInstanceStore()
-const loading = computed(() => instanceStore.current.loading || instanceStore.isDeleting)
+const isLoadingOther = computed(() => instanceStore.current.loading)
+const localLoading = ref(false)
 const open = () => {
-  openInstance(instance)
+  localLoading.value = true
+  openInstance(instance).then(() => {
+
+  }).finally(() => {
+    localLoading.value = false
+  })
 }
 const handleDelete = () => {
   Modal.confirm({
