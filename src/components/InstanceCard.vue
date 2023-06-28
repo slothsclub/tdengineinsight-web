@@ -55,8 +55,11 @@ const handleDelete = () => {
     },
     onCancel() {
     },
-    cancelText: "No",
-    okText: "Yes",
+    centered: true,
+    maskClosable: true,
+    width: 800,
+    cancelText: i18n.global.t("common.no"),
+    okText: i18n.global.t("common.yes"),
     okType: "primary",
     okButtonProps: {danger: "danger"}
   });

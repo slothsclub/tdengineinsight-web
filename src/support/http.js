@@ -4,6 +4,7 @@ import {baseURL, apis} from "../config/apis.js"
 import {onBeforeMount, reactive} from "vue";
 import {useRoute, useRouter} from 'vue-router'
 import {notification} from 'ant-design-vue';
+import emitter from "./emitter.js";
 
 const requestInterceptor = config => {
     config.headers['Content-Type'] = 'application/json';
@@ -33,13 +34,17 @@ instance.interceptors.response.use(function (response) {
     })
 
     if (code === "DATASOURCE_NOT_FOUND") {
-
+        emitter.emit("DATASOURCE_NOT_FOUND")
     }
     return Promise.reject(message)
 }, (error) => {
+    const code = error?.response?.data?.code
+    if(code === "DATASOURCE_NOT_FOUND") {
+        emitter.emit("DATASOURCE_NOT_FOUND")
+    }
     if (error?.response?.status !== 422) {
         notification.error({
-            message: error?.response?.data?.code,
+            message: code,
             description: error?.response?.data?.message
         })
     }

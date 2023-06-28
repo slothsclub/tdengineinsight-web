@@ -7,6 +7,7 @@ import VueApexCharts from "vue3-apexcharts"; //https://apexcharts.com/docs/insta
 import i18n from "./locale/i18n.js";
 import loading from "./directives/loading.js";
 import "ant-design-vue/es/notification/style/index.css"
+import emitter from "./support/emitter.js";
 
 const app = createApp(App)
 //https://pinia.vuejs.org/getting-started.html
@@ -17,5 +18,6 @@ app.use(router)
 app.use(pinia)
 app.use(VueApexCharts);
 app.directive("loading", loading)
+app.config.globalProperties.$emitter = emitter
 
 app.mount('#app')

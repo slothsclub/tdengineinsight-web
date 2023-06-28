@@ -137,6 +137,11 @@ const enUS = {
         setting: "Setting | Settings",
         feedback: "Feedback",
         about: "About",
+        yes: "Yes",
+        no: "No",
+        error: "ERROR",
+        later: "Later",
+        ok: "OK",
     },
     tdengine: {
         keywords: {
@@ -259,6 +264,7 @@ const enUS = {
         tips: {
             createTDengine: "Create a new TDengine database?",
             deleteDatabase: "Are you sure you want to delete {0} ?",
+            missingDatasource: "The datasource may be disconnected, please return to the select instances page and try again",
         },
         title: {
             databaseSummary: "Database summary",
