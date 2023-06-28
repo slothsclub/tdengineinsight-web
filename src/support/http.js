@@ -50,45 +50,31 @@ instance.interceptors.request.use(requestInterceptor);
 
 export default function useHttpClient() {
     const route = useRoute()
-
-    const pathVariable = reactive({
-        instance: null
-    })
-
-    const urlFormat = (url) => {
+    const urlFormat = (url, pathVariables) => {
         if (url.startsWith("http")) {
             return url
         }
-        route.params.id && addPathVariable('instance', route.params.id)
-        for (let k in pathVariable) {
-            url = url.replace(`:${k}`, pathVariable[k])
+        for (let k in pathVariables) {
+            url = url.replace(`:${k}`, pathVariables[k])
         }
         return url
     }
 
-    const addPathVariable = (k, v) => {
-        pathVariable[k] = v
+    const httpGet = (url, query, pathVariables) => {
+        return useAxios(urlFormat(url, pathVariables), {method: 'GET', params: query}, instance, options)
     }
 
-    onBeforeMount(() => {
-        route.params.id && addPathVariable('instance', route.params.id)
-    })
-
-    const httpGet = (url, query) => {
-        return useAxios(urlFormat(url), {method: 'GET', params: query}, instance, options)
+    const httpPost = (url, data, pathVariables) => {
+        return useAxios(urlFormat(url, pathVariables), {method: 'POST', data: data}, instance, options)
     }
 
-    const httpPost = (url, data) => {
-        return useAxios(urlFormat(url), {method: 'POST', data: data}, instance, options)
+    const httpPut = (url, data, pathVariables) => {
+        return useAxios(urlFormat(url, pathVariables), {method: 'PUT', data: data}, instance, options)
     }
 
-    const httpPut = (url, data) => {
-        return useAxios(urlFormat(url), {method: 'PUT', data: data}, instance, options)
+    const httpDelete = (url, pathVariables) => {
+        return useAxios(urlFormat(url, pathVariables), {method: 'DELETE'}, instance, options)
     }
 
-    const httpDelete = (url) => {
-        return useAxios(urlFormat(url), {method: 'DELETE'}, instance, options)
-    }
-
-    return {apis, httpGet, httpPost, httpPut, httpDelete, addPathVariable}
+    return {apis, httpGet, httpPost, httpPut, httpDelete}
 }

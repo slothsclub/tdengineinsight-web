@@ -7,7 +7,7 @@ import useValidation from "./validation.js";
 
 export function useInstances() {
     const router = useRouter()
-    const {httpGet, httpPost, httpPut, httpDelete, addPathVariable} = useHttpClient()
+    const {httpGet, httpPost, httpPut, httpDelete} = useHttpClient()
     const instanceStore = useInstanceStore()
     const {formatValidationErrors} = useValidation()
 
@@ -62,9 +62,8 @@ export function useInstances() {
     }
 
     const updateInstance = () => {
-        addPathVariable("id", instanceForm.id)
         instanceStore.formState.updating = true
-        const {data} = httpPut(apis.updateInstance, instanceForm.state).then(() => {
+        const {data} = httpPut(apis.updateInstance, instanceForm.state, {id: instanceForm.id}).then(() => {
             queryInstances()
             instanceForm.visible = false
         }, err => {
@@ -75,16 +74,14 @@ export function useInstances() {
     }
 
     const deleteInstance = (instance) => {
-        addPathVariable("id", instance.id)
-        return httpDelete(apis.deleteInstance)
+        return httpDelete(apis.deleteInstance, {id: instance.id})
     }
 
     const openInstance = (instance) => {
-        addPathVariable("instance", instance.id)
         instanceStore.current.loading = true
         return new Promise((resolve, reject) => {
-            const {data} = httpPost(apis.openInstance).then(() => {
-                instanceStore.current.instance = data
+            httpPost(apis.openInstance, null, {id: instance.id}).then((res) => {
+                instanceStore.current.instance = res.data
                 router.push({name: "overview", params: {id: instance.id}})
                 resolve()
             }, reject).finally(() => {
