@@ -2,9 +2,10 @@ import {useAxios} from '@vueuse/integrations/useAxios'
 import axios from 'axios'
 import {baseURL, apis} from "../config/apis.js"
 import {onBeforeMount, reactive} from "vue";
-import {useRoute} from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
+import {notification} from 'ant-design-vue';
 
-
+const router = useRouter()
 const requestInterceptor = config => {
     config.headers['Content-Type'] = 'application/json';
     config.headers['Accept'] = 'application/json';
@@ -19,12 +20,31 @@ const options = {
 
 //https://github.com/axios/axios#interceptors
 instance.interceptors.response.use(function (response) {
-    //todo Handle custom exceptions
-    response.data = response.data.payload
-    if (response.status === 422) {
+    let payload = response.data?.payload
+    let code = response.data?.code
+    let message = response.data?.message
 
+    if (code === "SUCCESS") {
+        response.data = payload
+        return response
     }
-    return response
+    notification.error({
+        message: code,
+        description: message
+    })
+
+    if (code === "DATASOURCE_NOT_FOUND") {
+        router.push({name: "instances"})
+    }
+    return Promise.reject(message)
+}, (error) => {
+    if (error?.response?.status !== 422) {
+        notification.error({
+            message: error?.response?.data?.code,
+            description: error?.response?.data?.message
+        })
+    }
+    return Promise.reject(error?.response?.data);
 })
 instance.interceptors.request.use(requestInterceptor);
 

@@ -6,6 +6,7 @@ import { createPinia } from 'pinia'
 import VueApexCharts from "vue3-apexcharts"; //https://apexcharts.com/docs/installation/
 import i18n from "./locale/i18n.js";
 import loading from "./directives/loading.js";
+import "ant-design-vue/es/notification/style/index.css"
 
 const app = createApp(App)
 //https://pinia.vuejs.org/getting-started.html
