@@ -46,20 +46,20 @@ defineExpose({
     </template>
 
     <a-form :model="instanceForm.state" :label-col="{ span: 10 }" :wrapper-col="{span: 14}" labelAlign="left">
-      <a-form-item :label="$t('common.name')">
+      <a-form-item :label="$t('common.name')" required :validateStatus="instanceForm.validate.name[0]" :help="instanceForm.validate.name[1]">
         <a-input v-model:value="instanceForm.state.name" placeholder=""/>
       </a-form-item>
-      <a-form-item :label="$t('common.host')">
+      <a-form-item :label="$t('common.host')" required :validateStatus="instanceForm.validate.host[0]" :help="instanceForm.validate.host[1]">
         <a-input v-model:value="instanceForm.state.host" placeholder="localhost"/>
       </a-form-item>
-      <a-form-item :label="$t('common.port')">
-        <a-input-number v-model:value="instanceForm.state.port" :min="2000" :max="65535" placeholder="6030"/>
+      <a-form-item :label="$t('common.port')" required :validateStatus="instanceForm.validate.port[0]" :help="instanceForm.validate.port[1]">
+        <a-input v-model:value="instanceForm.state.port" placeholder="6041"/>
       </a-form-item>
 
-      <a-form-item :label="$t('common.username')">
+      <a-form-item :label="$t('common.username')" required :validateStatus="instanceForm.validate.username[0]" :help="instanceForm.validate.username[1]">
         <a-input v-model:value="instanceForm.state.username" placeholder="root"/>
       </a-form-item>
-      <a-form-item :label="$t('common.password')">
+      <a-form-item :label="$t('common.password')" required :validateStatus="instanceForm.validate.password[0]" :help="instanceForm.validate.password[1]">
         <a-input v-model:value="instanceForm.state.password" placeholder="taosdata"/>
       </a-form-item>
 

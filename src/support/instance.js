@@ -3,11 +3,13 @@ import useHttpClient from "./http.js";
 import {apis} from "../config/apis.js";
 import {useInstanceStore} from "../store/instance.js";
 import {useRouter} from "vue-router";
+import useValidation from "./validation.js";
 
 export function useInstances() {
     const router = useRouter()
     const {httpGet, httpPost, httpPut, httpDelete, addPathVariable} = useHttpClient()
     const instanceStore = useInstanceStore()
+    const {formatValidationErrors} = useValidation()
 
     const defaultFormState = {
         name: null,
@@ -15,16 +17,24 @@ export function useInstances() {
         port: null,
         username: null,
         password: "",
-        batchfetch: true,
-        batchErrorIgnore: true,
+        batchfetch: false,
+        batchErrorIgnore: false,
         httpConnectTimeout: 5000,
         httpSocketTimeout: 5000,
         messageWaitTimeout: 3000
     }
+    const fieldState = {
+        name: ["", null],
+        host: ["", null],
+        port: ["", null],
+        username: ["", null],
+        password: ["", null],
+    }
     const instanceForm = reactive({
         id: null,
         state: {...defaultFormState},
-        visible: false
+        visible: false,
+        validate: {...fieldState}
     })
 
     const queryInstances = () => {
@@ -40,9 +50,12 @@ export function useInstances() {
     const createInstance = () => {
         instanceForm.loading = true
         instanceStore.formState.creating = true
+        instanceForm.validate = {...fieldState}
         const {data, isFinished, isLoading, error} = httpPost(apis.createInstance, instanceForm.state).then(() => {
             queryInstances()
             instanceForm.visible = false
+        }, err => {
+            instanceForm.validate = {...formatValidationErrors(err, fieldState)}
         }).finally(() => {
             instanceStore.formState.creating = false
         })
@@ -54,6 +67,8 @@ export function useInstances() {
         const {data} = httpPut(apis.updateInstance, instanceForm.state).then(() => {
             queryInstances()
             instanceForm.visible = false
+        }, err => {
+            instanceForm.validate = {...formatValidationErrors(err, fieldState)}
         }).finally(() => {
             instanceStore.formState.updating = false
         })
@@ -84,10 +99,12 @@ export function useInstances() {
     const setFormState = (state) => {
         instanceForm.id = state.id
         instanceForm.state = {...state}
+        instanceForm.validate = {...fieldState}
     }
     const resetFormState = () => {
         instanceForm.id = null
         instanceForm.state = {...defaultFormState}
+        instanceForm.validate = {...fieldState}
     }
 
     return {
