@@ -4,11 +4,13 @@ import {apis} from "../config/apis.js";
 import {useInstanceStore} from "../store/instance.js";
 import {useRouter} from "vue-router";
 import useValidation from "./validation.js";
+import {useAppStore} from "../store/app.js";
 
 export function useInstances() {
     const router = useRouter()
     const {httpGet, httpPost, httpPut, httpDelete} = useHttpClient()
     const instanceStore = useInstanceStore()
+    const appStore = useAppStore()
     const {formatValidationErrors} = useValidation()
 
     const defaultFormState = {
@@ -38,7 +40,7 @@ export function useInstances() {
     })
 
     const queryInstances = () => {
-        const {data, isFinished, isLoading} = httpGet(apis.getInstances)
+        const {data, isFinished, isLoading} = httpGet(apis.instances.query)
         instanceStore.$patch({
             allInstances: {
                 data: data,
@@ -51,7 +53,7 @@ export function useInstances() {
         instanceForm.loading = true
         instanceStore.formState.creating = true
         instanceForm.validate = {...fieldState}
-        const {data, isFinished, isLoading, error} = httpPost(apis.createInstance, instanceForm.state).then(() => {
+        const {data, isFinished, isLoading, error} = httpPost(apis.instances.create, instanceForm.state).then(() => {
             queryInstances()
             instanceForm.visible = false
         }, err => {
@@ -63,7 +65,7 @@ export function useInstances() {
 
     const updateInstance = () => {
         instanceStore.formState.updating = true
-        const {data} = httpPut(apis.updateInstance, instanceForm.state, {id: instanceForm.id}).then(() => {
+        const {data} = httpPut(apis.instances.update, instanceForm.state, {id: instanceForm.id}).then(() => {
             queryInstances()
             instanceForm.visible = false
         }, err => {
@@ -74,14 +76,15 @@ export function useInstances() {
     }
 
     const deleteInstance = (instance) => {
-        return httpDelete(apis.deleteInstance, {id: instance.id})
+        return httpDelete(apis.instances.delete, {id: instance.id})
     }
 
     const openInstance = (instance) => {
         instanceStore.current.loading = true
         return new Promise((resolve, reject) => {
-            httpPost(apis.openInstance, null, {id: instance.id}).then((res) => {
+            httpPost(apis.instances.open, null, {id: instance.id}).then((res) => {
                 instanceStore.current.instance = res.data
+                appStore.globalSwitchInstance.ready = true
                 router.push({name: "overview", params: {id: instance.id}})
                 resolve()
             }, reject).finally(() => {

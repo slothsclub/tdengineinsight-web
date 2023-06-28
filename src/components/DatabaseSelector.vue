@@ -53,6 +53,7 @@ watch([currentId, instances], ([m, n]) => {
   if (m && n) {
     instanceStore.current.instance = _.find(instances.value, {id: m})
     appStore.globalSwitchInstance.loading = false
+    !appStore.globalSwitchInstance.ready && openInstance(instanceStore.current.instance)
   }
 })
 

@@ -15,12 +15,16 @@ export const useAppStore = defineStore('app', () => {
         description: String
     })
     const globalSwitchInstance = reactive({
-        loading: false
+        loading: false,
+        ready: false
+    })
+    const instanceReady = computed(() => {
+        return route.params.id && globalSwitchInstance.ready
     })
 
     watch(pageInfo.value, (n) => {
         document.title = `${pageInfo.value.title} | ${appName.value}`
     })
 
-    return {appName, currentInstanceId, pageInfo, globalSwitchInstance}
+    return {appName, currentInstanceId, pageInfo, globalSwitchInstance, instanceReady}
 })

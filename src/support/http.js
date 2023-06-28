@@ -5,7 +5,6 @@ import {onBeforeMount, reactive} from "vue";
 import {useRoute, useRouter} from 'vue-router'
 import {notification} from 'ant-design-vue';
 
-const router = useRouter()
 const requestInterceptor = config => {
     config.headers['Content-Type'] = 'application/json';
     config.headers['Accept'] = 'application/json';
@@ -34,7 +33,7 @@ instance.interceptors.response.use(function (response) {
     })
 
     if (code === "DATASOURCE_NOT_FOUND") {
-        router.push({name: "instances"})
+
     }
     return Promise.reject(message)
 }, (error) => {
@@ -50,7 +49,11 @@ instance.interceptors.request.use(requestInterceptor);
 
 export default function useHttpClient() {
     const route = useRoute()
+    const headers = reactive({})
     const urlFormat = (url, pathVariables) => {
+        if(route?.params.id) {
+            headers['x-instance-id'] = route.params.id
+        }
         if (url.startsWith("http")) {
             return url
         }
@@ -61,7 +64,7 @@ export default function useHttpClient() {
     }
 
     const httpGet = (url, query, pathVariables) => {
-        return useAxios(urlFormat(url, pathVariables), {method: 'GET', params: query}, instance, options)
+        return useAxios(urlFormat(url, pathVariables), {method: 'GET', params: query, headers: headers}, instance, options)
     }
 
     const httpPost = (url, data, pathVariables) => {

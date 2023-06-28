@@ -4,6 +4,9 @@ import ConnectionsChart from "../components/charts/ConnectionsChart.vue";
 import QueriesChart from "../components/charts/QueriesChart.vue";
 import TransChart from "../components/charts/TransChart.vue";
 import SlowQueriesChart from "../components/charts/SlowQueriesChart.vue";
+import useMeta from "../support/meta.js";
+
+const meta = useMeta()
 
 </script>
 
