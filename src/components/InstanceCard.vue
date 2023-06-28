@@ -1,21 +1,58 @@
 <template>
-  <a-card class="instance-card" hoverable>
+  <a-card class="instance-card" hoverable v-loading="loading">
     <template #actions>
-      <EditOutlined key="edit" @click="emit('edit', instance)" />
-      <SettingOutlined key="setting" @click="emit('delete', instance)" />
+      <EditOutlined key="edit" @click="emit('edit', instance)"/>
+      <DeleteOutlined key="setting" @click="handleDelete"/>
     </template>
-    <a-card-meta :title="instance.name" :description="`${instance.host}:${instance.port}`" @click="emit('open', instance)">
+    <a-card-meta :title="instance.name" :description="`${instance.host}:${instance.port}`" @click="open">
 
     </a-card-meta>
   </a-card>
 </template>
 <script setup>
-import { SettingOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/icons-vue';
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons-vue';
+import {Modal} from 'ant-design-vue';
 import {useRouter} from "vue-router";
-import {reactive, watch} from "vue";
-const router = useRouter()
+import {computed, createVNode, reactive, ref, watch} from "vue";
+import {useInstances} from "../support/instance.js"
+import {useInstanceStore} from "../store/instance.js";
+import i18n from "../locale/i18n.js";
 
+const router = useRouter()
 const props = defineProps(["instance"])
-const emit = defineEmits(["edit", "delete", "open"])
+const emit = defineEmits(["edit", "open"])
 const instance = reactive(props.instance)
+
+const {openInstance, deleteInstance, queryInstances} = useInstances()
+const instanceStore = useInstanceStore()
+const loading = computed(() => instanceStore.current.loading || instanceStore.isDeleting)
+const open = () => {
+  openInstance(instance)
+}
+const handleDelete = () => {
+  Modal.confirm({
+    title: i18n.global.t("ui.label.deleteDatabase"),
+    icon: createVNode(ExclamationCircleOutlined),
+    content: i18n.global.t("ui.tips.deleteDatabase", [instance.name]),
+    onOk() {
+      return new Promise((resolve, reject) => {
+        instanceStore.formState.deleting = true
+        deleteInstance(instance).then(() => {
+          queryInstances()
+          resolve()
+        }, () => {
+          reject()
+        }).finally(() => {
+          instanceStore.formState.deleting = false
+        })
+      })
+    },
+    onCancel() {
+    },
+    cancelText: "No",
+    okText: "Yes",
+    okType: "primary",
+    okButtonProps: {danger: "danger"}
+  });
+}
 </script>

@@ -22,7 +22,6 @@ export function useInstances() {
         messageWaitTimeout: 3000
     }
     const instanceForm = reactive({
-        loading: false,
         id: null,
         state: {...defaultFormState},
         visible: false
@@ -39,43 +38,45 @@ export function useInstances() {
     }
 
     const createInstance = () => {
+        instanceForm.loading = true
+        instanceStore.formState.creating = true
         const {data, isFinished, isLoading, error} = httpPost(apis.createInstance, instanceForm.state).then(() => {
             queryInstances()
             instanceForm.visible = false
-        }, (err) => {
-
+        }).finally(() => {
+            instanceStore.formState.creating = false
         })
-        instanceForm.loading = isLoading
     }
 
     const updateInstance = () => {
         addPathVariable("id", instanceForm.id)
-        const {data, isFinished, isLoading, error} = httpPut(apis.updateInstance, instanceForm.state).then(() => {
+        instanceStore.formState.updating = true
+        const {data} = httpPut(apis.updateInstance, instanceForm.state).then(() => {
             queryInstances()
             instanceForm.visible = false
+        }).finally(() => {
+            instanceStore.formState.updating = false
         })
-        instanceForm.loading = isLoading
     }
 
     const deleteInstance = (instance) => {
         addPathVariable("id", instance.id)
-        const {data, isFinished, isLoading} = httpDelete(apis.deleteInstance).then(() => {
-            queryInstances()
-        })
+        return httpDelete(apis.deleteInstance)
     }
 
     const openInstance = (instance) => {
         addPathVariable("instance", instance.id)
-        const {data, isFinished, isLoading} = httpPost(apis.openInstance).then(() => {
+        instanceStore.current.loading = true
+        const {data} = httpPost(apis.openInstance).then(() => {
+            instanceStore.current.instance = data
             router.push({name: "overview", params: {id: instance.id}})
-        })
-        instanceStore.$patch({
-            current: {
-                instance: data,
-                loading: isLoading
-            }
+        }).finally(() => {
+            instanceStore.current.loading = false
         })
     }
+
+    //todo
+    const closeInstanceDatasource = () => {}
 
     const setFormState = (state) => {
         instanceForm.id = state.id
@@ -93,7 +94,6 @@ export function useInstances() {
         updateInstance,
         deleteInstance,
         openInstance,
-
         setFormState,
         resetFormState
     }

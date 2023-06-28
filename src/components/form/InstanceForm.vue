@@ -2,11 +2,12 @@
 import {computed, reactive, ref, toRaw} from "vue";
 import i18n from "../../locale/i18n.js";
 import {useInstances} from "../../support/instance.js";
+import {useInstanceStore} from "../../store/instance.js";
 
 const {instanceForm, setFormState, resetFormState, createInstance, updateInstance} = useInstances()
+const instanceStore = useInstanceStore()
 
 const editMode = ref(false)
-const loading = ref(false);
 
 const add = () => {
   resetFormState()
@@ -36,10 +37,10 @@ defineExpose({
   <a-modal v-model:visible="instanceForm.visible" :title="title">
     <template #footer>
       <a-button key="back" @click="handleCancel">{{ $t('ui.btn.cancel') }}</a-button>
-      <a-button key="submit" type="primary" :loading="instanceForm.loading" @click="createInstance" v-show="!editMode">
+      <a-button key="submit" type="primary" :loading="instanceStore.isCreating" @click="createInstance" v-show="!editMode">
         {{ $t('ui.btn.addDatabase') }}
       </a-button>
-      <a-button key="submit" type="primary" :loading="instanceForm.loading" @click="updateInstance" v-show="editMode">
+      <a-button key="submit" type="primary" :loading="instanceStore.isUpdating" @click="updateInstance" v-show="editMode">
         {{ $t('ui.btn.updateDatabase') }}
       </a-button>
     </template>

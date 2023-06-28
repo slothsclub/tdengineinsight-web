@@ -344,3 +344,30 @@ a.logo {
     color: @primary-color;
   }
 }
+
+.v-loading {
+  position: relative;
+  pointer-events: none;
+  .indicator {
+    width: 100%;
+    height: 100%;
+    z-index: 998;
+    position: absolute;
+    background-color: rgba(135, 180, 220, 0.1);
+    top: 0;
+    left: 0;
+  }
+  .v-loading-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: @primary-color;
+    z-index: 999;
+    background-image: url("../imgs/loading.svg");
+    background-size: contain;
+    width: 60px;
+    height: 60px;
+    margin-top: -30px;
+    margin-left: -30px;
+  }
+}

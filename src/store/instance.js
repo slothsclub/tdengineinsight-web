@@ -10,9 +10,27 @@ export const useInstanceStore = defineStore('instance', () => {
         loading: false,
         data: []
     })
+    const formState = reactive({
+        updating: false,
+        creating: false,
+        deleting: false
+    })
+
     const filter = ref()
-    const loading = computed(() => {
+    const isFetching = computed(() => {
         return allInstances.loading
+    })
+    const isUpdating = computed(() => {
+        return formState.updating
+    })
+    const isCreating = computed(() => {
+        return formState.creating
+    })
+    const isDeleting = computed(() => {
+        return formState.deleting
+    })
+    const total = computed(() => {
+        return allInstances.data ? allInstances.data.length : -1
     })
 
     const instances = computed(() => {
@@ -24,5 +42,5 @@ export const useInstanceStore = defineStore('instance', () => {
         return allInstances.data
     })
 
-    return {current, instances, filter, loading, allInstances}
+    return {current, instances, filter, isFetching, allInstances, formState, isUpdating, isCreating, isDeleting, total}
 })

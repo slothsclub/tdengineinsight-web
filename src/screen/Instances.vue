@@ -7,7 +7,7 @@ import {useInstanceStore} from "../store/instance.js";
 import {useInstances} from "../support/instance.js";
 
 const instanceStore = useInstanceStore()
-const {queryInstances, openInstance, deleteInstance} = useInstances()
+const {queryInstances, deleteInstance} = useInstances()
 
 const formRef = ref(null)
 
@@ -17,12 +17,6 @@ onMounted(() => {
 
 const handleEdit = (instance) => {
   formRef.value.edit(instance)
-}
-const handleDelete = (instance) => {
-  deleteInstance(instance)
-}
-const handleOpen = (instance) => {
-  openInstance(instance)
 }
 </script>
 
@@ -52,9 +46,10 @@ const handleOpen = (instance) => {
   <br>
   <a-row>
     <a-col :span="14" :offset="5" class="instances-container">
-      <a-skeleton active v-show="instanceStore.loading"/>
+      <a-skeleton active v-show="instanceStore.isFetching"/>
+      <a-empty class="center" :description="null" v-show="instanceStore.total === 0" />
       <InstanceCard v-for="instance in instanceStore.instances" :instance="instance" :key="instance.id"
-                    @edit="handleEdit" @delete="handleDelete" @open="handleOpen"></InstanceCard>
+                    @edit="handleEdit"></InstanceCard>
     </a-col>
   </a-row>
   <a-row>

@@ -1,6 +1,5 @@
 import {createRouter, createWebHistory} from "vue-router"
 import Overview from "../screen/Overview.vue";
-import AddInstance from "../screen/AddInstance.vue";
 import InstanceLayout from "../layout/InstanceLayout.vue";
 import DefaultLayout from "../layout/DefaultLayout.vue";
 import Browser from "../screen/Browser.vue";
@@ -12,11 +11,12 @@ import ClientList from "../screen/ClientList.vue";
 import usePageTitle from "../support/pageTitle.js";
 import Schema from "../screen/Schema.vue";
 import Connections from "../screen/Connections.vue";
+import Instances from "../screen/Instances.vue";
 
 const routes = [
     {
         path: '/', component: DefaultLayout, children: [
-            {path: '', component: AddInstance, name: "addInstance"}
+            {path: '', component: Instances, name: "instances"}
         ]
     },
     {

@@ -3,7 +3,7 @@ const enUS = {
     route: {
         title: {
             overview: "Overview",
-            addInstance: "My TDengine Databases",
+            instances: "My TDengine Databases",
             browser: "Browser",
             query: "Query",
             cluster: "Cluster",
@@ -16,7 +16,7 @@ const enUS = {
         },
         description: {
             overview: "Real time statistics for this TDengine database",
-            addInstance: "",
+            instances: "",
             browser: "Real time view of data in your TDengine database",
             query: "Execute your TDengine SQL",
             cluster: "View your TDengine cluster info",
@@ -250,13 +250,15 @@ const enUS = {
             systemConfigs: "System Configs",
             dnodeConfigs: "DNode Configs: {0}",
             allDatabase: "All Database",
+            deleteDatabase: "Delete Database",
         },
         placeholder: {
             searchInstance: "Search by name, host, port",
             searchTables: "Containing the word",
         },
         tips: {
-            createTDengine: "Create a new TDengine database?"
+            createTDengine: "Create a new TDengine database?",
+            deleteDatabase: "Are you sure you want to delete {0} ?",
         },
         title: {
             databaseSummary: "Database summary",
