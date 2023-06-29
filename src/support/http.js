@@ -5,6 +5,8 @@ import {onBeforeMount, reactive} from "vue";
 import {useRoute, useRouter} from 'vue-router'
 import {notification} from 'ant-design-vue';
 import emitter from "./emitter.js";
+import {useAppStore} from "../store/app.js";
+import {storeToRefs} from "pinia";
 
 const requestInterceptor = config => {
     config.headers['Content-Type'] = 'application/json';
@@ -60,6 +62,9 @@ instance.interceptors.request.use(requestInterceptor);
 export default function useHttpClient() {
     const route = useRoute()
     const headers = reactive({})
+    const appStore = useAppStore()
+    const {instanceReady} = storeToRefs(appStore)
+
     const urlFormat = (url, pathVariables) => {
         if(route?.params.id) {
             headers['x-instance-id'] = route.params.id
@@ -73,19 +78,27 @@ export default function useHttpClient() {
         return url
     }
 
+    const sendable = (url) => {
+        return !url.startsWith("/tdengine") || instanceReady.value
+    }
+
     const httpGet = (url, query, pathVariables) => {
+        if(!sendable(url)) return Promise.reject("datasource is not initialized, request is ignored")
         return useAxios(urlFormat(url, pathVariables), {method: 'GET', params: query, headers: headers}, instance, options)
     }
 
     const httpPost = (url, data, pathVariables) => {
+        if(!sendable(url)) return Promise.reject("datasource is not initialized, request is ignored")
         return useAxios(urlFormat(url, pathVariables), {method: 'POST', data: data}, instance, options)
     }
 
     const httpPut = (url, data, pathVariables) => {
+        if(!sendable(url)) return Promise.reject("datasource is not initialized, request is ignored")
         return useAxios(urlFormat(url, pathVariables), {method: 'PUT', data: data}, instance, options)
     }
 
     const httpDelete = (url, pathVariables) => {
+        if(!sendable(url)) return Promise.reject("datasource is not initialized, request is ignored")
         return useAxios(urlFormat(url, pathVariables), {method: 'DELETE'}, instance, options)
     }
 

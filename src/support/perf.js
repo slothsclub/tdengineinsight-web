@@ -13,34 +13,29 @@ export default function usePerf() {
 
 
     const queryClientInfo  = () => {
-        if(!instanceReady.value) return
         httpGet(apis.perf.apps).then(res => {
             perfStore.data.clients = res.data
         })
     }
     const queryConnectionInfo = () => {
-        if(!instanceReady.value) return
         httpGet(apis.perf.connections).then(res => {
             perfStore.data.connections = res.data
         })
     }
 
     const queryQueries = () => {
-        if(!instanceReady.value) return
         httpGet(apis.perf.queries).then(res => {
             perfStore.data.queries = res.data
         })
     }
 
     const queryTransactions = () => {
-        if(!instanceReady.value) return
         httpGet(apis.perf.trans).then(res => {
             perfStore.data.transactions = res.data
         })
     }
 
     const queryConsumers = () => {
-        if(!instanceReady.value) return
         httpGet(apis.perf.consumers).then(res => {
             perfStore.data.consumers = res.data
         })

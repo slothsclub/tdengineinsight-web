@@ -14,19 +14,16 @@ export default function useMeta() {
 
 
     const queryClusterInfo = () => {
-        if(!instanceReady.value) return
         httpGet(apis.meta.cluster).then(res => {
             metaStore.data.cluster = res.data.value[0]
         })
     }
     const queryMNodes = () => {
-        if(!instanceReady.value) return
         httpGet(apis.meta.mnodes).then(res => {
             metaStore.data.mnodes = res.data
         })
     }
     const queryDNodes = () => {
-        if(!instanceReady.value) return
         httpGet(apis.meta.dnodes).then(res => {
             metaStore.data.dnodes = res.data
         })
