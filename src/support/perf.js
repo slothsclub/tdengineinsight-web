@@ -17,7 +17,7 @@ export default function usePerf() {
             perfStore.data.clients = res.data
         })
     }
-    const queryConnectionInfo = () => {
+    const queryConnections = () => {
         httpGet(apis.perf.connections).then(res => {
             perfStore.data.connections = res.data
         })
@@ -43,7 +43,7 @@ export default function usePerf() {
 
     return {
         queryClientInfo,
-        queryConnectionInfo,
+        queryConnections,
         queryQueries,
         queryTransactions,
         queryConsumers,

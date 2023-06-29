@@ -28,7 +28,7 @@ const intervalRef = reactive({
   source: null,
   chart: null
 })
-const {queryConnectionInfo} = usePerf()
+const {queryConnections} = usePerf()
 const perfStore = usePerfStore()
 const series = reactive({
   data: []
@@ -56,7 +56,7 @@ const autoRefreshChart = () => {
 
 const autoRefreshSource = () => {
   intervalRef.source = setInterval(() => {
-    queryConnectionInfo()
+    queryConnections()
   }, 1000)
 }
 onMounted(() => {

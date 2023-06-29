@@ -29,9 +29,23 @@ export default function useMeta() {
         })
     }
 
+    const queryConfigs = () => {
+        httpGet(apis.meta.configs).then(res => {
+            metaStore.data.configs = res.data
+        })
+    }
+
+    const queryDNodesVariables = () => {
+        httpGet(apis.meta.dnode_variables).then(res => {
+            metaStore.data.dnodeVariables = res.data
+        })
+    }
+
     return {
         queryClusterInfo,
         queryMNodes,
         queryDNodes,
+        queryConfigs,
+        queryDNodesVariables,
     }
 }

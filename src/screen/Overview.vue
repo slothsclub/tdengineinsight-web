@@ -16,7 +16,7 @@ import {CrownOutlined} from "@ant-design/icons-vue"
 const appStore = useAppStore()
 const {queryClusterInfo, queryDNodes, queryMNodes} = useMeta()
 const metaStore = useMetaStore()
-const {queryClientInfo, queryConnectionInfo} = usePerf()
+const {queryClientInfo, queryConnections} = usePerf()
 const perfStore = usePerfStore()
 
 const {currentInstanceId, instanceReady} = storeToRefs(appStore)
@@ -27,7 +27,7 @@ watch([currentInstanceId, instanceReady], ([m, n]) => {
   if(m && n) {
     queryClusterInfo()
     queryClientInfo()
-    queryConnectionInfo()
+    queryConnections()
     queryMNodes()
     queryDNodes()
   }
@@ -36,15 +36,17 @@ watch([currentInstanceId, instanceReady], ([m, n]) => {
 const autoRefresh = () => {
   intervalRef.value = setInterval(() => {
     queryClientInfo()
-    queryConnectionInfo()
+    queryConnections()
   }, interval.value)
 }
-
+const stopAutoRefresh = () => {
+  intervalRef.value && clearInterval(intervalRef.value)
+}
 onMounted(() => {
   autoRefresh()
 })
 onBeforeUnmount(() => {
-  clearInterval(intervalRef.value)
+  stopAutoRefresh()
 })
 </script>
 

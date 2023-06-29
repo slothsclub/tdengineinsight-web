@@ -13,14 +13,24 @@ export const useMetaStore = defineStore('meta', () => {
         },
         mnodes: [],
         dnodes: [],
+        configs: [],
+        dnodeVariables: []
     })
 
     const readableUptime = computed(() => {
         return data.cluster.uptime / 3600
     })
 
+    const groupDNodeVariables = computed(() => {
+        return data.dnodeVariables.reduce(function (results, v) {
+            (results[v.dnodeId] = results[v.dnodeId] || []).push(v);
+            return results;
+        }, {})
+    })
+
     return {
         data,
         readableUptime,
+        groupDNodeVariables,
     }
 })

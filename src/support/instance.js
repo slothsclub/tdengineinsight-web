@@ -2,11 +2,12 @@ import {reactive, ref, watch} from "vue";
 import useHttpClient from "./http.js";
 import {apis} from "../config/apis.js";
 import {useInstanceStore} from "../store/instance.js";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import useValidation from "./validation.js";
 import {useAppStore} from "../store/app.js";
 
 export function useInstances() {
+    const route = useRoute()
     const router = useRouter()
     const {httpGet, httpPost, httpPut, httpDelete} = useHttpClient()
     const instanceStore = useInstanceStore()
@@ -85,7 +86,9 @@ export function useInstances() {
             httpPost(apis.instances.open, null, {id: instance.id}).then((res) => {
                 instanceStore.current.instance = res.data
                 appStore.globalSwitchInstance.ready = true
-                router.push({name: "overview", params: {id: instance.id}})
+
+                let to = route.name === "instances" ? "overview" : route.name
+                router.push({name: to, params: {id: instance.id}})
                 resolve()
             }, reject).finally(() => {
                 instanceStore.current.loading = false

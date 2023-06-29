@@ -1,43 +1,14 @@
 <script setup>
-import {ref} from "vue";
+import {onBeforeUnmount, onMounted, ref, watch} from "vue";
 import i18n from "../locale/i18n.js";
+import usePerf from "../support/perf.js";
+import {useAppStore} from "../store/app.js";
+import {usePerfStore} from "../store/perf.js";
+import {storeToRefs} from "pinia";
 
-const data = [{
-  app_id: 1,
-  ip: "",
-  pid: "",
-  name: "",
-  start_time: "",
-  insert_req: "",
-  insert_row: "",
-  insert_time: "",
-  insert_bytes: "",
-  fetch_bytes: "",
-  query_time: "",
-  slow_query: "",
-  total_req: "",
-  current_req: "",
-  last_access: ""
-}, {
-  app_id: 1,
-  ip: "",
-  pid: "",
-  name: "",
-  start_time: "",
-  insert_req: "",
-  insert_row: "",
-  insert_time: "",
-  insert_bytes: "",
-  fetch_bytes: "",
-  query_time: "",
-  slow_query: "",
-  total_req: "",
-  current_req: "",
-  last_access: ""
-}];
 const columns = [{
   title: i18n.global.t('common.appId'),
-  dataIndex: 'app_id'
+  dataIndex: 'appId'
 }, {
   title: i18n.global.t('common.ip'),
   dataIndex: 'ip'
@@ -49,41 +20,72 @@ const columns = [{
   dataIndex: 'name'
 }, {
   title: i18n.global.t('common.startTime'),
-  dataIndex: 'start_time'
+  dataIndex: 'startTime'
 }, {
   title: i18n.global.t('tdengine.client.insertReq'),
-  dataIndex: 'insert_req'
+  dataIndex: 'insertReq'
 }, {
   title: i18n.global.t('tdengine.client.insertRow'),
-  dataIndex: 'insert_row'
+  dataIndex: 'insertRow'
 }, {
   title: i18n.global.t('tdengine.client.insertTime'),
-  dataIndex: 'insert_time'
+  dataIndex: 'insertTime'
 }, {
   title: i18n.global.t('tdengine.client.insertBytes'),
-  dataIndex: 'insert_bytes'
+  dataIndex: 'insertBytes'
 }, {
   title: i18n.global.t('tdengine.client.fetchBytes'),
-  dataIndex: 'fetch_bytes'
+  dataIndex: 'fetchBytes'
 }, {
   title: i18n.global.t('tdengine.client.queryTime'),
-  dataIndex: 'query_time'
+  dataIndex: 'queryTime'
 }, {
   title: i18n.global.tc('ui.label.status.slowQuery', 2),
-  dataIndex: 'slow_query'
+  dataIndex: 'slowQuery'
 }, {
   title: i18n.global.t('tdengine.client.totalReq'),
-  dataIndex: 'total_req'
+  dataIndex: 'totalReq'
 }, {
   title: i18n.global.t('tdengine.client.currentReq'),
-  dataIndex: 'current_req'
+  dataIndex: 'currentReq'
 }, {
   title: i18n.global.t('common.lastAccess'),
-  dataIndex: 'last_access'
+  dataIndex: 'lastAccess'
 }
 ];
 
 const checked = ref(true)
+const intervalRef = ref()
+const {queryClientInfo} = usePerf()
+const appStore = useAppStore()
+const perfStore = usePerfStore()
+const {currentInstanceId, instanceReady} = storeToRefs(appStore)
+
+const autoRefresh = () => {
+  intervalRef.value = setInterval(() => {
+    queryClientInfo()
+  }, 3000)
+}
+const stopAutoRefresh = () => {
+  intervalRef.value && clearInterval(intervalRef.value)
+}
+
+watch(checked, () => {
+  checked.value ? autoRefresh() : stopAutoRefresh()
+})
+
+watch([currentInstanceId, instanceReady], ([m, n]) => {
+  if (m && n) {
+    queryClientInfo()
+  }
+}, {immediate: true})
+
+onMounted(() => {
+  autoRefresh()
+})
+onBeforeUnmount(() => {
+  stopAutoRefresh()
+})
 </script>
 
 <template>
@@ -92,7 +94,8 @@ const checked = ref(true)
       <a-checkbox v-model:checked="checked">{{ $t('common.autoRefresh') }}</a-checkbox>
     </a-col>
     <a-col :span="24">
-      <a-table class="client-list" :columns="columns" :data-source="data" bordered :pagination="false" size="small">
+      <a-table class="client-list" :columns="columns" :data-source="perfStore.data.clients" bordered :pagination="false"
+               size="small">
       </a-table>
     </a-col>
   </a-row>
