@@ -3,24 +3,38 @@ import {useAppStore} from "../store/app.js";
 import useHttpClient from "./http.js";
 import {apis} from "../config/apis.js";
 import {storeToRefs} from "pinia";
+import {useMetaStore} from "../store/meta.js";
 
 export default function useMeta() {
 
     const appStore = useAppStore()
+    const metaStore = useMetaStore()
     const {currentInstanceId, instanceReady} = storeToRefs(appStore)
     const {httpGet} = useHttpClient()
 
+
     const queryClusterInfo = () => {
-        httpGet(apis.meta.cluster)
+        if(!instanceReady.value) return
+        httpGet(apis.meta.cluster).then(res => {
+            metaStore.data.cluster = res.data.value[0]
+        })
+    }
+    const queryMNodes = () => {
+        if(!instanceReady.value) return
+        httpGet(apis.meta.mnodes).then(res => {
+            metaStore.data.mnodes = res.data
+        })
+    }
+    const queryDNodes = () => {
+        if(!instanceReady.value) return
+        httpGet(apis.meta.dnodes).then(res => {
+            metaStore.data.dnodes = res.data
+        })
     }
 
-    watch([currentInstanceId, instanceReady], ([m, n]) => {
-        if(m && n) {
-            queryClusterInfo()
-        }
-    }, {immediate: true})
-
     return {
-        queryClusterInfo
+        queryClusterInfo,
+        queryMNodes,
+        queryDNodes,
     }
 }

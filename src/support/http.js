@@ -42,7 +42,12 @@ instance.interceptors.response.use(function (response) {
     if(code === "DATASOURCE_NOT_FOUND") {
         emitter.emit("DATASOURCE_NOT_FOUND")
     }
-    if (error?.response?.status !== 422) {
+    if(error.code === "ERR_NETWORK") {
+        notification.error({
+            message: "ERROR NETWORK",
+            description: error.message
+        })
+    } else if (error?.response?.status !== 422) {
         notification.error({
             message: code,
             description: error?.response?.data?.message

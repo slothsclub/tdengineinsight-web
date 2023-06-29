@@ -20,7 +20,7 @@ const props = defineProps({
   }
 })
 const chartRef = ref()
-const {options} = useChart("chart-queries", i18n.global.t('common.queries'))
+const {options} = useChart("chart-consumers", i18n.global.t('common.consumer'))
 const max = ref(0)
 const loading = ref(true)
 
@@ -28,7 +28,7 @@ const intervalRef = reactive({
   source: null,
   chart: null
 })
-const {queryQueries} = usePerf()
+const {queryConsumers} = usePerf()
 const perfStore = usePerfStore()
 const series = reactive({
   data: []
@@ -36,11 +36,11 @@ const series = reactive({
 
 const autoRefreshChart = () => {
   intervalRef.chart = setInterval(() => {
-    max.value = Math.max(perfStore.data.queries.length, max.value)
+    max.value = Math.max(perfStore.data.consumers.length, max.value)
     loading.value = false
     series.data.push({
       x: new Date().getTime(),
-      y: perfStore.data.queries.length
+      y: perfStore.data.consumers.length
     })
     if(series.data.length > props.maxPoint) {
       series.data.shift()
@@ -50,7 +50,7 @@ const autoRefreshChart = () => {
 
 const autoRefreshSource = () => {
   intervalRef.source = setInterval(() => {
-    queryQueries()
+    queryConsumers()
   }, 1000)
 }
 onMounted(() => {

@@ -142,6 +142,7 @@ const enUS = {
         error: "ERROR",
         later: "Later",
         ok: "OK",
+        version: "Version",
     },
     tdengine: {
         keywords: {
@@ -270,6 +271,11 @@ const enUS = {
             databaseSummary: "Database summary",
             tablesWithDatabase: "Tables on {0}",
         },
+        chart: {
+            insertReq: "Insert Req",
+            insertBytes: "Insert Bytes",
+            fetchBytes: "Fetch Bytes",
+        }
     },
     errors: {
 
