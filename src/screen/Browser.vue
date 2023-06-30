@@ -1,27 +1,34 @@
 <script setup>
 import { TableOutlined, OneToOneOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons-vue';
-import {ref} from "vue";
-import TableList from "../components/TableList.vue";
+import {ref, watch} from "vue";
+import Tables from "../components/Tables.vue";
 import DataTableView from "../components/DataTableView.vue";
 import QueryResult from "../components/QueryResult.vue";
 import TableStructure from "../components/TableStructure.vue";
 import QueryBuilder from "../components/QueryBuilder.vue";
 import QuickTimeRangeClauseSelector from "../components/clause/QuickTimeRangeClauseSelector.vue";
-const val = ref("db2")
+import {useAppStore} from "../store/app.js";
+import {storeToRefs} from "pinia";
+import useDatabase from "../support/database.js";
+import {useDatabaseStore} from "../store/database.js";
 const activeKey = ref("1")
 const viewMode = ref("a")
+
+const appStore = useAppStore()
+const {currentInstanceId, instanceReady} = storeToRefs(appStore)
+
+const {queryDatabases} = useDatabase()
+const databaseStore = useDatabaseStore()
 </script>
 
 <template>
   <a-row :gutter="[0, 0]" class="min-h browser-container">
     <a-col class="browser-schema-container">
-      <a-select size="large" v-model:value="val">
-        <a-select-option value="db1">DB1</a-select-option>
-        <a-select-option value="db2">DB2</a-select-option>
-        <a-select-option value="db3">DB3</a-select-option>
+      <a-select size="large" v-model:value="databaseStore.currentDatabase.name">
+        <a-select-option v-for="db in databaseStore.databases.userDefined" :value="db.name">{{ db.name }}</a-select-option>
       </a-select>
 
-      <TableList></TableList>
+      <Tables></Tables>
     </a-col>
     <a-col class="browser-data-container">
       <a-tabs v-model:activeKey="activeKey" type="card" class="tabs min-h">

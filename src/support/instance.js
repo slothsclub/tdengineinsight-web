@@ -88,7 +88,7 @@ export function useInstances() {
                 appStore.globalSwitchInstance.ready = true
 
                 let to = route.name === "instances" ? "overview" : route.name
-                router.push({name: to, params: {id: instance.id}})
+                router.push({name: to, params: {id: instance.id}, query: route.query})
                 resolve()
             }, reject).finally(() => {
                 instanceStore.current.loading = false

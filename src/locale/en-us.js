@@ -229,6 +229,7 @@ const enUS = {
             alterTable: "Alter Table",
             addDatabase: "Add Database",
             updateDatabase: "Update Database",
+            backupToStables: "Back to stables",
         },
         label: {
             status: {
@@ -262,11 +263,14 @@ const enUS = {
         placeholder: {
             searchInstance: "Search by name, host, port",
             searchTables: "Containing the word",
+            searchStables: "Search by name, comment",
         },
         tips: {
             createTDengine: "Create a new TDengine database?",
             deleteDatabase: "Are you sure you want to delete {0} ?",
             missingDatasource: "The datasource may be disconnected, please return to the select instances page and try again",
+            tooMuchChildTables: "Too much data, showing 0 - {0} of the total data.",
+            viewChildTables: "View child tables",
         },
         title: {
             databaseSummary: "Database summary",
