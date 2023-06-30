@@ -1,14 +1,11 @@
 <script setup>
 import i18n from "../locale/i18n.js";
-const data = [{
-  id: '1',
-  endpoint: 'New York No. 1 Lake Park',
-  create_time: '2022',
-}, {
-  id: '2',
-  endpoint: 'New York No. 1 Lake Park',
-  create_time: '2022',
-}];
+import {useAppStore} from "../store/app.js";
+import {storeToRefs} from "pinia";
+import useMeta from "../support/meta.js";
+import {useMetaStore} from "../store/meta.js";
+import {watch} from "vue";
+
 const columns = [{
   title: i18n.global.t('common.id'),
   dataIndex: 'id'
@@ -17,13 +14,24 @@ const columns = [{
   dataIndex: 'endpoint'
 }, {
   title: i18n.global.t('common.created'),
-  dataIndex: 'create_time'
+  dataIndex: 'createTime'
 }
 ];
+
+const appStore = useAppStore()
+const {currentInstanceId, instanceReady} = storeToRefs(appStore)
+const {queryQNodes} = useMeta()
+const metaStore = useMetaStore()
+
+watch([currentInstanceId, instanceReady], ([m, n]) => {
+  if (m && n) {
+    queryQNodes()
+  }
+}, {immediate: true})
 </script>
 
 <template>
-  <a-table class="qnodes-table" :columns="columns" :data-source="data" bordered :pagination="false" size="small">
+  <a-table class="qnodes-table" :columns="columns" :data-source="metaStore.data.qnodes" bordered :pagination="false" size="small">
   </a-table>
 </template>
 

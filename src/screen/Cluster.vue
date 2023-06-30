@@ -1,12 +1,12 @@
 <script setup>
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import DNodesList from "../components/DNodesList.vue";
 import QNodesList from "../components/QNodesList.vue";
 import MNodesList from "../components/MNodesList.vue";
 import ClusterInfo from "../components/ClusterInfo.vue";
 import {PartitionOutlined, ClusterOutlined} from "@ant-design/icons-vue";
 
-const activeKey = ref("cluster");
+const activeKey = ref('cluster')
 </script>
 
 <template>

@@ -1,22 +1,11 @@
 <script setup>
 import i18n from "../locale/i18n.js";
-const data = [{
-  id: '1',
-  vnodes: 'DNodes',
-  support_vnodes: 32,
-  status: '0571-22098909',
-  note: 18889898989,
-  endpoint: 'New York No. 1 Lake Park',
-  create: '2022',
-}, {
-  id: '2',
-  vnodes: 'DNodes',
-  support_vnodes: 32,
-  status: '0571-22098909',
-  note: 18889898989,
-  endpoint: 'New York No. 1 Lake Park',
-  create: '2022',
-}];
+import {useAppStore} from "../store/app.js";
+import {storeToRefs} from "pinia";
+import useMeta from "../support/meta.js";
+import {useMetaStore} from "../store/meta.js";
+import {ref, watch} from "vue";
+
 const columns = [{
   title: i18n.global.t('common.id'),
   dataIndex: 'id'
@@ -25,7 +14,7 @@ const columns = [{
   dataIndex: 'vnodes'
 }, {
   title: i18n.global.t('common.support') + " " + i18n.global.t('tdengine.label.vnodes'),
-  dataIndex: 'support_vnodes',
+  dataIndex: 'supportVnodes',
 }, {
   title: i18n.global.t('common.status'),
   dataIndex: 'status',
@@ -37,13 +26,27 @@ const columns = [{
   dataIndex: 'endpoint'
 }, {
   title: i18n.global.t('common.created'),
-  dataIndex: 'create'
-}
+  dataIndex: 'createTime'
+}, {
+    title: i18n.global.t('common.rebootTime'),
+    dataIndex: 'rebootTime'
+  }
 ];
+
+const appStore = useAppStore()
+const {currentInstanceId, instanceReady} = storeToRefs(appStore)
+const {queryDNodes} = useMeta()
+const metaStore = useMetaStore()
+
+watch([currentInstanceId, instanceReady], ([m, n]) => {
+  if(m && n) {
+    queryDNodes()
+  }
+}, {immediate: true})
 </script>
 
 <template>
-  <a-table class="dnodes-table" :columns="columns" :data-source="data" bordered :pagination="false" size="small">
+  <a-table class="dnodes-table" :columns="columns" :data-source="metaStore.data.dnodes" bordered :pagination="false" size="small">
   </a-table>
 </template>
 

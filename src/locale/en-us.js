@@ -76,6 +76,7 @@ const enUS = {
         mode: "Mode",
         role: "Role",
         roleTime: "Role Time",
+        rebootTime: "Reboot Time",
         endpoint: "Endpoint",
         status: "Status",
         node: "Node",

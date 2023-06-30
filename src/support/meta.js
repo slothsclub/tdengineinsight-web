@@ -29,6 +29,12 @@ export default function useMeta() {
         })
     }
 
+    const queryQNodes = () => {
+        httpGet(apis.meta.qnodes).then(res => {
+            metaStore.data.qnodes = res.data
+        })
+    }
+
     const queryConfigs = () => {
         httpGet(apis.meta.configs).then(res => {
             metaStore.data.configs = res.data
@@ -45,6 +51,7 @@ export default function useMeta() {
         queryClusterInfo,
         queryMNodes,
         queryDNodes,
+        queryQNodes,
         queryConfigs,
         queryDNodesVariables,
     }

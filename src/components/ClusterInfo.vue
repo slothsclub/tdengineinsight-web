@@ -1,29 +1,29 @@
 <script setup>
 
+import {useAppStore} from "../store/app.js";
+import {storeToRefs} from "pinia";
+import useMeta from "../support/meta.js";
+import {useMetaStore} from "../store/meta.js";
+import {ref, watch} from "vue";
+
+const appStore = useAppStore()
+const {currentInstanceId, instanceReady} = storeToRefs(appStore)
+const {queryClusterInfo} = useMeta()
+const metaStore = useMetaStore()
+
+watch([currentInstanceId, instanceReady], ([m, n]) => {
+  if(m && n) {
+    queryClusterInfo()
+  }
+}, {immediate: true})
 </script>
 
 <template>
   <a-descriptions class="cluster-info" bordered size="small" :column="1">
-    <a-descriptions-item label="Product">Cloud Database</a-descriptions-item>
-    <a-descriptions-item label="Billing">Prepaid</a-descriptions-item>
-    <a-descriptions-item label="Time">18:00:00</a-descriptions-item>
-    <a-descriptions-item label="Amount">$80.00</a-descriptions-item>
-    <a-descriptions-item label="Discount">$20.00</a-descriptions-item>
-    <a-descriptions-item label="Official">$60.00</a-descriptions-item>
-    <a-descriptions-item label="Config Info">
-      Data disk type: MongoDB
-      <br/>
-      Database version: 3.4
-      <br/>
-      Package: dds.mongo.mid
-      <br/>
-      Storage space: 10 GB
-      <br/>
-      Replication factor: 3
-      <br/>
-      Region: East China 1
-      <br/>
-    </a-descriptions-item>
+    <a-descriptions-item :label="$t('common.version')" >{{ metaStore.data.cluster?.version }}</a-descriptions-item>
+    <a-descriptions-item :label="$t('ui.label.cluster.id')" >{{ metaStore.data.cluster?.id }}</a-descriptions-item>
+    <a-descriptions-item :label="$t('ui.label.cluster.name')" >{{ metaStore.data.cluster?.name }}</a-descriptions-item>
+    <a-descriptions-item :label="$t('common.created')" >{{ metaStore.data.cluster?.createTime }}</a-descriptions-item>
   </a-descriptions>
 </template>
 

@@ -13,6 +13,7 @@ export const useMetaStore = defineStore('meta', () => {
         },
         mnodes: [],
         dnodes: [],
+        qnodes: [],
         configs: [],
         dnodeVariables: []
     })
