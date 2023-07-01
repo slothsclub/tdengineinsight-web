@@ -1,6 +1,6 @@
 <script setup>
 import { TableOutlined, OneToOneOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons-vue';
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import Tables from "../components/Tables.vue";
 import DataTableView from "../components/DataTableView.vue";
 import QueryResult from "../components/QueryResult.vue";
@@ -19,18 +19,25 @@ const {currentInstanceId, instanceReady} = storeToRefs(appStore)
 
 const {queryDatabases} = useDatabase()
 const databaseStore = useDatabaseStore()
+
+const noDatabase = computed(() => {
+  return databaseStore.databases.userDefined.length === 0
+})
 </script>
 
 <template>
   <a-row :gutter="[0, 0]" class="min-h browser-container">
-    <a-col class="browser-schema-container">
+    <a-col :span="24" v-if="noDatabase">
+      <a-empty class="center mrg-top" :description="$t('ui.tips.noDatabaseFound')" />
+    </a-col>
+    <a-col v-show="!noDatabase" class="browser-schema-container">
       <a-select size="large" v-model:value="databaseStore.currentDatabase.name">
         <a-select-option v-for="db in databaseStore.databases.userDefined" :value="db.name">{{ db.name }}</a-select-option>
       </a-select>
 
       <Tables></Tables>
     </a-col>
-    <a-col class="browser-data-container">
+    <a-col v-show="!noDatabase" class="browser-data-container">
       <a-tabs v-model:activeKey="activeKey" type="card" class="tabs min-h">
         <a-tab-pane key="1">
           <template #tab>

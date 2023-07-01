@@ -271,6 +271,7 @@ const enUS = {
             missingDatasource: "The datasource may be disconnected, please return to the select instances page and try again",
             tooMuchChildTables: "Too much data, showing 0 - {0} of the total data.",
             viewChildTables: "View child tables",
+            noDatabaseFound: "No database found, so nothing shows here, would you like to check another one?",
         },
         title: {
             databaseSummary: "Database summary",
