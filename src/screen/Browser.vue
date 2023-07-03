@@ -17,7 +17,7 @@ const viewMode = ref("a")
 const appStore = useAppStore()
 const {currentInstanceId, instanceReady} = storeToRefs(appStore)
 
-const {queryDatabases} = useDatabase()
+const {queryDatabases} = useDatabase(true)
 const databaseStore = useDatabaseStore()
 
 const noDatabase = computed(() => {

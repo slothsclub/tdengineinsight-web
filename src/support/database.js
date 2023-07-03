@@ -7,7 +7,7 @@ import _ from "lodash"
 import {computed, onBeforeUnmount, onMounted, watch} from "vue";
 import {useRoute} from "vue-router";
 
-export default function useDatabase() {
+export default function useDatabase(bindWatcher) {
     const appStore = useAppStore()
     const {currentInstanceId, instanceReady} = storeToRefs(appStore)
     const {httpGet} = useHttpClient()
@@ -30,7 +30,7 @@ export default function useDatabase() {
         databaseStore.currentDatabase.name = dbName
     }
 
-    watch([currentInstanceId, instanceReady], ([m, n]) => {
+    bindWatcher && watch([currentInstanceId, instanceReady], ([m, n]) => {
         if (m && n) {
             queryDatabases()
         }

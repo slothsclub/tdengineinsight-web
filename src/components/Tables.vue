@@ -13,7 +13,7 @@ const router = useRouter()
 const appStore = useAppStore()
 const databaseStore = useDatabaseStore()
 const tableStore = useTableStore()
-const {queryChildTables} = useTable()
+const {queryChildTables} = useTable(true)
 
 const switchToChildTablesView = (stable) => {
   tableStore.mode = "childTable"

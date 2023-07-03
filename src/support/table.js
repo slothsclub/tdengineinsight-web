@@ -7,7 +7,7 @@ import {apis} from "../config/apis.js";
 import {useRoute} from "vue-router";
 import {useTableStore} from "../store/table.js";
 
-export default function useTable() {
+export default function useTable(bindWatcher) {
     const appStore = useAppStore()
     const {currentInstanceId, instanceReady} = storeToRefs(appStore)
     const {httpGet} = useHttpClient()
@@ -81,7 +81,7 @@ export default function useTable() {
         tableStore.currentNormalTable.name = name
     }
 
-    watch(currentDatabase, () => {
+    const loadTables = () => {
         if (!currentDatabase.value) return
         queryStables()
         if (userSelectedStable.value) {
@@ -90,12 +90,14 @@ export default function useTable() {
         if (userSelectedMode.value === 'normalTable') {
             queryNormalTables()
         }
-    }, {immediate: false})
+    }
 
-    watch(userSelectedStable, () => {
+    bindWatcher && watch([currentInstanceId, currentDatabase], loadTables, {immediate: false})
+
+    bindWatcher && watch(userSelectedStable, () => {
         setCurrentStable(userSelectedStable.value)
     })
-    watch(userSelectedMode, () => {
+    bindWatcher && watch(userSelectedMode, () => {
         if (userSelectedMode.value === 'normalTable') queryNormalTables()
         if (userSelectedMode.value === 'stable') queryStables()
     })
