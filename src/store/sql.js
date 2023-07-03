@@ -6,7 +6,7 @@ export const useSqlStore = defineStore('sql', () => {
         executing: true
     })
     const pageSizeOptions = reactive([
-        50, 100, 200, 500
+        20, 50, 100, 200, 500
     ])
 
     const sql = reactive({
@@ -15,7 +15,7 @@ export const useSqlStore = defineStore('sql', () => {
     })
     const pagination = reactive({
         offset: 0,
-        limit: 50,
+        limit: 20,
         current: 1
     })
     const orderBy = reactive({
@@ -23,7 +23,7 @@ export const useSqlStore = defineStore('sql', () => {
         direction: "DESC"
     })
     const where = reactive({
-        tsOffset: "10m"
+        tsOffset: "5m"
     })
 
     const execResult = reactive({

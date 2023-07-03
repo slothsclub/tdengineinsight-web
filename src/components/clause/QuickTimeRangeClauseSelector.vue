@@ -2,21 +2,22 @@
 import {reactive, ref, watch} from "vue";
 import useSql from "../../support/sql.js";
 import {useSqlStore} from "../../store/sql.js";
-const {simplePaginationQuery} = useSql()
+const {simplePaginationQuery, registerListener} = useSql()
 const sqlStore = useSqlStore()
 
 const where = reactive({
-  time: "10",
+  time: "5",
   unit: "m",
-  limit: "50"
+  limit: "20"
 })
 
 watch(where, () => {
   sqlStore.pagination.limit = where.limit
   sqlStore.where.tsOffset = where.time === '0' ? null : `${where.time}${where.unit}`
-  console.log("where changed")
+  sqlStore.pagination.current = 1
   simplePaginationQuery()
 })
+registerListener()
 </script>
 
 <template>
@@ -30,6 +31,7 @@ watch(where, () => {
         <a-select-option value="0">{{ $t('common.none') }}</a-select-option>
       </a-select>
       <a-select v-model:value="where.unit" v-show="where.time !== '0'">
+        <a-select-option value="s">{{ $t('common.seconds') }}</a-select-option>
         <a-select-option value="m">{{ $t('common.minutes') }}</a-select-option>
         <a-select-option value="h">{{ $t('common.hours') }}</a-select-option>
       </a-select>

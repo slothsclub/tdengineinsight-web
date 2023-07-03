@@ -259,6 +259,7 @@ const enUS = {
             dnodeConfigs: "DNode Configs: {0}",
             allDatabase: "All Database",
             deleteDatabase: "Delete Database",
+            showOrHideColumnSelector: "Show / Hide Columns",
         },
         placeholder: {
             searchInstance: "Search by name, host, port",

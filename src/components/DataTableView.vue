@@ -2,8 +2,9 @@
 import useColumn from "../support/column.js";
 import {useSqlStore} from "../store/sql.js";
 import {useColumnStore} from "../store/column.js";
-import {computed, nextTick, onMounted, onUpdated, reactive, ref} from "vue";
+import {computed, nextTick, onMounted, onUpdated, reactive, ref, watch} from "vue";
 import useSql from "../support/sql.js";
+import {useAppStore} from "../store/app.js";
 
 const props = defineProps({
   parentClass: {
@@ -14,9 +15,10 @@ const props = defineProps({
 const tableRef = ref()
 
 const {queryColumns} = useColumn()
+const appStore = useAppStore()
 const columnStore = useColumnStore()
 const sqlStore = useSqlStore()
-const {simplePaginationQuery} = useSql()
+const {simplePaginationQuery} = useSql(false)
 
 const pagination = computed(() => {
   return {
@@ -24,9 +26,11 @@ const pagination = computed(() => {
     total: Number(sqlStore.execResult.total),
     pageSizeOptions: sqlStore.pageSizeOptions,
     showSizeChanger: false,
-    showQuickJumper: true
+    showQuickJumper: true,
+    current: sqlStore.pagination.current
   }
 })
+
 const onChange = (pagination, filters, sorter) => {
   sqlStore.pagination.current = pagination.current
   simplePaginationQuery()
@@ -35,10 +39,11 @@ const onChange = (pagination, filters, sorter) => {
 </script>
 
 <template>
-  <a-table ref="tableRef" size="small" bordered
+  <a-table ref="tableRef" size="small" bordered id="data-table"
+           table-layout="fixed"
            :columns="columnStore.antTableColumns"
            :loading="sqlStore.state.executing"
-           :scroll="{x: true}"
+           :scroll="{x: '50%'}"
            :data-source="sqlStore.execResult.data"
            @change="onChange"
            :pagination="pagination" />

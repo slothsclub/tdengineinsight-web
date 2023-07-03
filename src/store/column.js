@@ -1,25 +1,38 @@
 import {defineStore} from "pinia";
-import {computed, reactive} from "vue";
+import {computed, reactive, ref} from "vue";
 
 export const useColumnStore = defineStore('column', () => {
-
+    const keyword = ref(null)
     const columns = reactive({
         count: 0,
-        items: []
+        items: [],
+        selected: []
     })
-    const antTableColumns = computed(() => {
-        let cols = []
-        for(let i in columns.items) {
-            cols.push({
-                title: columns.items[i].colName,
-                dataIndex: columns.items[i].colName,
-            })
+
+    const filteredColumns = computed(() => {
+        if (!keyword.value) return columns.items
+        return columns.items.filter(item => {
+            return item.colName.indexOf(keyword.value) > -1
+        })
+    })
+
+    const columnsClause = computed(() => {
+        let col = []
+        for (let i in columns.selected) {
+            col.push(columns.selected[i].title)
         }
-        return cols
+        return col.join(",")
+    })
+
+    const antTableColumns = computed(() => {
+        return columns.selected
     })
 
     return {
+        keyword,
         columns,
-        antTableColumns
+        filteredColumns,
+        antTableColumns,
+        columnsClause
     }
 })

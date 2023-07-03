@@ -1,6 +1,6 @@
 <script setup>
 import { TableOutlined, OneToOneOutlined, SearchOutlined } from '@ant-design/icons-vue';
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import Tables from "../components/Tables.vue";
 import DataTableView from "../components/DataTableView.vue";
 import QueryResult from "../components/QueryResult.vue";
@@ -14,17 +14,22 @@ import {useDatabaseStore} from "../store/database.js";
 import {useSqlStore} from "../store/sql.js";
 import useSql from "../support/sql.js";
 import {useTableStore} from "../store/table.js";
+import ColumnSelector from "../components/ColumnSelector.vue";
+import {useColumnStore} from "../store/column.js";
+import useColumn from "../support/column.js";
 const activeKey = ref("1")
 const viewMode = ref("a")
 
 const appStore = useAppStore()
-const {currentInstanceId, instanceReady} = storeToRefs(appStore)
+const {currentInstanceId, instanceRead} = storeToRefs(appStore)
 
 const {queryDatabases} = useDatabase(true)
 const databaseStore = useDatabaseStore()
 const tableStore = useTableStore()
+const columnStore = useColumnStore()
 const sqlStore = useSqlStore()
-const {simplePaginationQuery} = useSql(true)
+const {simplePaginationQuery, execSql} = useSql(true)
+const {registerListener} = useColumn()
 
 const table = computed(() => {
   return tableStore.currentTableName
@@ -32,14 +37,19 @@ const table = computed(() => {
 const db = computed(() => {
   return databaseStore.currentDatabase.name
 })
+const columns = computed(() => {
+  return columnStore.columnsClause
+})
 
 const noDatabase = computed(() => {
   return databaseStore.databases.userDefined.length === 0
 })
-watch([table, db], () => {
-  if(!table.value || !db.value) return
+
+watch([table, db, columns], () => {
+  if(!table.value || !db.value || !columns.value) return
   simplePaginationQuery()
 })
+registerListener()
 </script>
 
 <template>
@@ -71,14 +81,17 @@ watch([table, db], () => {
               <a-row>
                 <a-col :span="18">
                   <QuickTimeRangeClauseSelector>
-                    <a-button @click="simplePaginationQuery">{{ $t('common.refresh') }}</a-button>
+                    <a-button @click="execSql">{{ $t('common.refresh') }}</a-button>
                   </QuickTimeRangeClauseSelector>
                 </a-col>
                 <a-col :span="6" class="txt-right">
-                  <a-radio-group v-model:value="viewMode" button-style="solid">
-                    <a-radio-button value="a">{{ $t('common.table') }}</a-radio-button>
-                    <a-radio-button value="b">{{ $t('common.chart') }}</a-radio-button>
-                  </a-radio-group>
+                  <a-space>
+                    <ColumnSelector />
+                    <a-radio-group v-model:value="viewMode" button-style="solid">
+                      <a-radio-button value="a">{{ $t('common.table') }}</a-radio-button>
+                      <a-radio-button value="b">{{ $t('common.chart') }}</a-radio-button>
+                    </a-radio-group>
+                  </a-space>
                 </a-col>
               </a-row>
             </a-col>
