@@ -1,48 +1,47 @@
 <script setup>
-const columns = [{
-  title: 'Name',
-  dataIndex: 'name',
-  sorter: (a, b) => a.name.length - b.name.length,
-}, {
-  title: 'Age',
-  dataIndex: 'age',
-  defaultSortOrder: 'descend',
-  sorter: (a, b) => a.age - b.age,
-}, {
-  title: 'Address',
-  dataIndex: 'address',
-  sorter: (a, b) => a.address.length - b.address.length,
-  sortDirections: ['descend', 'ascend'],
-}];
-const data = [{
-  key: '1',
-  name: 'John Brown',
-  age: 32,
-  address: 'New York No. 1 Lake Park',
-}, {
-  key: '2',
-  name: 'Jim Green',
-  age: 42,
-  address: 'London No. 1 Lake Park',
-}, {
-  key: '3',
-  name: 'Joe Black',
-  age: 32,
-  address: 'Sidney No. 1 Lake Park',
-}, {
-  key: '4',
-  name: 'Jim Red',
-  age: 32,
-  address: 'London No. 2 Lake Park',
-}];
+import useColumn from "../support/column.js";
+import {useSqlStore} from "../store/sql.js";
+import {useColumnStore} from "../store/column.js";
+import {computed, nextTick, onMounted, onUpdated, reactive, ref} from "vue";
+import useSql from "../support/sql.js";
 
+const props = defineProps({
+  parentClass: {
+    type: String,
+    default() {return "query-result-tabs"}
+  }
+})
+const tableRef = ref()
+
+const {queryColumns} = useColumn()
+const columnStore = useColumnStore()
+const sqlStore = useSqlStore()
+const {simplePaginationQuery} = useSql()
+
+const pagination = computed(() => {
+  return {
+    pageSize: Number(sqlStore.pagination.limit),
+    total: Number(sqlStore.execResult.total),
+    pageSizeOptions: sqlStore.pageSizeOptions,
+    showSizeChanger: false,
+    showQuickJumper: true
+  }
+})
 const onChange = (pagination, filters, sorter) => {
-  console.log('params', pagination, filters, sorter);
+  sqlStore.pagination.current = pagination.current
+  simplePaginationQuery()
 };
+
 </script>
 
 <template>
-  <a-table size="small" bordered :columns="columns" :data-source="data" @change="onChange" :pagination="false" />
+  <a-table ref="tableRef" size="small" bordered
+           :columns="columnStore.antTableColumns"
+           :loading="sqlStore.state.executing"
+           :scroll="{x: true}"
+           :data-source="sqlStore.execResult.data"
+           @change="onChange"
+           :pagination="pagination" />
 </template>
 
 <style scoped>

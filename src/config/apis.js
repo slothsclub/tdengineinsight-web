@@ -37,4 +37,7 @@ export const apis = {
         trans: "/tdengine/perf/basic/trans",
         smas: "/tdengine/perf/basic/smas",
     },
+    sql: {
+        exec: "/tdengine/exec/sql"
+    }
 }

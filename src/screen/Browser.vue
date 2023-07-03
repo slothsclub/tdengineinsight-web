@@ -1,6 +1,6 @@
 <script setup>
-import { TableOutlined, OneToOneOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons-vue';
-import {computed, ref, watch} from "vue";
+import { TableOutlined, OneToOneOutlined, SearchOutlined } from '@ant-design/icons-vue';
+import {computed, onMounted, ref, watch} from "vue";
 import Tables from "../components/Tables.vue";
 import DataTableView from "../components/DataTableView.vue";
 import QueryResult from "../components/QueryResult.vue";
@@ -11,6 +11,9 @@ import {useAppStore} from "../store/app.js";
 import {storeToRefs} from "pinia";
 import useDatabase from "../support/database.js";
 import {useDatabaseStore} from "../store/database.js";
+import {useSqlStore} from "../store/sql.js";
+import useSql from "../support/sql.js";
+import {useTableStore} from "../store/table.js";
 const activeKey = ref("1")
 const viewMode = ref("a")
 
@@ -19,9 +22,23 @@ const {currentInstanceId, instanceReady} = storeToRefs(appStore)
 
 const {queryDatabases} = useDatabase(true)
 const databaseStore = useDatabaseStore()
+const tableStore = useTableStore()
+const sqlStore = useSqlStore()
+const {simplePaginationQuery} = useSql(true)
+
+const table = computed(() => {
+  return tableStore.currentTableName
+})
+const db = computed(() => {
+  return databaseStore.currentDatabase.name
+})
 
 const noDatabase = computed(() => {
   return databaseStore.databases.userDefined.length === 0
+})
+watch([table, db], () => {
+  if(!table.value || !db.value) return
+  simplePaginationQuery()
 })
 </script>
 
@@ -38,7 +55,7 @@ const noDatabase = computed(() => {
       <Tables></Tables>
     </a-col>
     <a-col v-show="!noDatabase" class="browser-data-container">
-      <a-tabs v-model:activeKey="activeKey" type="card" class="tabs min-h">
+      <a-tabs v-model:activeKey="activeKey" type="card" class="query-result-tabs tabs min-h">
         <a-tab-pane key="1">
           <template #tab>
             <span>
@@ -48,13 +65,13 @@ const noDatabase = computed(() => {
           </template>
           <a-row :gutter="[0, 20]">
             <a-col :span="24">
-              <QueryResult/>
+              <QueryResult v-loading="sqlStore.state.executing"/>
             </a-col>
             <a-col :span="24">
               <a-row>
                 <a-col :span="18">
                   <QuickTimeRangeClauseSelector>
-                    <a-button>{{ $t('common.refresh') }}</a-button>
+                    <a-button @click="simplePaginationQuery">{{ $t('common.refresh') }}</a-button>
                   </QuickTimeRangeClauseSelector>
                 </a-col>
                 <a-col :span="6" class="txt-right">

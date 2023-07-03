@@ -83,22 +83,22 @@ export default function useHttpClient() {
     }
 
     const httpGet = (url, query, pathVariables) => {
-        if(!sendable(url)) return Promise.reject("datasource is not initialized, request is ignored")
+        if(!sendable(url)) return Promise.reject(`[${url}] datasource is not initialized, request is ignored"`)
         return useAxios(urlFormat(url, pathVariables), {method: 'GET', params: query, headers: headers}, instance, options)
     }
 
     const httpPost = (url, data, pathVariables) => {
-        if(!sendable(url)) return Promise.reject("datasource is not initialized, request is ignored")
-        return useAxios(urlFormat(url, pathVariables), {method: 'POST', data: data}, instance, options)
+        if(!sendable(url)) return Promise.reject(`[${url}] datasource is not initialized, request is ignored"`)
+        return useAxios(urlFormat(url, pathVariables), {method: 'POST', data: data, headers: headers}, instance, options)
     }
 
     const httpPut = (url, data, pathVariables) => {
-        if(!sendable(url)) return Promise.reject("datasource is not initialized, request is ignored")
+        if(!sendable(url)) return Promise.reject(`[${url}] datasource is not initialized, request is ignored"`)
         return useAxios(urlFormat(url, pathVariables), {method: 'PUT', data: data}, instance, options)
     }
 
     const httpDelete = (url, pathVariables) => {
-        if(!sendable(url)) return Promise.reject("datasource is not initialized, request is ignored")
+        if(!sendable(url)) return Promise.reject(`[${url}] datasource is not initialized, request is ignored"`)
         return useAxios(urlFormat(url, pathVariables), {method: 'DELETE'}, instance, options)
     }
 

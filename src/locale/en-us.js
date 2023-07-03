@@ -244,7 +244,7 @@ const enUS = {
                 mnode: "MNode Endpoint",
                 dnode: "DNode Endpoint"
             },
-            queryResult: "Showing rows 0 - 11 (12 total, Query took 0.0002 seconds.)",
+            queryResult: "Showing rows {0} - {1} ({2} total, Query took {3} ms.)",
             connectedToServer: "Connected to server {0}",
             form: {
                 alterDatabase: "Alter Database",
