@@ -56,7 +56,8 @@ const handleDatabaseChange = () => {
   router.push({
     name: "browser",
     query: {
-      dbName: databaseStore.currentDatabase.name
+      dbName: databaseStore.currentDatabase.name,
+      mode: tableStore.mode,
     }
   })
 }

@@ -84,7 +84,9 @@ export default function useTable() {
     const loadTables = () => {
         resetTableState()
         if (!currentDatabase.value) return
-        queryStables()
+        if (userSelectedMode.value === 'stable') {
+            queryStables()
+        }
         if (userSelectedStable.value) {
             queryChildTables()
         }
