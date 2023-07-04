@@ -16,9 +16,13 @@ export const useDatabaseStore = defineStore('database', () => {
         return databases.userDefined.length > 0 ? databases.userDefined[0].name : null
     })
 
+    const hasDatabase = computed(() => {
+        return databases.userDefined.length > 0
+    })
 
     return {
         databases,
+        hasDatabase,
         currentDatabase,
         defaultDatabaseName
     }

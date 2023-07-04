@@ -6,6 +6,7 @@ import {useDatabaseStore} from "../store/database.js";
 import {useTableStore} from "../store/table.js";
 import useTable from "../support/table.js";
 import {useRoute, useRouter} from "vue-router";
+import useSql from "../support/sql.js";
 
 const route = useRoute()
 const activeTab = ref(route.query.activeTab || "stable")
@@ -13,37 +14,39 @@ const router = useRouter()
 const appStore = useAppStore()
 const databaseStore = useDatabaseStore()
 const tableStore = useTableStore()
-const {queryChildTables} = useTable(true)
+const {queryChildTables} = useTable()
+const {resetSqlState} = useSql()
 
 const switchToChildTablesView = (stable) => {
   tableStore.mode = "childTable"
   tableStore.currentStable.name = stable.stableName
   queryChildTables()
-  forwardRoute()
+  redirect()
 }
 const handleStableSelect = (stable) => {
   tableStore.currentStable.name = stable.stableName
-  forwardRoute()
+  redirect()
 }
 const handleChildTableSelect = (childTable) => {
   tableStore.currentChildTable.name = childTable.tableName
-  forwardRoute()
+  redirect()
 }
 const handleNormalTableSelect = (normalTable) => {
   tableStore.currentNormalTable.name = normalTable.tableName
   tableStore.mode = 'normalTable'
-  forwardRoute()
+  redirect()
 }
 const handleTabsChange = (k) => {
+  resetSqlState()
   tableStore.mode = k
-  forwardRoute()
+  redirect()
 }
 const backToStable = () => {
   tableStore.mode = "stable"
   tableStore.currentChildTable.name = null
-  forwardRoute()
+  redirect()
 }
-const forwardRoute = () => {
+const redirect = () => {
   router.push({
     name: "browser",
     query: {

@@ -273,6 +273,7 @@ const enUS = {
             tooMuchChildTables: "Too much data, showing 0 - {0} of the total data.",
             viewChildTables: "View child tables",
             noDatabaseFound: "No database found, so nothing shows here, would you like to check another one?",
+            noTableFound: "No tables found in the current database",
         },
         title: {
             databaseSummary: "Database summary",

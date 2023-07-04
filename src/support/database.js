@@ -7,7 +7,7 @@ import _ from "lodash"
 import {computed, onBeforeUnmount, onMounted, watch} from "vue";
 import {useRoute} from "vue-router";
 
-export default function useDatabase(bindWatcher) {
+export default function useDatabase() {
     const appStore = useAppStore()
     const {currentInstanceId, instanceReady} = storeToRefs(appStore)
     const {httpGet} = useHttpClient()
@@ -30,16 +30,19 @@ export default function useDatabase(bindWatcher) {
         databaseStore.currentDatabase.name = dbName
     }
 
-    bindWatcher && watch([currentInstanceId, instanceReady], ([m, n]) => {
-        if (m && n) {
-            queryDatabases()
-        }
-    }, {immediate: true})
+    const registerListener = () => {
+        watch([currentInstanceId, instanceReady], ([m, n]) => {
+            if (m && n) {
+                queryDatabases()
+            }
+        }, {immediate: true})
+    }
 
     onBeforeUnmount(() => {
         databaseStore.currentDatabase.name = null
     })
     return {
-        queryDatabases
+        queryDatabases,
+        registerListener
     }
 }

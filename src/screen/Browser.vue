@@ -17,19 +17,23 @@ import {useTableStore} from "../store/table.js";
 import ColumnSelector from "../components/ColumnSelector.vue";
 import {useColumnStore} from "../store/column.js";
 import useColumn from "../support/column.js";
+import {useRouter} from "vue-router";
+import useTable from "../support/table.js";
 const activeKey = ref("1")
-const viewMode = ref("a")
+const viewMode = ref("table")
 
+const router = useRouter()
 const appStore = useAppStore()
-const {currentInstanceId, instanceRead} = storeToRefs(appStore)
+const {currentInstanceId} = storeToRefs(appStore)
 
-const {queryDatabases} = useDatabase(true)
+const {registerListener: registerDatabaseListener} = useDatabase()
 const databaseStore = useDatabaseStore()
+const {resetTableState, registerListener: registerTableListener} = useTable()
 const tableStore = useTableStore()
 const columnStore = useColumnStore()
 const sqlStore = useSqlStore()
-const {simplePaginationQuery, execSql} = useSql(true)
-const {registerListener} = useColumn()
+const {simplePaginationQuery, execSql, registerListener: registerSqlListener} = useSql()
+const {registerListener: registerColumnListener, resetColumnState} = useColumn()
 
 const table = computed(() => {
   return tableStore.currentTableName
@@ -41,30 +45,44 @@ const columns = computed(() => {
   return columnStore.columnsClause
 })
 
-const noDatabase = computed(() => {
-  return databaseStore.databases.userDefined.length === 0
-})
 
 watch([table, db, columns], () => {
   if(!table.value || !db.value || !columns.value) return
   simplePaginationQuery()
 })
-registerListener()
+const handleDatabaseChange = () => {
+  resetTableState()
+  resetColumnState()
+  router.push({
+    name: "browser",
+    query: {
+      dbName: databaseStore.currentDatabase.name
+    }
+  })
+}
+
+registerColumnListener()
+registerDatabaseListener()
+registerTableListener()
+registerSqlListener()
 </script>
 
 <template>
   <a-row :gutter="[0, 0]" class="min-h browser-container">
-    <a-col :span="24" v-if="noDatabase">
+    <a-col :span="24" v-if="!databaseStore.hasDatabase">
       <a-empty class="center mrg-top" :description="$t('ui.tips.noDatabaseFound')" />
     </a-col>
-    <a-col v-show="!noDatabase" class="browser-schema-container">
-      <a-select size="large" v-model:value="databaseStore.currentDatabase.name">
+    <a-col v-show="databaseStore.hasDatabase" class="browser-schema-container">
+      <a-select size="large" v-model:value="databaseStore.currentDatabase.name" @change="handleDatabaseChange">
         <a-select-option v-for="db in databaseStore.databases.userDefined" :value="db.name">{{ db.name }}</a-select-option>
       </a-select>
 
       <Tables></Tables>
     </a-col>
-    <a-col v-show="!noDatabase" class="browser-data-container">
+    <a-col :span="24" v-show="!tableStore.hasTables">
+      <a-empty class="center mrg-top" :description="$t('ui.tips.noTableFound')" />
+    </a-col>
+    <a-col v-show="databaseStore.hasDatabase && tableStore.hasTables" class="browser-data-container">
       <a-tabs v-model:activeKey="activeKey" type="card" class="query-result-tabs tabs min-h">
         <a-tab-pane key="1">
           <template #tab>
@@ -88,15 +106,15 @@ registerListener()
                   <a-space>
                     <ColumnSelector />
                     <a-radio-group v-model:value="viewMode" button-style="solid">
-                      <a-radio-button value="a">{{ $t('common.table') }}</a-radio-button>
-                      <a-radio-button value="b">{{ $t('common.chart') }}</a-radio-button>
+                      <a-radio-button value="table">{{ $t('common.table') }}</a-radio-button>
+                      <a-radio-button value="chart">{{ $t('common.chart') }}</a-radio-button>
                     </a-radio-group>
                   </a-space>
                 </a-col>
               </a-row>
             </a-col>
             <a-col :span="24">
-              <DataTableView></DataTableView>
+              <DataTableView v-if="viewMode === 'table'"></DataTableView>
             </a-col>
           </a-row>
         </a-tab-pane>

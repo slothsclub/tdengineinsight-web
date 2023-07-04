@@ -59,6 +59,11 @@ export default function useColumn() {
         setSelectedColumns()
     }
 
+    const resetColumnState = () => {
+        columnStore.columns.items = []
+        columnStore.columns.selected = []
+    }
+
     //todo Looking for a better way to register watchers
     const registerListener = () => {
         watch([db, table, instanceReady], queryColumns, {immediate: false})
@@ -68,6 +73,7 @@ export default function useColumn() {
         queryColumns,
         columnSelectorVisible,
         toggleColumnSelectorVisible,
-        registerListener
+        registerListener,
+        resetColumnState
     }
 }

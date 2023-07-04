@@ -24,6 +24,10 @@ export const useColumnStore = defineStore('column', () => {
         return col.join(",")
     })
 
+    const selectedColumnsCount = computed(() => {
+        return columns.selected.length
+    })
+
     const antTableColumns = computed(() => {
         return columns.selected
     })
@@ -33,6 +37,7 @@ export const useColumnStore = defineStore('column', () => {
         columns,
         filteredColumns,
         antTableColumns,
-        columnsClause
+        columnsClause,
+        selectedColumnsCount
     }
 })

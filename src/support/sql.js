@@ -8,7 +8,7 @@ import {useTableStore} from "../store/table.js";
 import {useDatabaseStore} from "../store/database.js";
 import {useColumnStore} from "../store/column.js";
 
-export default function useSql(bindWatcher) {
+export default function useSql() {
     const {httpPost} = useHttpClient()
     const appStore = useAppStore()
     const {currentInstanceId, instanceReady} = storeToRefs(appStore)
@@ -36,10 +36,24 @@ export default function useSql(bindWatcher) {
         sqlStore.sql.countSql = sql
     }
 
+    const resetSqlState = () => {
+        tableStore.currentStable.name = null
+        tableStore.currentChildTable.name = null
+        tableStore.currentNormalTable.name = null
+        columnStore.columns.items = []
+        columnStore.columns.selected = []
+        sqlStore.sql.rawSql = null
+        sqlStore.sql.countSql = null
+        sqlStore.where.tsOffset = {n: 5, unit: "m"}
+        sqlStore.pagination.limit = 20
+        sqlStore.pagination.current = 1
+        sqlStore.pagination.offset = 0
+    }
+
     const simplePaginationQuery = () => {
         let tsOffset = ""
-        if (sqlStore.where.tsOffset) {
-            tsOffset = ` WHERE ts > now - ${sqlStore.where.tsOffset}`
+        if (sqlStore.where.tsOffset.n > 0) {
+            tsOffset = ` WHERE ts > now - ${sqlStore.where.tsOffset.n}${sqlStore.where.tsOffset.unit}`
         }
         let orderBy = ` ORDER BY ${sqlStore.orderBy.field} ${sqlStore.orderBy.direction}`
         let offset = (sqlStore.pagination.current - 1) * sqlStore.pagination.limit
@@ -63,7 +77,6 @@ export default function useSql(bindWatcher) {
 
     const registerListener = () => {
         watch([rawSql, instanceReady, table, columns], () => {
-
             if (rawSql.value && instanceReady.value && table.value && columns.value) {
                 execSql()
             }
@@ -76,6 +89,7 @@ export default function useSql(bindWatcher) {
     return {
         setRawSql,
         setCountSql,
+        resetSqlState,
         simplePaginationQuery,
         execSql,
         registerListener

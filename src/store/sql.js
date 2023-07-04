@@ -23,7 +23,10 @@ export const useSqlStore = defineStore('sql', () => {
         direction: "DESC"
     })
     const where = reactive({
-        tsOffset: "5m"
+        tsOffset: {
+            n: 5,
+            unit: "m"
+        }
     })
 
     const execResult = reactive({

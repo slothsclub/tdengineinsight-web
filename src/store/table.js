@@ -81,6 +81,18 @@ export const useTableStore = defineStore('table', () => {
         return mode.value === 'childTable' && allTables.childTables.length > 100
     })
 
+    const hasTables = computed(() => {
+        switch (mode.value) {
+            case "stable":
+                return allTables.stable.length > 0
+            case "childTable":
+                return allTables.childTables.length > 0
+            case "normalTable":
+                return allTables.normalTables.length > 0
+        }
+        return false
+    })
+
     return {
         mode,
         loadingState,
@@ -98,5 +110,6 @@ export const useTableStore = defineStore('table', () => {
         childTables,
         normalTables,
         isTooMuchChildTables,
+        hasTables,
     }
 })

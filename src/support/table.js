@@ -7,7 +7,7 @@ import {apis} from "../config/apis.js";
 import {useRoute} from "vue-router";
 import {useTableStore} from "../store/table.js";
 
-export default function useTable(bindWatcher) {
+export default function useTable() {
     const appStore = useAppStore()
     const {currentInstanceId, instanceReady} = storeToRefs(appStore)
     const {httpGet} = useHttpClient()
@@ -82,6 +82,7 @@ export default function useTable(bindWatcher) {
     }
 
     const loadTables = () => {
+        resetTableState()
         if (!currentDatabase.value) return
         queryStables()
         if (userSelectedStable.value) {
@@ -92,15 +93,23 @@ export default function useTable(bindWatcher) {
         }
     }
 
-    bindWatcher && watch([currentInstanceId, currentDatabase], loadTables, {immediate: false})
+    const resetTableState = () => {
+        tableStore.currentStable.name = null
+        tableStore.currentChildTable.name = null
+        tableStore.currentNormalTable.name = null
+    }
 
-    bindWatcher && watch(userSelectedStable, () => {
-        setCurrentStable(userSelectedStable.value)
-    })
-    bindWatcher && watch(userSelectedMode, () => {
-        if (userSelectedMode.value === 'normalTable') queryNormalTables()
-        if (userSelectedMode.value === 'stable') queryStables()
-    })
+    const registerListener = () => {
+        watch([currentInstanceId, currentDatabase], loadTables, {immediate: false})
+
+        watch(userSelectedStable, () => {
+            setCurrentStable(userSelectedStable.value)
+        })
+        watch(userSelectedMode, () => {
+            if (userSelectedMode.value === 'normalTable') queryNormalTables()
+            if (userSelectedMode.value === 'stable') queryStables()
+        })
+    }
 
     onMounted(() => {
         if (route.query.mode) tableStore.mode = route.query.mode
@@ -121,6 +130,8 @@ export default function useTable(bindWatcher) {
         queryStables,
         queryChildTables,
         queryNormalTables,
-        userSelectedStable
+        userSelectedStable,
+        resetTableState,
+        registerListener
     }
 }
