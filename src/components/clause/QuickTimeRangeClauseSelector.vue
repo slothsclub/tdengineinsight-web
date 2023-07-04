@@ -8,7 +8,10 @@ const sqlStore = useSqlStore()
 const tsOffset = computed(() => {
   return sqlStore.where.tsOffset
 })
-watch(tsOffset, () => {
+const limit = computed(() => {
+  return sqlStore.pagination.limit
+})
+watch([tsOffset, limit], () => {
   simplePaginationQuery()
 }, {deep: true})
 </script>
@@ -32,7 +35,7 @@ watch(tsOffset, () => {
     <a-input-group compact>
       <a-button disabled>{{ $t('common.numberOfRows') }}</a-button>
       <a-select v-model:value="sqlStore.pagination.limit">
-        <a-select-option :value="n" v-for="n in sqlStore.pageSizeOptions">{{ n }}</a-select-option>
+        <a-select-option :value="n" v-for="n in sqlStore.pageSizes">{{ n }}</a-select-option>
       </a-select>
     </a-input-group>
     <slot></slot>

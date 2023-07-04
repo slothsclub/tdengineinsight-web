@@ -1,13 +1,19 @@
 import {defineStore} from "pinia";
-import {onMounted, reactive, ref, watch} from "vue";
+import {computed, onMounted, reactive, ref, watch} from "vue";
 
 export const useSqlStore = defineStore('sql', () => {
     const state = reactive({
         executing: true
     })
-    const pageSizeOptions = reactive([
-        20, 50, 100, 200, 500
-    ])
+    const pageSizeOptions = reactive({
+        table: [20, 50, 100, 200],
+        chart: [200, 500, 1000, 5000, 10000, 30000]
+    })
+    const pageSizeBreakup = ref(200)
+    const pageSizes = computed(() => {
+        return viewMode.value === 'chart' ? pageSizeOptions.chart : pageSizeOptions.table
+    })
+    const viewMode = ref("table")
 
     const sql = reactive({
         rawSql: null,
@@ -36,12 +42,14 @@ export const useSqlStore = defineStore('sql', () => {
     })
 
     return {
+        viewMode,
         state,
         sql,
         where,
         pagination,
         orderBy,
         execResult,
-        pageSizeOptions,
+        pageSizes,
+        pageSizeBreakup,
     }
 })

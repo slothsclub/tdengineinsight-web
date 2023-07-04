@@ -1,65 +1,102 @@
 import _ from "lodash"
-import {onUnmounted, ref} from "vue";
+import {ref} from "vue";
 
-const baseOptions = {
-    chart: {
-        //id: 'apex',
-        height: 350,
-        type: 'line',
-        animations: {
-            enabled: true,
-            easing: 'linear',
-            dynamicAnimation: {
-                speed: 1000
-            }
-        },
-        toolbar: {
-            show: false
-        },
-        zoom: {
-            enabled: false
-        }
-    },
-    dataLabels: {
+const stockBaseOptions = {
+    credits: {
         enabled: false
     },
-    stroke: {
-        curve: 'smooth'
+    accessibility: {
+        enabled: false
     },
-    title: {
-        //text: 'Dynamic Updating Chart',
-        align: 'left'
+    rangeSelector: {
+        inputEnabled: false
     },
-    markers: {
-        size: 0
+    exporting: {
+        enabled: true
     },
-    xaxis: {
-        type: 'datetime',
-        labels: {
-            show: false
+    yAxis: {
+        opposite: false,
+        plotLines: [{
+            value: 0,
+            width: 2,
+            color: 'silver'
+        }]
+    },
+    plotOptions: {
+        series: {
+            compare: 'percent',
+            showInNavigator: true
         }
     },
-    yaxis: {
-        max: 100
+    tooltip: {
+        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+        valueDecimals: 2,
+        split: true
     },
-    legend: {
-        show: false
+    series: [],
+}
+const lineBaseOptions = {
+    accessibility: {
+        enabled: false
+    },
+    credits: {
+        enabled: false
     },
 }
 
-export function useChart(id, title) {
-    const options = ref({})
-    options.value = _.merge({
-        chart: {
-            id
-        },
-        title: {
-            text: title
+const areaBaseOptions = {
+    credits: {
+        enabled: false
+    },
+    accessibility: {
+        enabled: false
+    },
+    chart: {
+        type: 'area'
+    },
+    title: {
+        text: null
+    },
+    plotOptions: {
+        area: {
+            marker: {
+                enabled: false,
+                symbol: 'circle',
+                radius: 2,
+                states: {
+                    hover: {
+                        enabled: true
+                    }
+                }
+            }
         }
-    }, baseOptions)
+    },
+    xAxis: {
+        type: "datetime"
+    },
+    series: [],
+}
 
-    onUnmounted(() => {
-        //destroy chart instance
-    })
-    return {options}
+export function useChart() {
+    const getStockChartOptions = () => {
+        return ref(_.merge(_.cloneDeep(stockBaseOptions), {}))
+    }
+
+    const getLineChartOptions = () => {
+        return ref(_.merge(_.cloneDeep(lineBaseOptions), {}))
+    }
+
+    const getAreaChartOptions = (title) => {
+        return ref(_.merge(_.cloneDeep(areaBaseOptions), {
+            title: {
+                text: title
+            }
+        }))
+    }
+
+    return {
+        getStockChartOptions,
+        getLineChartOptions,
+        getAreaChartOptions
+    }
 }

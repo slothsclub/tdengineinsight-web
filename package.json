@@ -1,5 +1,5 @@
 {
-  "name": "demo",
+  "name": "tdengineinsight-web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,16 +12,15 @@
     "@tarekraafat/autocomplete.js": "^10.2.7",
     "@vueuse/integrations": "^10.1.2",
     "ant-design-vue": "^3.2.20",
-    "apexcharts": "^3.41.0",
     "axios": "^1.4.0",
+    "highcharts-vue": "^1.4.3",
     "lodash": "^4.17.21",
     "mitt": "^3.0.0",
     "pinia": "^2.1.3",
     "textarea-caret": "^3.1.0",
     "vue": "^3.2.47",
     "vue-i18n": "^9.2.2",
-    "vue-router": "^4.2.2",
-    "vue3-apexcharts": "^1.4.1"
+    "vue-router": "^4.2.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",

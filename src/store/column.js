@@ -8,6 +8,10 @@ export const useColumnStore = defineStore('column', () => {
         items: [],
         selected: []
     })
+    const chartSeries = reactive({
+        selected: [],
+        columns: []
+    })
 
     const filteredColumns = computed(() => {
         if (!keyword.value) return columns.items
@@ -38,6 +42,7 @@ export const useColumnStore = defineStore('column', () => {
         filteredColumns,
         antTableColumns,
         columnsClause,
-        selectedColumnsCount
+        selectedColumnsCount,
+        chartSeries
     }
 })

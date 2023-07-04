@@ -20,9 +20,8 @@ const props = defineProps({
   }
 })
 const chartRef = ref()
-const {options} = useChart("chart-queries", i18n.global.t('common.queries'))
+const {getAreaChartOptions} = useChart()
 const max = ref(0)
-const loading = ref(true)
 
 const intervalRef = reactive({
   source: null,
@@ -30,20 +29,21 @@ const intervalRef = reactive({
 })
 const {queryQueries} = usePerf()
 const perfStore = usePerfStore()
-const series = reactive({
+const chartOptions = getAreaChartOptions(i18n.global.t('common.queries'))
+chartOptions.value.series.push({
+  name: i18n.global.t('common.queries'),
   data: []
 })
+
+
 
 const autoRefreshChart = () => {
   intervalRef.chart = setInterval(() => {
     max.value = Math.max(perfStore.data.queries.length, max.value)
-    loading.value = false
-    series.data.push({
-      x: new Date().getTime(),
-      y: perfStore.data.queries.length
-    })
-    if(series.data.length > props.maxPoint) {
-      series.data.shift()
+
+    chartOptions.value.series[0].data.push([new Date().getTime(), perfStore.data.queries.length])
+    if(chartOptions.value.series[0].data.length > props.maxPoint) {
+      chartOptions.value.series[0].data.shift()
     }
   }, props.interval)
 }
@@ -66,8 +66,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <a-card v-loading="loading">
-    <apexchart type="line" height="350" width="500" ref="chartRef" :options="options" :series="[{data: series.data}]"></apexchart>
+  <a-card>
+    <highcharts ref="chartRef" :options="chartOptions" ></highcharts>
   </a-card>
 </template>
 

@@ -36,7 +36,7 @@ export default function useColumn() {
 
     const setDefaultSelectedColumns = () => {
         for (let i in columnStore.columns.items) {
-            columnStore.columns.items[i].checked = i < 10
+            columnStore.columns.items[i].checked = i < 11
         }
     }
     const setSelectedColumns = () => {
@@ -49,6 +49,19 @@ export default function useColumn() {
             })
         }
         columnStore.columns.selected = selected
+
+        setSelectedChartSeries()
+    }
+
+    const setSelectedChartSeries = () => {
+        let col = []
+        for (let i in columnStore.columns.selected) {
+            let n = columnStore.columns.selected[i].title
+            if (n === 'ts') continue
+            col.push(n)
+        }
+        columnStore.chartSeries.columns = col
+        columnStore.chartSeries.selected = [col[0]]
     }
 
     const toggleColumnSelectorVisible = () => {

@@ -7,6 +7,7 @@ import {useAppStore} from "../store/app.js";
 import {useTableStore} from "../store/table.js";
 import {useDatabaseStore} from "../store/database.js";
 import {useColumnStore} from "../store/column.js";
+import emitter from "./emitter.js";
 
 export default function useSql() {
     const {httpPost} = useHttpClient()
@@ -27,6 +28,10 @@ export default function useSql() {
     })
     const columns = computed(() => {
         return columnStore.columnsClause
+    })
+
+    const ready = computed(() => {
+        return instanceReady.value && databaseStore.currentDatabase.name && table.value && columns.value && rawSql.value
     })
 
     const setRawSql = (sql) => {
@@ -64,11 +69,15 @@ export default function useSql() {
     }
 
     const execSql = () => {
+        if (!ready.value) return
+        emitter.emit("BEFORE_UPDATE_CHART")
         sqlStore.state.executing = true
         httpPost(apis.sql.exec, {...sqlStore.sql}).then(res => {
             sqlStore.execResult.data = res.data?.value.data
             sqlStore.execResult.total = res.data?.value.count
             sqlStore.execResult.elapsedTime = res.data?.value.elapsedTime
+
+            emitter.emit("REFRESH_RAW_DATA_CHART")
         }).finally(() => {
             sqlStore.state.executing = false
         })
@@ -77,7 +86,7 @@ export default function useSql() {
 
     const registerListener = () => {
         watch([rawSql, instanceReady, table, columns], () => {
-            if (rawSql.value && instanceReady.value && table.value && columns.value) {
+            if (ready.value) {
                 execSql()
             }
         }, {immediate: true})

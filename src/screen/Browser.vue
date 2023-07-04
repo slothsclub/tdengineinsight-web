@@ -19,8 +19,8 @@ import {useColumnStore} from "../store/column.js";
 import useColumn from "../support/column.js";
 import {useRouter} from "vue-router";
 import useTable from "../support/table.js";
+import DataChartView from "../components/DataChartView.vue";
 const activeKey = ref("1")
-const viewMode = ref("table")
 
 const router = useRouter()
 const appStore = useAppStore()
@@ -60,6 +60,12 @@ const handleDatabaseChange = () => {
       mode: tableStore.mode,
     }
   })
+}
+const handleViewModeChange = () => {
+  if(sqlStore.pagination.limit > sqlStore.pageSizeBreakup) {
+    sqlStore.pagination.limit = sqlStore.pageSizeBreakup
+    sqlStore.execResult.total = 0
+  }
 }
 
 registerColumnListener()
@@ -106,7 +112,7 @@ registerSqlListener()
                 <a-col :span="6" class="txt-right">
                   <a-space>
                     <ColumnSelector />
-                    <a-radio-group v-model:value="viewMode" button-style="solid">
+                    <a-radio-group v-model:value="sqlStore.viewMode" button-style="solid" @change="handleViewModeChange">
                       <a-radio-button value="table">{{ $t('common.table') }}</a-radio-button>
                       <a-radio-button value="chart">{{ $t('common.chart') }}</a-radio-button>
                     </a-radio-group>
@@ -115,7 +121,8 @@ registerSqlListener()
               </a-row>
             </a-col>
             <a-col :span="24">
-              <DataTableView v-if="viewMode === 'table'"></DataTableView>
+              <DataTableView v-if="sqlStore.viewMode === 'table'"></DataTableView>
+              <DataChartView v-if="sqlStore.viewMode === 'chart'"></DataChartView>
             </a-col>
           </a-row>
         </a-tab-pane>

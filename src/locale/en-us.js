@@ -274,6 +274,7 @@ const enUS = {
             viewChildTables: "View child tables",
             noDatabaseFound: "No database found, so nothing shows here, would you like to check another one?",
             noTableFound: "No tables found in the current database",
+            addColumnToChart: "Select columns and compare data in charts",
         },
         title: {
             databaseSummary: "Database summary",

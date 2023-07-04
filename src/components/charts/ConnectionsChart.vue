@@ -20,9 +20,8 @@ const props = defineProps({
   }
 })
 const chartRef = ref()
-const {options} = useChart("chart-connections", i18n.global.t('common.connections'))
+const {getAreaChartOptions} = useChart()
 const max = ref(0)
-const loading = ref(true)
 
 const intervalRef = reactive({
   source: null,
@@ -30,26 +29,20 @@ const intervalRef = reactive({
 })
 const {queryConnections} = usePerf()
 const perfStore = usePerfStore()
-const series = reactive({
+
+const chartOptions = getAreaChartOptions(i18n.global.t('common.connections'))
+chartOptions.value.series.push({
+  name: i18n.global.t('common.connections'),
   data: []
 })
 
 const autoRefreshChart = () => {
   intervalRef.chart = setInterval(() => {
-    loading.value = false
     max.value = Math.max(perfStore.connectionTotal, max.value)
-    // chartRef.value.updateOptions({
-    //   yaxis: {
-    //     min: Math.round(max.value * 0.8),
-    //     max: Math.round(max.value * 1.2),
-    //   }
-    // })
-    series.data.push({
-      x: new Date().getTime(),
-      y: perfStore.connectionTotal
-    })
-    if(series.data.length > props.maxPoint) {
-      series.data.shift()
+
+    chartOptions.value.series[0].data.push([new Date().getTime(), perfStore.connectionTotal])
+    if(chartOptions.value.series[0].data.length > props.maxPoint) {
+      chartOptions.value.series[0].data.shift()
     }
   }, props.interval)
 }
@@ -72,8 +65,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <a-card v-loading="loading">
-    <apexchart type="line" height="350" width="500" ref="chartRef" :options="options" :series="[{data: series.data}]"></apexchart>
+  <a-card>
+    <highcharts ref="chartRef" :options="chartOptions"></highcharts>
   </a-card>
 </template>
 

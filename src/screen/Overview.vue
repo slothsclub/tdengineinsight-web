@@ -85,11 +85,11 @@ onBeforeUnmount(() => {
       </a-card>
     </a-col>
     <a-col :span="24" class="charts-container">
-      <a-row justify="space-between">
-        <ConnectionsChart :shared="true" :interval="interval" />
-        <QueriesChart :shared="false" :interval="interval" />
-        <ConsumerChart :shared="false" :interval="interval" />
-        <TransChart :shared="false" :interval="interval" />
+      <a-row justify="space-between" :gutter="20">
+        <a-col :span="6"><ConnectionsChart :shared="true" :interval="interval" /></a-col>
+        <a-col :span="6"><QueriesChart :shared="false" :interval="interval" /></a-col>
+        <a-col :span="6"><ConsumerChart :shared="false" :interval="interval" /></a-col>
+        <a-col :span="6"><TransChart :shared="false" :interval="interval" /></a-col>
       </a-row>
     </a-col>
   </a-row>
