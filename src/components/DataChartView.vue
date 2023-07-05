@@ -19,8 +19,6 @@ const columns = computed(() => {
 const chartOptions = getStockChartOptions()
 
 const refreshChart = () => {
-  //chartRef.value.chart.destroy()
-
   let series = {}
   for(let i in sqlStore.execResult.data) {
     let d = sqlStore.execResult.data[i]
@@ -33,6 +31,7 @@ const refreshChart = () => {
     }
   }
   chartOptions.value.series = Object.values(series)
+  chartRef.value.chart.hideLoading()
 }
 const handleCompareModeChange = () => {
   let compare = undefined;
@@ -62,10 +61,14 @@ const handleCompareModeChange = () => {
 
 onMounted(() => {
   emitter.on("REFRESH_RAW_DATA_CHART", refreshChart)
+  emitter.on("BEFORE_UPDATE_CHART", () => {
+    chartRef.value.chart.showLoading()
+  })
   refreshChart()
 })
 onBeforeUnmount(() => {
   emitter.off("REFRESH_RAW_DATA_CHART")
+  emitter.off("BEFORE_UPDATE_CHART")
 })
 </script>
 
