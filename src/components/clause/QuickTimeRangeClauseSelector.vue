@@ -2,7 +2,7 @@
 import {computed, reactive, ref, watch} from "vue";
 import useSql from "../../support/sql.js";
 import {useSqlStore} from "../../store/sql.js";
-const {simplePaginationQuery} = useSql()
+const {buildSimplePaginationSql} = useSql()
 const sqlStore = useSqlStore()
 
 const tsOffset = computed(() => {
@@ -12,7 +12,7 @@ const limit = computed(() => {
   return sqlStore.pagination.limit
 })
 watch([tsOffset, limit], () => {
-  simplePaginationQuery()
+  buildSimplePaginationSql()
 }, {deep: true})
 </script>
 

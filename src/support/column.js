@@ -75,6 +75,8 @@ export default function useColumn() {
     const resetColumnState = () => {
         columnStore.columns.items = []
         columnStore.columns.selected = []
+        columnStore.chartSeries.columns = []
+        columnStore.chartSeries.selected = []
     }
 
     //todo Looking for a better way to register watchers

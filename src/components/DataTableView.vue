@@ -18,7 +18,7 @@ const {queryColumns} = useColumn()
 const appStore = useAppStore()
 const columnStore = useColumnStore()
 const sqlStore = useSqlStore()
-const {simplePaginationQuery} = useSql(false)
+const {buildSimplePaginationSql} = useSql(false)
 
 const pagination = computed(() => {
   return {
@@ -33,7 +33,7 @@ const pagination = computed(() => {
 
 const onChange = (pagination, filters, sorter) => {
   sqlStore.pagination.current = pagination.current
-  simplePaginationQuery()
+  buildSimplePaginationSql()
 };
 
 </script>

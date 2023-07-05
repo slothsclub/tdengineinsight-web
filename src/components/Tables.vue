@@ -1,74 +1,19 @@
 <script setup>
 import {TableOutlined, LeftOutlined, InsertRowLeftOutlined} from "@ant-design/icons-vue";
 import {nextTick, onMounted, ref} from "vue";
-import {useAppStore} from "../store/app.js";
-import {useDatabaseStore} from "../store/database.js";
 import {useTableStore} from "../store/table.js";
 import useTable from "../support/table.js";
-import {useRoute, useRouter} from "vue-router";
-import useSql from "../support/sql.js";
 
-const route = useRoute()
-const activeTab = ref(route.query.activeTab || "stable")
-const router = useRouter()
-const appStore = useAppStore()
-const databaseStore = useDatabaseStore()
 const tableStore = useTableStore()
-const {queryChildTables} = useTable()
-const {resetSqlState} = useSql()
-
-const switchToChildTablesView = (stable) => {
-  tableStore.mode = "childTable"
-  tableStore.currentStable.name = stable.stableName
-  queryChildTables()
-  redirect()
-}
-const handleStableSelect = (stable) => {
-  tableStore.currentStable.name = stable.stableName
-  redirect()
-}
-const handleChildTableSelect = (childTable) => {
-  tableStore.currentChildTable.name = childTable.tableName
-  redirect()
-}
-const handleNormalTableSelect = (normalTable) => {
-  tableStore.currentNormalTable.name = normalTable.tableName
-  tableStore.mode = 'normalTable'
-  redirect()
-}
-const handleTabsChange = (k) => {
-  resetSqlState()
-  tableStore.mode = k
-  redirect()
-}
-const backToStable = () => {
-  tableStore.mode = "stable"
-  tableStore.currentChildTable.name = null
-  redirect()
-}
-const redirect = () => {
-  router.push({
-    name: "browser",
-    query: {
-      dbName: databaseStore.currentDatabase.name,
-      stable: tableStore.currentStable.name,
-      childTable: tableStore.currentChildTable.name,
-      normalTable: tableStore.currentNormalTable.name,
-      mode: tableStore.mode,
-      activeTab: activeTab.value
-    }
-  })
-}
-
-onMounted(() => {
-  nextTick(() => {
-    const h = document.getElementsByClassName("sider")[0].clientHeight
-    const dom = document.getElementsByClassName("table-list")
-    Array.prototype.forEach.call(dom, function(el) {
-      el.style.maxHeight = (h - el.getBoundingClientRect().top - 60) + 'px'
-    })
-  })
-})
+const {
+  activeTab,
+  switchToChildTablesView,
+  handleStableSelect,
+  handleChildTableSelect,
+  handleNormalTableSelect,
+  handleTabsChange,
+  backToStable,
+} = useTable()
 </script>
 
 <template>

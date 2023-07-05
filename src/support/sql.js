@@ -8,6 +8,8 @@ import {useTableStore} from "../store/table.js";
 import {useDatabaseStore} from "../store/database.js";
 import {useColumnStore} from "../store/column.js";
 import emitter from "./emitter.js";
+import {sqlConfig} from "../config/sql-config.js";
+import {typeDefine} from "../config/type.js";
 
 export default function useSql() {
     const {httpPost} = useHttpClient()
@@ -42,20 +44,19 @@ export default function useSql() {
     }
 
     const resetSqlState = () => {
-        tableStore.currentStable.name = null
-        tableStore.currentChildTable.name = null
-        tableStore.currentNormalTable.name = null
-        columnStore.columns.items = []
-        columnStore.columns.selected = []
         sqlStore.sql.rawSql = null
         sqlStore.sql.countSql = null
-        sqlStore.where.tsOffset = {n: 5, unit: "m"}
-        sqlStore.pagination.limit = 20
-        sqlStore.pagination.current = 1
-        sqlStore.pagination.offset = 0
+        sqlStore.pagination = {...sqlConfig.pagination}
+        sqlStore.orderBy = {...sqlConfig.orderBy}
+        sqlStore.where.tsOffset = {...sqlConfig.tsOffset}
+    }
+    const cleanSqlResult = () => {
+        sqlStore.execResult.data = null
+        sqlStore.execResult.total = null
+        sqlStore.execResult.elapsedTime = null
     }
 
-    const simplePaginationQuery = () => {
+    const buildSimplePaginationSql = () => {
         let tsOffset = ""
         if (sqlStore.where.tsOffset.n > 0) {
             tsOffset = ` WHERE ts > now - ${sqlStore.where.tsOffset.n}${sqlStore.where.tsOffset.unit}`
@@ -70,28 +71,28 @@ export default function useSql() {
 
     const execSql = () => {
         if (!ready.value) return
-        emitter.emit("BEFORE_UPDATE_CHART")
+        emitter.emit(typeDefine.events.BEFORE_UPDATE_CHART)
         sqlStore.state.executing = true
         httpPost(apis.sql.exec, {...sqlStore.sql}).then(res => {
             sqlStore.execResult.data = res.data?.value.data
             sqlStore.execResult.total = res.data?.value.count
             sqlStore.execResult.elapsedTime = res.data?.value.elapsedTime
 
-            emitter.emit("REFRESH_RAW_DATA_CHART")
+            emitter.emit(typeDefine.events.REFRESH_RAW_DATA_CHART)
         }).finally(() => {
             sqlStore.state.executing = false
         })
     }
 
     const setStateToTableView = () => {
-        sqlStore.pagination.limit = sqlStore.pageSizeOptions.table[0]
+        sqlStore.pagination.limit = sqlConfig.tableDefaultConfig.pageSize
         sqlStore.execResult.total = 0
-        sqlStore.orderBy.direction = "DESC"
+        sqlStore.orderBy.direction = sqlConfig.tableDefaultConfig.orderBy.direction
     }
     const setStateToChartView = () => {
-        sqlStore.pagination.limit = sqlStore.pageSizeOptions.chart[0]
+        sqlStore.pagination.limit = sqlConfig.chartDefaultConfig.pageSize
         sqlStore.execResult.total = 0
-        sqlStore.orderBy.direction = "ASC"
+        sqlStore.orderBy.direction = sqlConfig.chartDefaultConfig.orderBy.direction
     }
 
     const registerListener = () => {
@@ -103,19 +104,19 @@ export default function useSql() {
         watch([table, columns], () => {
             if (!ready.value) return
             sqlStore.pagination.current = 1
-            simplePaginationQuery()
+            buildSimplePaginationSql()
         })
     }
 
     onUnmounted(() => {
-        resetSqlState()
+        cleanSqlResult()
     })
 
     return {
         setRawSql,
         setCountSql,
         resetSqlState,
-        simplePaginationQuery,
+        buildSimplePaginationSql,
         execSql,
         registerListener,
         setStateToTableView,

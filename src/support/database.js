@@ -30,6 +30,12 @@ export default function useDatabase() {
         databaseStore.currentDatabase.name = dbName
     }
 
+    const resetDatabaseStore = () => {
+        databaseStore.currentDatabase.name = null
+        databaseStore.databases.system = []
+        databaseStore.databases.userDefined = []
+    }
+
     const registerListener = () => {
         watch([currentInstanceId, instanceReady], ([m, n]) => {
             if (m && n) {
@@ -43,6 +49,7 @@ export default function useDatabase() {
     })
     return {
         queryDatabases,
+        resetDatabaseStore,
         registerListener
     }
 }

@@ -4,6 +4,7 @@ import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import {useSqlStore} from "../store/sql.js";
 import {useColumnStore} from "../store/column.js";
 import emitter from "../support/emitter.js";
+import {typeDefine} from "../config/type.js";
 
 const chartRef = ref()
 const compareMode = ref("none")
@@ -60,15 +61,15 @@ const handleCompareModeChange = () => {
 }
 
 onMounted(() => {
-  emitter.on("REFRESH_RAW_DATA_CHART", refreshChart)
-  emitter.on("BEFORE_UPDATE_CHART", () => {
+  emitter.on(typeDefine.events.REFRESH_RAW_DATA_CHART, refreshChart)
+  emitter.on(typeDefine.events.BEFORE_UPDATE_CHART, () => {
     chartRef.value.chart.showLoading()
   })
   refreshChart()
 })
 onBeforeUnmount(() => {
-  emitter.off("REFRESH_RAW_DATA_CHART")
-  emitter.off("BEFORE_UPDATE_CHART")
+  emitter.off(typeDefine.events.REFRESH_RAW_DATA_CHART)
+  emitter.off(typeDefine.events.BEFORE_UPDATE_CHART)
 })
 </script>
 

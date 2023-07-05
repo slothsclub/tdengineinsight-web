@@ -7,73 +7,21 @@ import QueryResult from "../components/QueryResult.vue";
 import TableStructure from "../components/TableStructure.vue";
 import QueryBuilder from "../components/QueryBuilder.vue";
 import QuickTimeRangeClauseSelector from "../components/clause/QuickTimeRangeClauseSelector.vue";
-import {useAppStore} from "../store/app.js";
-import {storeToRefs} from "pinia";
-import useDatabase from "../support/database.js";
-import {useDatabaseStore} from "../store/database.js";
-import {useSqlStore} from "../store/sql.js";
-import useSql from "../support/sql.js";
-import {useTableStore} from "../store/table.js";
 import ColumnSelector from "../components/ColumnSelector.vue";
-import {useColumnStore} from "../store/column.js";
-import useColumn from "../support/column.js";
-import {useRouter} from "vue-router";
-import useTable from "../support/table.js";
 import DataChartView from "../components/DataChartView.vue";
-const activeKey = ref("1")
+import useBrowser from "../support/browser.js";
 
-const router = useRouter()
-const appStore = useAppStore()
-const {currentInstanceId} = storeToRefs(appStore)
-
-const {registerListener: registerDatabaseListener} = useDatabase()
-const databaseStore = useDatabaseStore()
-const {resetTableState, registerListener: registerTableListener} = useTable()
-const tableStore = useTableStore()
-const columnStore = useColumnStore()
-const sqlStore = useSqlStore()
-const {simplePaginationQuery, execSql, registerListener: registerSqlListener, setStateToChartView, setStateToTableView} = useSql()
-const {registerListener: registerColumnListener, resetColumnState} = useColumn()
-
-const table = computed(() => {
-  return tableStore.currentTableName
-})
-const db = computed(() => {
-  return databaseStore.currentDatabase.name
-})
-const columns = computed(() => {
-  return columnStore.columnsClause
-})
-
-
-watch([table, db, columns], () => {
-  if(!table.value || !db.value || !columns.value) return
-  simplePaginationQuery()
-})
-const handleDatabaseChange = () => {
-  resetTableState()
-  resetColumnState()
-  router.push({
-    name: "browser",
-    query: {
-      dbName: databaseStore.currentDatabase.name,
-      mode: tableStore.mode,
-    }
-  })
-}
-const handleViewModeChange = () => {
-  if(sqlStore.viewMode === 'table') {
-    setStateToTableView()
-  }
-  if(sqlStore.viewMode === 'chart') {
-    setStateToChartView()
-  }
-}
-
-registerColumnListener()
-registerDatabaseListener()
-registerTableListener()
-registerSqlListener()
+const {
+  init,
+  viewport,
+  databaseStore,
+  tableStore,
+  sqlStore,
+  handleDatabaseChange,
+  handleViewModeChange,
+  execSql
+} = useBrowser()
+init()
 </script>
 
 <template>
@@ -92,8 +40,8 @@ registerSqlListener()
       <a-empty class="center mrg-top" :description="$t('ui.tips.noTableFound')" />
     </a-col>
     <a-col v-show="databaseStore.hasDatabase && tableStore.hasTables" class="browser-data-container">
-      <a-tabs v-model:activeKey="activeKey" type="card" class="query-result-tabs tabs min-h">
-        <a-tab-pane key="1">
+      <a-tabs v-model:activeKey="viewport" type="card" class="query-result-tabs tabs min-h">
+        <a-tab-pane key="browse">
           <template #tab>
             <span>
               <TableOutlined />
@@ -128,7 +76,7 @@ registerSqlListener()
             </a-col>
           </a-row>
         </a-tab-pane>
-        <a-tab-pane key="2">
+        <a-tab-pane key="structure">
           <template #tab>
             <span>
               <OneToOneOutlined />
@@ -137,7 +85,7 @@ registerSqlListener()
           </template>
           <TableStructure/>
         </a-tab-pane>
-        <a-tab-pane key="3">
+        <a-tab-pane key="search">
           <template #tab>
             <span>
               <SearchOutlined />
