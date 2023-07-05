@@ -49,6 +49,7 @@ export default function useSql() {
         sqlStore.pagination = {...sqlConfig.pagination}
         sqlStore.orderBy = {...sqlConfig.orderBy}
         sqlStore.where.tsOffset = {...sqlConfig.tsOffset}
+        sqlStore.viewMode = "table"
     }
     const cleanSqlResult = () => {
         sqlStore.execResult.data = null

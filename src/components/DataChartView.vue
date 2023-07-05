@@ -48,7 +48,7 @@ const handleCompareModeChange = () => {
       break;
     case "value":
       compare = 'value'
-      change = '({point.change}%)'
+      change = '({point.change})'
       break;
   }
   chartOptions.value.tooltip.pointFormat = `<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ${change}<br/>`

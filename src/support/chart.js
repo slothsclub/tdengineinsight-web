@@ -24,7 +24,7 @@ const stockBaseOptions = {
     },
     plotOptions: {
         series: {
-            compare: 'percent',
+            compare: undefined,
             showInNavigator: true
         }
     },
