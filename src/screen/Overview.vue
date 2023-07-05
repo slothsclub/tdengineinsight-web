@@ -14,7 +14,7 @@ import ConsumerChart from "../components/charts/ConsumerChart.vue";
 import {CrownOutlined} from "@ant-design/icons-vue"
 
 const appStore = useAppStore()
-const {queryClusterInfo, queryDNodes, queryMNodes} = useMeta()
+const {queryClusterInfo, queryDNodes, queryMNodes, queryServerVersion} = useMeta()
 const metaStore = useMetaStore()
 const {queryClientInfo, queryConnections} = usePerf()
 const perfStore = usePerfStore()
@@ -44,6 +44,7 @@ const stopAutoRefresh = () => {
 }
 onMounted(() => {
   autoRefresh()
+  queryServerVersion()
 })
 onBeforeUnmount(() => {
   stopAutoRefresh()
@@ -55,7 +56,7 @@ onBeforeUnmount(() => {
     <a-col :span="24">
       <a-typography-title :level="3">{{ $t('ui.title.databaseSummary') }}</a-typography-title>
       <a-descriptions bordered style="width: 600px" size="small" :column="2">
-        <a-descriptions-item :label="$t('common.version')" :span="2">{{ metaStore.data.cluster?.version }}</a-descriptions-item>
+        <a-descriptions-item :label="$t('common.version')" :span="2">{{ metaStore.data.cluster?.version }} <a-tag color="#108ee9">{{ appStore.instanceInfo.serverVersion }}</a-tag></a-descriptions-item>
         <a-descriptions-item :label="$t('ui.label.cluster.id')" :span="2">{{ metaStore.data.cluster?.id }}</a-descriptions-item>
         <a-descriptions-item :label="$t('ui.label.cluster.name')" :span="2">{{ metaStore.data.cluster?.name }}</a-descriptions-item>
         <a-descriptions-item :label="$t('common.created')" :span="2">{{ metaStore.data.cluster?.createTime }}</a-descriptions-item>

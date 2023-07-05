@@ -27,7 +27,8 @@ export const apis = {
         dnode_variables: "/tdengine/meta/basic/dnode_variables",
         topics: "/tdengine/meta/query/topics",
         subscriptions: "/tdengine/meta/basic/subscriptions",
-        query: "/tdengine/meta/query"
+        query: "/tdengine/meta/query",
+        version: "/tdengine/meta/version",
     },
     perf: {
         apps: "/tdengine/perf/basic/apps",

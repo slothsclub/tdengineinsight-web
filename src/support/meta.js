@@ -47,6 +47,12 @@ export default function useMeta() {
         })
     }
 
+    const queryServerVersion = () => {
+        httpGet(apis.meta.version).then(res => {
+            appStore.instanceInfo.serverVersion = res.data
+        })
+    }
+
     return {
         queryClusterInfo,
         queryMNodes,
@@ -54,5 +60,6 @@ export default function useMeta() {
         queryQNodes,
         queryConfigs,
         queryDNodesVariables,
+        queryServerVersion,
     }
 }

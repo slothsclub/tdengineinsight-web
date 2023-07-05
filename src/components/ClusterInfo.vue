@@ -8,19 +8,20 @@ import {ref, watch} from "vue";
 
 const appStore = useAppStore()
 const {currentInstanceId, instanceReady} = storeToRefs(appStore)
-const {queryClusterInfo} = useMeta()
+const {queryClusterInfo, queryServerVersion} = useMeta()
 const metaStore = useMetaStore()
 
 watch([currentInstanceId, instanceReady], ([m, n]) => {
   if(m && n) {
     queryClusterInfo()
+    queryServerVersion()
   }
 }, {immediate: true})
 </script>
 
 <template>
   <a-descriptions class="cluster-info" bordered size="small" :column="1">
-    <a-descriptions-item :label="$t('common.version')" >{{ metaStore.data.cluster?.version }}</a-descriptions-item>
+    <a-descriptions-item :label="$t('common.version')" >{{ metaStore.data.cluster?.version }} <a-tag color="#108ee9">{{ appStore.instanceInfo.serverVersion }}</a-tag> </a-descriptions-item>
     <a-descriptions-item :label="$t('ui.label.cluster.id')" >{{ metaStore.data.cluster?.id }}</a-descriptions-item>
     <a-descriptions-item :label="$t('ui.label.cluster.name')" >{{ metaStore.data.cluster?.name }}</a-descriptions-item>
     <a-descriptions-item :label="$t('common.created')" >{{ metaStore.data.cluster?.createTime }}</a-descriptions-item>
