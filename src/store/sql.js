@@ -9,7 +9,6 @@ export const useSqlStore = defineStore('sql', () => {
         table: [20, 50, 100, 200],
         chart: [200, 500, 1000, 5000, 10000, 30000]
     })
-    const pageSizeBreakup = ref(200)
     const pageSizes = computed(() => {
         return viewMode.value === 'chart' ? pageSizeOptions.chart : pageSizeOptions.table
     })
@@ -50,6 +49,6 @@ export const useSqlStore = defineStore('sql', () => {
         orderBy,
         execResult,
         pageSizes,
-        pageSizeBreakup,
+        pageSizeOptions,
     }
 })

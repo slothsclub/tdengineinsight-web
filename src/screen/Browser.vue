@@ -32,7 +32,7 @@ const {resetTableState, registerListener: registerTableListener} = useTable()
 const tableStore = useTableStore()
 const columnStore = useColumnStore()
 const sqlStore = useSqlStore()
-const {simplePaginationQuery, execSql, registerListener: registerSqlListener} = useSql()
+const {simplePaginationQuery, execSql, registerListener: registerSqlListener, setStateToChartView, setStateToTableView} = useSql()
 const {registerListener: registerColumnListener, resetColumnState} = useColumn()
 
 const table = computed(() => {
@@ -62,9 +62,11 @@ const handleDatabaseChange = () => {
   })
 }
 const handleViewModeChange = () => {
-  if(sqlStore.pagination.limit > sqlStore.pageSizeBreakup) {
-    sqlStore.pagination.limit = sqlStore.pageSizeBreakup
-    sqlStore.execResult.total = 0
+  if(sqlStore.viewMode === 'table') {
+    setStateToTableView()
+  }
+  if(sqlStore.viewMode === 'chart') {
+    setStateToChartView()
   }
 }
 

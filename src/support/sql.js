@@ -83,6 +83,16 @@ export default function useSql() {
         })
     }
 
+    const setStateToTableView = () => {
+        sqlStore.pagination.limit = sqlStore.pageSizeOptions.table[0]
+        sqlStore.execResult.total = 0
+        sqlStore.orderBy.direction = "DESC"
+    }
+    const setStateToChartView = () => {
+        sqlStore.pagination.limit = sqlStore.pageSizeOptions.chart[0]
+        sqlStore.execResult.total = 0
+        sqlStore.orderBy.direction = "ASC"
+    }
 
     const registerListener = () => {
         watch([rawSql, instanceReady, table, columns], () => {
@@ -101,6 +111,8 @@ export default function useSql() {
         resetSqlState,
         simplePaginationQuery,
         execSql,
-        registerListener
+        registerListener,
+        setStateToTableView,
+        setStateToChartView
     }
 }
