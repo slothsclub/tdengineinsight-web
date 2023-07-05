@@ -1,40 +1,97 @@
 <script setup>
-const dataSource = [
-  {
-    key: '1',
-    name: 'Mike',
-    age: 32,
-    address: '10 Downing Street',
-  },
-  {
-    key: '2',
-    name: 'John',
-    age: 42,
-    address: '10 Downing Street',
-  },
-]
+import i18n from "../locale/i18n.js";
+import {computed} from "vue";
+import {useColumnStore} from "../store/column.js";
+import useTag from "../support/tag.js";
+import {useTagStore} from "../store/tag.js";
+import {storeToRefs} from "pinia";
+import {useTableStore} from "../store/table.js";
 
 const columns = [
   {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
+    title: i18n.global.t('common.name'),
+    dataIndex: 'colName'
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
+    title: i18n.global.t('common.type'),
+    dataIndex: 'colType'
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address',
+    title: i18n.global.t('common.length'),
+    dataIndex: 'colLength'
+  },
+  {
+    title: i18n.global.t('common.precision'),
+    dataIndex: 'colPrecision'
+  },
+  {
+    title: i18n.global.t('common.scale'),
+    dataIndex: 'colScale'
+  },
+  {
+    title: i18n.global.t('common.nullable'),
+    dataIndex: 'colNullable'
   },
 ]
+
+const stableTagColumns = [
+  {
+    title: i18n.global.t('common.name'),
+    dataIndex: 'tagName'
+  },
+  {
+    title: i18n.global.t('common.type'),
+    dataIndex: 'tagType'
+  },
+]
+
+const childTableTagColumns = [
+  {
+    title: i18n.global.t('common.name'),
+    dataIndex: 'tagName'
+  },
+  {
+    title: i18n.global.t('common.type'),
+    dataIndex: 'tagType'
+  },
+  {
+    title: i18n.global.t('common.value'),
+    dataIndex: 'tagValue'
+  },
+]
+
+const columnStore = useColumnStore()
+const {registerListener} = useTag()
+const tagStore = useTagStore()
+const {tags} = storeToRefs(tagStore)
+const tableStore = useTableStore()
+
+const data = computed(() => {
+  return columnStore.columns.items
+})
+const tagColumns = computed(() => {
+  return tableStore.mode === "stable" ? stableTagColumns : childTableTagColumns
+})
+const mode = computed(() => {
+  return tableStore.mode
+})
+
+registerListener()
 </script>
 
 <template>
-  <a-table :dataSource="dataSource" :columns="columns" size="small" :pagination="false" bordered />
+  <a-row :gutter="[0, 10]">
+    <a-col :span="24">
+      <a-card title="Columns" size="small">
+        <a-table :dataSource="data" :columns="columns" size="small" :pagination="false" />
+      </a-card>
+    </a-col>
+    <a-col :span="24" v-show="mode !== 'normalTable'">
+      <a-card title="Tags" size="small">
+        <a-table :dataSource="tags" :columns="tagColumns" size="small" :pagination="false" />
+      </a-card>
+    </a-col>
+  </a-row>
 </template>
 
 <style scoped>

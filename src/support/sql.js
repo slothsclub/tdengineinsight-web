@@ -1,6 +1,6 @@
 import {useSqlStore} from "../store/sql.js";
 import {apis} from "../config/apis.js";
-import {computed, ref, watch} from "vue";
+import {computed, onUnmounted, ref, watch} from "vue";
 import {storeToRefs} from "pinia";
 import useHttpClient from "./http.js";
 import {useAppStore} from "../store/app.js";
@@ -95,15 +95,21 @@ export default function useSql() {
     }
 
     const registerListener = () => {
-        watch([rawSql, instanceReady, table, columns], () => {
+        watch([rawSql, instanceReady], () => {
             if (ready.value) {
                 execSql()
             }
         }, {immediate: true})
-        watch(table, () => {
+        watch([table, columns], () => {
+            if (!ready.value) return
             sqlStore.pagination.current = 1
+            simplePaginationQuery()
         })
     }
+
+    onUnmounted(() => {
+        resetSqlState()
+    })
 
     return {
         setRawSql,

@@ -52,7 +52,7 @@ export default function useTable() {
         httpGet(apis.meta.tables, {
             dbName: currentDatabase.value,
             tableName: currentStable.value,
-            tableType: "child"
+            tableType: tableStore.mode
         }).then(res => {
             tableStore.allTables.childTables = res.data
             setCurrentChildTable(userSelectedChildTable.value || tableStore.defaultChildTableName)
@@ -63,7 +63,7 @@ export default function useTable() {
     const queryNormalTables = () => {
         if (!currentDatabase.value || !instanceReady.value) return
         tableStore.loadingState.normalTable = true
-        httpGet(apis.meta.tables, {dbName: currentDatabase.value, tableType: "normal"}).then(res => {
+        httpGet(apis.meta.tables, {dbName: currentDatabase.value, tableType: tableStore.mode}).then(res => {
             tableStore.allTables.normalTables = res.data
             setCurrentNormalTable(userSelectedNormalTable.value || tableStore.defaultNormalTableName)
         }).finally(() => {
@@ -108,6 +108,7 @@ export default function useTable() {
             setCurrentStable(userSelectedStable.value)
         })
         watch(userSelectedMode, () => {
+            tableStore.mode = userSelectedMode.value
             if (userSelectedMode.value === 'normalTable') queryNormalTables()
             if (userSelectedMode.value === 'stable') queryStables()
         })

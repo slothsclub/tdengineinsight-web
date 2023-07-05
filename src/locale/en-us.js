@@ -147,6 +147,8 @@ const enUS = {
         compare: "Compare",
         percent: "Percent",
         value: "Value",
+        scale: "Scale",
+        nullable: "Nullable",
     },
     tdengine: {
         keywords: {
