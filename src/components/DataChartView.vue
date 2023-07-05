@@ -6,6 +6,7 @@ import {useColumnStore} from "../store/column.js";
 import emitter from "../support/emitter.js";
 
 const chartRef = ref()
+const compareMode = ref("none")
 const {getStockChartOptions} = useChart()
 
 const columnStore = useColumnStore()
@@ -18,6 +19,8 @@ const columns = computed(() => {
 const chartOptions = getStockChartOptions()
 
 const refreshChart = () => {
+  //chartRef.value.chart.destroy()
+
   let series = {}
   for(let i in sqlStore.execResult.data) {
     let d = sqlStore.execResult.data[i]
@@ -30,6 +33,31 @@ const refreshChart = () => {
     }
   }
   chartOptions.value.series = Object.values(series)
+}
+const handleCompareModeChange = () => {
+  let compare = undefined;
+  let change = ''
+  switch (compareMode.value) {
+    case "none":
+      compare = undefined
+      change = ''
+      break;
+    case "percent":
+      compare = 'percent'
+      change = '({point.change}%)'
+      break;
+    case "value":
+      compare = 'value'
+      change = '({point.change}%)'
+      break;
+  }
+  chartOptions.value.tooltip.pointFormat = `<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ${change}<br/>`
+  chartOptions.value.plotOptions = {
+    series: {
+      compare: compare,
+      showInNavigator: true
+    }
+  }
 }
 
 onMounted(() => {
@@ -50,12 +78,24 @@ onBeforeUnmount(() => {
     </a-col>
     <a-col :span="24" class="mrg-top">
       <a-card>
-        <highcharts ref="chartRef" :constructor-type="'stockChart'" :options="chartOptions" />
+        <a-radio-group class="compare-mode" v-model:value="compareMode" button-style="solid" size="small" @change="handleCompareModeChange">
+          <a-button value="" disabled size="small">{{ $t('common.compare') }}</a-button>
+          <a-radio-button value="none">{{ $t('common.none') }}</a-radio-button>
+          <a-radio-button value="percent">{{ $t('common.percent') }}</a-radio-button>
+          <a-radio-button value="value">{{ $t('common.value') }}</a-radio-button>
+        </a-radio-group>
+        <highcharts class="data-charts" ref="chartRef" :constructor-type="'stockChart'" :options="chartOptions" />
       </a-card>
     </a-col>
   </a-row>
 </template>
 
 <style scoped>
-
+.compare-mode {
+  float: right;
+}
+.data-charts {
+  display: block;
+  width: 100%;
+}
 </style>

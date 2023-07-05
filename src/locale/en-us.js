@@ -144,6 +144,9 @@ const enUS = {
         later: "Later",
         ok: "OK",
         version: "Version",
+        compare: "Compare",
+        percent: "Percent",
+        value: "Value",
     },
     tdengine: {
         keywords: {
