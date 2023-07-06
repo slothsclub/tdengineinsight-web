@@ -1,42 +1,74 @@
 <script setup>
 import {ref} from "vue";
+import useQueryBuilder from "../../support/query-builder.js";
+import {PlusOutlined, DeleteOutlined} from "@ant-design/icons-vue";
+import {useColumnStore} from "../../store/column.js";
+import {useQueryBuilderStore} from "../../store/query-builder.js";
 
-const func = ref("avg")
-const column = ref("col1")
-const alias = ref("")
+const {
+  handleFunctionChanged,
+  addColumn,
+  removeColumn,
+} = useQueryBuilder()
+const columnStore = useColumnStore()
+const queryBuilderStore = useQueryBuilderStore()
+const {formatFunctionsForSelect, columns, columnsTotal } = queryBuilderStore
 </script>
 
 <template>
-<a-space>
-  <a-input-group compact>
-    <a-button disabled>{{ $t('common.function') }}</a-button>
-    <a-select v-model:value="func">
-      <a-select-option value="avg">AVG</a-select-option>
-      <a-select-option value="count">COUNT</a-select-option>
-    </a-select>
-  </a-input-group>
+  <a-row class="select-clause-container">
+    <a-col :span="24" v-for="(column, index) in columns.items" :key="column._key">
+      <a-space>
+        <a-input-group compact>
+          <a-button disabled>{{ $t('common.function') }}</a-button>
+          <a-select
+              ref="select"
+              v-model:value="column.func"
+              style="width: 120px"
+              :options="formatFunctionsForSelect"
+              :field-names="{ label: 'name', value: 'id', options: 'children' }"
+              @change="handleFunctionChanged"
+          ></a-select>
+        </a-input-group>
 
-  <a-input-group compact>
-    <a-button disabled>{{ $t('common.column') }}</a-button>
-    <a-select v-model:value="column">
-      <a-select-option value="col1">Col 1</a-select-option>
-      <a-select-option value="col2">Col 2</a-select-option>
-      <a-select-option value="col3">Col 3</a-select-option>
-    </a-select>
-  </a-input-group>
+        <a-input-group compact>
+          <a-button disabled>{{ $t('common.column') }}</a-button>
+          <a-select v-model:value="column.name">
+            <a-select-option :value="col.colName" v-for="col in columnStore.filteredColumns">{{ col.colName }}</a-select-option>
+          </a-select>
+        </a-input-group>
 
-  <a-input-group compact>
-    <a-button disabled>{{ $t('common.alias') }}</a-button>
-    <a-input v-model:value="alias" placeholder="" />
-  </a-input-group>
-</a-space>
+        <a-input-group compact>
+          <a-button disabled>{{ $t('common.alias') }}</a-button>
+          <a-input v-model:value="column.alias" :placeholder="column.name"/>
+        </a-input-group>
+
+        <a-button size="small" type="link" danger @click="removeColumn(index)" v-show="columnsTotal > 1">
+          <template #icon>
+            <DeleteOutlined/>
+          </template>
+        </a-button>
+      </a-space>
+    </a-col>
+    <a-col :span="24">
+      <a-button shape="round" size="small" @click="addColumn">
+        <template #icon>
+          <PlusOutlined/>
+        </template>
+      </a-button>
+    </a-col>
+  </a-row>
 </template>
 
 <style scoped>
 .ant-select {
-  min-width: 100px;
+  min-width: 200px;
 }
+
 .ant-input-group-compact {
   display: flex;
+}
+.select-clause-container {
+  width: 800px;
 }
 </style>

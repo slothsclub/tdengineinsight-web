@@ -6,7 +6,7 @@ export const useColumnStore = defineStore('column', () => {
     const columns = reactive({
         count: 0,
         items: [],
-        selected: []
+        selected: [] // [{dataIndex: null, title: null}]
     })
     const chartSeries = reactive({
         selected: [],
@@ -23,7 +23,7 @@ export const useColumnStore = defineStore('column', () => {
     const columnsClause = computed(() => {
         let col = []
         for (let i in columns.selected) {
-            col.push(columns.selected[i].title)
+            col.push(columns.selected[i].dataIndex)
         }
         return col.join(",")
     })

@@ -21,13 +21,17 @@ const sqlStore = useSqlStore()
 const {buildSimplePaginationSql} = useSql(false)
 
 const pagination = computed(() => {
-  return {
-    pageSize: Number(sqlStore.pagination.limit),
-    total: Number(sqlStore.execResult.total),
-    pageSizeOptions: sqlStore.pageSizeOptions.table,
-    showSizeChanger: false,
-    showQuickJumper: true,
-    current: sqlStore.pagination.current
+  if(sqlStore.mode === 'normal') {
+    return {
+      pageSize: Number(sqlStore.pagination.limit),
+      total: Number(sqlStore.execResult.total),
+      pageSizeOptions: sqlStore.pageSizeOptions.table,
+      showSizeChanger: false,
+      showQuickJumper: true,
+      current: sqlStore.pagination.current
+    }
+  } else {
+    return false
   }
 })
 

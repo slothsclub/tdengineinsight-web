@@ -30,5 +30,18 @@ export const sqlConfig = {
             field: "ts",
             direction: "ASC"
         }
+    },
+    windowClause: {
+        type: "interval",
+        interval: "3",
+        intervalUnit: "s",
+        intervalMode: "fill",
+        fillMode: "none",
+        fillValue: "",
+        slidingVal: "10",
+        slidingValUnit: "s",
+        stateColumn: null,
+        sessionTime: "10",
+        sessionTimeUnit: "s",
     }
 }

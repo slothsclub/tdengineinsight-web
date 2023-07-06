@@ -6,7 +6,10 @@ import i18n from "../locale/i18n.js";
 const sqlStore = useSqlStore()
 
 const tip = computed(() => {
-  return i18n.global.t('ui.label.queryResult', [sqlStore.pagination.offset, sqlStore.pagination.limit, sqlStore.execResult.total, sqlStore.execResult.elapsedTime])
+  if(sqlStore.mode === "normal") {
+    return i18n.global.t('ui.label.queryResult', [sqlStore.pagination.offset, sqlStore.pagination.limit, sqlStore.execResult.total, sqlStore.execResult.elapsedTime])
+  }
+  return i18n.global.t('ui.label.queryTook', [sqlStore.execResult.elapsedTime])
 })
 </script>
 

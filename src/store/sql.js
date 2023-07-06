@@ -3,6 +3,7 @@ import {computed, onMounted, reactive, ref, watch} from "vue";
 import {sqlConfig} from "../config/sql-config.js";
 
 export const useSqlStore = defineStore('sql', () => {
+    const mode = ref("normal")
     const state = reactive({
         executing: true
     })
@@ -29,6 +30,7 @@ export const useSqlStore = defineStore('sql', () => {
     })
 
     return {
+        mode,
         viewMode,
         state,
         sql,

@@ -213,6 +213,15 @@ const enUS = {
             totalReq: "Total Req",
             currentReq: "Current Req",
         },
+        functions: {
+            mathematical: "Mathematical Functions",
+            concatenation: "Concatenation Functions",
+            conversion: "Conversion Functions",
+            datetime: "Time and Date Functions",
+            aggregate: "Aggregate Functions",
+            selection: "Selection Functions",
+            timeseries: "Time-Series Extensions",
+        }
     },
     links: {
         tdengineCloud: {
@@ -250,6 +259,7 @@ const enUS = {
                 dnode: "DNode Endpoint"
             },
             queryResult: "Showing rows {0} - {1} ({2} total, Query took {3} ms.)",
+            queryTook: "Query took {0} ms.",
             connectedToServer: "Connected to server {0}",
             form: {
                 alterDatabase: "Alter Database",

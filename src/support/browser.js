@@ -10,6 +10,7 @@ import {useColumnStore} from "../store/column.js";
 import {useSqlStore} from "../store/sql.js";
 import useSql from "./sql.js";
 import useColumn from "./column.js";
+import useQueryBuilder from "./query-builder.js";
 
 export default function useBrowser() {
     const router = useRouter()
@@ -27,9 +28,12 @@ export default function useBrowser() {
         registerListener: registerSqlListener,
         setStateToChartView,
         setStateToTableView,
-        resetSqlState
+        resetSqlState,
+        setAdvancedMode,
+        setNormalMode
     } = useSql()
-    const {registerListener: registerColumnListener, resetColumnState} = useColumn()
+    const {registerListener: registerColumnListener, resetColumnState, queryColumns} = useColumn()
+    const {resetQueryBuilderState, registerListener: registerQueryBuilderListener} = useQueryBuilder()
 
     const viewport = ref("browse")
     const table = computed(() => {
@@ -68,11 +72,25 @@ export default function useBrowser() {
         registerDatabaseListener()
         registerTableListener()
         registerSqlListener()
+        registerQueryBuilderListener()
     }
 
     watch([table, db, columns], () => {
         if (!table.value || !db.value || !columns.value) return
-        buildSimplePaginationSql()
+        sqlStore.mode === "normal" && buildSimplePaginationSql()
+
+    })
+    watch(viewport, () => {
+        if (viewport.value === "search") {
+            setAdvancedMode()
+            resetQueryBuilderState()
+        } else if (viewport.value === "browse") {
+            resetColumnState()
+            resetSqlState()
+            setNormalMode()
+            queryColumns()
+            buildSimplePaginationSql()
+        }
     })
 
     onMounted(() => {
@@ -84,6 +102,7 @@ export default function useBrowser() {
         resetTableState()
         resetColumnState()
         resetSqlState()
+        resetQueryBuilderState()
     })
 
     return {

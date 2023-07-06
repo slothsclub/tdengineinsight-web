@@ -56,7 +56,7 @@ export default function useColumn() {
     const setSelectedChartSeries = () => {
         let col = []
         for (let i in columnStore.columns.selected) {
-            let n = columnStore.columns.selected[i].title
+            let n = columnStore.columns.selected[i].dataIndex
             if (n === 'ts') continue
             col.push(n)
         }
@@ -89,6 +89,9 @@ export default function useColumn() {
         columnSelectorVisible,
         toggleColumnSelectorVisible,
         registerListener,
-        resetColumnState
+        resetColumnState,
+        setDefaultSelectedColumns,
+        setSelectedColumns,
+        setSelectedChartSeries
     }
 }

@@ -20,8 +20,9 @@ export default function useSql() {
     const sqlStore = useSqlStore()
     const columnStore = useColumnStore()
 
-    const mode = ref("normal")
-
+    const db = computed(() => {
+        return databaseStore.currentDatabase.name
+    })
     const table = computed(() => {
         return tableStore.currentTableName
     })
@@ -85,15 +86,44 @@ export default function useSql() {
         })
     }
 
+    const execSqlManually = (sql) => {
+        return new Promise((resolve, reject) => {
+            sqlStore.state.executing = true
+            httpPost(apis.sql.exec, {rawSql: sql, countSql: null}).then(res => {
+                sqlStore.execResult.data = res.data?.value.data
+                sqlStore.execResult.total = res.data?.value.count
+                sqlStore.execResult.elapsedTime = res.data?.value.elapsedTime
+                resolve(res.data)
+            }, reject).finally(() => {
+                sqlStore.state.executing = false
+            })
+        })
+    }
+
     const setStateToTableView = () => {
+        if(sqlStore.mode === "advanced") {
+            execSql()
+            return
+        }
         sqlStore.pagination.limit = sqlConfig.tableDefaultConfig.pageSize
         sqlStore.execResult.total = 0
         sqlStore.orderBy.direction = sqlConfig.tableDefaultConfig.orderBy.direction
     }
     const setStateToChartView = () => {
+        if(sqlStore.mode === "advanced") {
+            execSql()
+            return
+        }
         sqlStore.pagination.limit = sqlConfig.chartDefaultConfig.pageSize
         sqlStore.execResult.total = 0
         sqlStore.orderBy.direction = sqlConfig.chartDefaultConfig.orderBy.direction
+    }
+
+    const setAdvancedMode = () => {
+        sqlStore.mode = "advanced"
+    }
+    const setNormalMode = () => {
+        sqlStore.mode = "normal"
     }
 
     const registerListener = () => {
@@ -102,10 +132,10 @@ export default function useSql() {
                 execSql()
             }
         }, {immediate: true})
-        watch([table, columns], () => {
+        watch([db, table, columns], () => {
             if (!ready.value) return
             sqlStore.pagination.current = 1
-            buildSimplePaginationSql()
+            sqlStore.mode === "normal" && buildSimplePaginationSql()
         })
     }
 
@@ -121,6 +151,9 @@ export default function useSql() {
         execSql,
         registerListener,
         setStateToTableView,
-        setStateToChartView
+        setStateToChartView,
+        execSqlManually,
+        setAdvancedMode,
+        setNormalMode,
     }
 }

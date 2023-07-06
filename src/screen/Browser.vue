@@ -10,6 +10,8 @@ import QuickTimeRangeClauseSelector from "../components/clause/QuickTimeRangeCla
 import ColumnSelector from "../components/ColumnSelector.vue";
 import DataChartView from "../components/DataChartView.vue";
 import useBrowser from "../support/browser.js";
+import useQueryBuilder from "../support/query-builder.js";
+import {useQueryBuilderStore} from "../store/query-builder.js";
 
 const {
   init,
@@ -21,6 +23,8 @@ const {
   handleViewModeChange,
   execSql
 } = useBrowser()
+const {execAdvancedSql} = useQueryBuilder()
+const queryBuilderStore = useQueryBuilderStore()
 init()
 </script>
 
@@ -95,13 +99,22 @@ init()
           <a-row :gutter="[0, 20]">
             <a-col :span="24">
               <QueryBuilder />
-              <a-button class="mrg-top" size="large" style="width: 200px">{{ $t('common.query') }}</a-button>
+              <a-button class="mrg-top outline-primary" size="large" style="width: 200px" @click="execAdvancedSql" :loading="sqlStore.state.executing">{{ $t('common.query') }}</a-button>
             </a-col>
-            <a-col :span="24">
+            <a-col :span="24" v-show="queryBuilderStore.queryCount > 0">
               <QueryResult />
             </a-col>
-            <a-col :span="24">
-              <DataTableView />
+            <a-col :span="24" class="txt-right" v-show="queryBuilderStore.queryCount > 0">
+              <a-space>
+                <a-radio-group v-model:value="sqlStore.viewMode" button-style="solid" @change="handleViewModeChange">
+                  <a-radio-button value="table">{{ $t('common.table') }}</a-radio-button>
+                  <a-radio-button value="chart">{{ $t('common.chart') }}</a-radio-button>
+                </a-radio-group>
+              </a-space>
+            </a-col>
+            <a-col :span="24" v-show="queryBuilderStore.queryCount > 0">
+              <DataTableView v-if="sqlStore.viewMode === 'table'"></DataTableView>
+              <DataChartView v-if="sqlStore.viewMode === 'chart'"></DataChartView>
             </a-col>
           </a-row>
         </a-tab-pane>

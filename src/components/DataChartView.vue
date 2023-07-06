@@ -23,6 +23,7 @@ const refreshChart = () => {
   let series = {}
   for(let i in sqlStore.execResult.data) {
     let d = sqlStore.execResult.data[i]
+    if(!d) continue
     for(let i in columnStore.chartSeries.selected) {
       let field = columnStore.chartSeries.selected[i]
       if(!series[field]) {
