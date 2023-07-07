@@ -29,7 +29,7 @@ export default function useQueryBuilder() {
     })
 
     const addColumn = () => {
-        queryBuilderStore.columns.items.push({func: "AVG", name: null, alias: null, _key: Date.now()})
+        queryBuilderStore.columns.items.push({func: "AVG", name: null, alias: null, _key: Date.now(), disabled: false})
     }
     const removeColumn = (index) => {
         queryBuilderStore.columns.items.splice(index, 1)
@@ -40,11 +40,12 @@ export default function useQueryBuilder() {
     }
 
     const buildSelectColumnsClause = () => {
+        const columns = replaceTsColumnToPseudoColumns()
         let select = []
-        for (let i in queryBuilderStore.columns.items) {
-            let col = queryBuilderStore.columns.items[i]
+        for (let i in columns) {
+            let col = columns[i]
             if (!col.name || col.disabled) continue
-            if (col.func === "none") {
+            if (col.func === "none" || col.func === null) {
                 select.push(col.name)
             } else {
                 select.push(col.alias ? `${col.func}(${col.name}) AS ${col.alias}` : `${col.func}(${col.name}) AS ${col.name}`)
@@ -56,10 +57,10 @@ export default function useQueryBuilder() {
         let start = queryBuilderStore.timestamp ? queryBuilderStore.timestamp[0] : queryBuilderStore.defaultTimestampRange.start
         let end = queryBuilderStore.timestamp ? queryBuilderStore.timestamp[1] : queryBuilderStore.defaultTimestampRange.end
 
-        return `ts > '${start.format("YYYY-MM-DD HH:mm:ss")}' AND ts < '${end.format("YYYY-MM-DD HH:mm:ss")}'`
+        return `ts BETWEEN '${start.format("YYYY-MM-DD HH:mm:ss")}' AND '${end.format("YYYY-MM-DD HH:mm:ss")}'`
     }
     const buildOrderClause = () => {
-        return `ORDER BY ${queryBuilderStore.orderBy.column} ${queryBuilderStore.orderBy.direction}`
+        return queryBuilderStore.orderBy.column === "none" ? "" : `ORDER BY ${queryBuilderStore.orderBy.column} ${queryBuilderStore.orderBy.direction}`
     }
     const buildLimitClause = () => {
         return `LIMIT ${queryBuilderStore.limit}`
@@ -114,9 +115,10 @@ export default function useQueryBuilder() {
     }
 
     const setColumnOptionForTable = () => {
+        const columns = replaceTsColumnToPseudoColumns()
         let options = []
-        for (let i in queryBuilderStore.columns.items) {
-            let col = queryBuilderStore.columns.items[i]
+        for (let i in columns) {
+            let col = columns[i]
             if (!col.name || col.disabled) continue
             options.push({
                 title: col.alias ? `${col.alias} (${col.name})` : `${col.name}`,
@@ -132,6 +134,25 @@ export default function useQueryBuilder() {
             let c = queryBuilderStore.columns.items[i]
             queryBuilderStore.columns.items[i].disabled = queryBuilderStore.windowClause.type === "none" ? false : !sqlConfig.availableFunctionsInWindowClause.includes(c.func.toUpperCase())
         }
+    }
+
+    const switchOrderBy = () => {
+        if(queryBuilderStore.orderBy.column === "none") return
+        queryBuilderStore.orderBy.column = queryBuilderStore.windowClause.type === "none" ? "ts" : "_wstart"
+    }
+
+    const replaceTsColumnToPseudoColumns = () => {
+        let result = []
+        for (let i in queryBuilderStore.columns.items) {
+            let col = queryBuilderStore.columns.items[i]
+            if (queryBuilderStore.windowClause.type !== "none" && col.name === "ts") {
+                result.push({func: null, name: '_wstart', alias: null, _key: 0, disabled: false})
+                result.push({func: null, name: '_wend', alias: null, _key: 0, disabled: false})
+            } else {
+                result.push({...col})
+            }
+        }
+        return result
     }
 
     const resetQueryBuilderState = () => {
@@ -159,6 +180,7 @@ export default function useQueryBuilder() {
         })
         watch([windowClauseMode, selectColumns], (n) => {
             disableColumnWithInvalidFunction()
+            switchOrderBy()
         }, {deep: true})
     }
 

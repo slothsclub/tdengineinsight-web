@@ -22,6 +22,7 @@ export default function useBrowser() {
     const tableStore = useTableStore()
     const columnStore = useColumnStore()
     const sqlStore = useSqlStore()
+    const {setTsColumnName} = useColumn()
     const {
         buildSimplePaginationSql,
         execSql,
@@ -84,11 +85,13 @@ export default function useBrowser() {
         if (viewport.value === "search") {
             setAdvancedMode()
             resetQueryBuilderState()
+            setTsColumnName("_wstart")
         } else if (viewport.value === "browse") {
             resetColumnState()
             resetSqlState()
             setNormalMode()
             queryColumns()
+            setTsColumnName("ts")
             buildSimplePaginationSql()
         }
     })

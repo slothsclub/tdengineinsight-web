@@ -29,7 +29,7 @@ const refreshChart = () => {
       if(!series[field]) {
         series[field] = {name: field, data: []}
       }
-      series[field].data.push([d['ts'], d[field]])
+      series[field].data.push([d[columnStore.tsColumnName], d[field]])
     }
   }
   chartOptions.value.series = Object.values(series)

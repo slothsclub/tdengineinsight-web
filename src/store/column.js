@@ -12,6 +12,7 @@ export const useColumnStore = defineStore('column', () => {
         selected: [],
         columns: []
     })
+    const tsColumnName = ref('ts')
 
     const filteredColumns = computed(() => {
         if (!keyword.value) return columns.items
@@ -43,6 +44,7 @@ export const useColumnStore = defineStore('column', () => {
         antTableColumns,
         columnsClause,
         selectedColumnsCount,
-        chartSeries
+        chartSeries,
+        tsColumnName
     }
 })

@@ -33,9 +33,13 @@ const handleRangePickerChanged = () => {
     <a-descriptions-item :label="$t('common.orderBy')">
       <a-space>
         <a-select v-model:value="orderBy.column">
+          <a-select-option value="none">None</a-select-option>
           <a-select-option value="ts">ts</a-select-option>
+          <a-select-option value="_wstart">_WSTART</a-select-option>
+          <a-select-option value="_wend">_WEND</a-select-option>
         </a-select>
         <a-select v-model:value="orderBy.direction">
+          <a-select-option value="none">None</a-select-option>
           <a-select-option value="asc">ASC</a-select-option>
           <a-select-option value="desc">DESC</a-select-option>
         </a-select>

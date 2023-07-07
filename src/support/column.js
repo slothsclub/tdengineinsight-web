@@ -57,7 +57,7 @@ export default function useColumn() {
         let col = []
         for (let i in columnStore.columns.selected) {
             let n = columnStore.columns.selected[i].dataIndex
-            if (n === 'ts') continue
+            if (n === 'ts' || n.startsWith("_")) continue
             col.push(n)
         }
         columnStore.chartSeries.columns = col
@@ -79,6 +79,10 @@ export default function useColumn() {
         columnStore.chartSeries.selected = []
     }
 
+    const setTsColumnName = (name) => {
+        columnStore.tsColumnName = name
+    }
+
     //todo Looking for a better way to register watchers
     const registerListener = () => {
         watch([db, table, instanceReady], queryColumns, {immediate: false})
@@ -92,6 +96,7 @@ export default function useColumn() {
         resetColumnState,
         setDefaultSelectedColumns,
         setSelectedColumns,
-        setSelectedChartSeries
+        setSelectedChartSeries,
+        setTsColumnName
     }
 }
