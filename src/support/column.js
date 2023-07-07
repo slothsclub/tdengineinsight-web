@@ -43,13 +43,15 @@ export default function useColumn() {
         let selected = []
         for (let i in columnStore.columns.items) {
             if (!columnStore.columns.items[i].checked) continue
-            selected.push({
-                title: columnStore.columns.items[i].colName,
-                dataIndex: columnStore.columns.items[i].colName,
-            })
+            let name = columnStore.columns.items[i].colName
+            let col = {
+                title: name,
+                dataIndex: name,
+            }
+            if(["ts", "_wstart", "_wend"].includes(name)) col['width'] = 200
+            selected.push(col)
         }
         columnStore.columns.selected = selected
-
         setSelectedChartSeries()
     }
 

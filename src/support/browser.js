@@ -30,6 +30,7 @@ export default function useBrowser() {
         setStateToChartView,
         setStateToTableView,
         resetSqlState,
+        cleanSqlResult,
         setAdvancedMode,
         setNormalMode
     } = useSql()
@@ -88,6 +89,7 @@ export default function useBrowser() {
             setTsColumnName("_wstart")
         } else if (viewport.value === "browse") {
             resetColumnState()
+            cleanSqlResult()
             resetSqlState()
             setNormalMode()
             queryColumns()

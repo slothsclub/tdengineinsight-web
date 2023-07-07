@@ -5,13 +5,8 @@ import {useColumnStore} from "../store/column.js";
 import {computed, nextTick, onMounted, onUpdated, reactive, ref, watch} from "vue";
 import useSql from "../support/sql.js";
 import {useAppStore} from "../store/app.js";
+import dayjs from "dayjs";
 
-const props = defineProps({
-  parentClass: {
-    type: String,
-    default() {return "query-result-tabs"}
-  }
-})
 const tableRef = ref()
 
 const {queryColumns} = useColumn()
@@ -43,14 +38,21 @@ const onChange = (pagination, filters, sorter) => {
 </script>
 
 <template>
-  <a-table ref="tableRef" size="small" bordered id="data-table"
+  <a-table ref="tableRef" size="small" bordered id="data-table" v-if="columnStore.antTableColumns"
            table-layout="fixed"
            :columns="columnStore.antTableColumns"
            :loading="sqlStore.state.executing"
-           :scroll="{x: '50%'}"
+           :scroll="{x: '50%', y: '100%'}"
            :data-source="sqlStore.execResult.data"
            @change="onChange"
-           :pagination="pagination" />
+           :pagination="pagination" >
+
+    <template #bodyCell="{ text, record, index, column }">
+      <template v-if="column?.dataIndex === 'ts' || column?.dataIndex === '_wstart' || column?.dataIndex === '_wend'">
+        {{ dayjs(text).format(appStore.datetimeFormat) }}
+      </template>
+    </template>
+  </a-table>
 </template>
 
 <style scoped>

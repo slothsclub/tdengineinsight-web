@@ -147,6 +147,7 @@ export default function useSql() {
         setRawSql,
         setCountSql,
         resetSqlState,
+        cleanSqlResult,
         buildSimplePaginationSql,
         execSql,
         registerListener,

@@ -36,6 +36,8 @@ export default function useQueryBuilder() {
         let col = {...sqlConfig.selectClause}
         col.func = sqlConfig.selectClauseDefaultFunction
         col.alias = null
+        col.name = null
+        col._key = Date.now()
         queryBuilderStore.columns.items.push(col)
     }
     const removeColumn = (index) => {
@@ -135,10 +137,12 @@ export default function useQueryBuilder() {
         for (let i in columns) {
             let col = columns[i]
             if (!col.name || col.disabled) continue
-            options.push({
+            let opt = {
                 title: col.alias ? `${col.alias} (${col.name})` : `${col.name}`,
                 dataIndex: col.alias || col.name
-            })
+            }
+            if(["ts", "_wstart", "_wend"].includes(col.name)) opt['width'] = 200
+            options.push(opt)
         }
         columnStore.columns.selected = options
         setSelectedChartSeries()
