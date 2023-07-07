@@ -5,6 +5,7 @@ import WindowClauseBuilder from "./clause/WindowClauseBuilder.vue";
 import dayjs from "dayjs";
 import {useQueryBuilderStore} from "../store/query-builder.js";
 import {storeToRefs} from "pinia";
+import TagClauseBuilder from "./clause/TagClauseBuilder.vue";
 
 const queryBuilderStore = useQueryBuilderStore()
 const {
@@ -38,8 +39,7 @@ const handleRangePickerChanged = () => {
           <a-select-option value="_wstart">_WSTART</a-select-option>
           <a-select-option value="_wend">_WEND</a-select-option>
         </a-select>
-        <a-select v-model:value="orderBy.direction">
-          <a-select-option value="none">None</a-select-option>
+        <a-select v-model:value="orderBy.direction" v-show="orderBy.column !== 'none'">
           <a-select-option value="asc">ASC</a-select-option>
           <a-select-option value="desc">DESC</a-select-option>
         </a-select>
@@ -53,6 +53,10 @@ const handleRangePickerChanged = () => {
 
     <a-descriptions-item :label="$t('common.timeWindow')" :span="3">
       <WindowClauseBuilder/>
+    </a-descriptions-item>
+
+    <a-descriptions-item :label="$t('common.tag')" :span="3" v-if="queryBuilderStore.tagClauseAvailable">
+      <TagClauseBuilder />
     </a-descriptions-item>
   </a-descriptions>
 </template>

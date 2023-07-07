@@ -21,6 +21,7 @@ export const apis = {
         stables: "/tdengine/meta/query/stables",
         tables: "/tdengine/meta/query/tables",
         tags: "/tdengine/meta/query/tags",
+        tagValues: "/tdengine/meta/query/tag_values",
         columns: "/tdengine/meta/query/columns",
         users: "/tdengine/meta/basic/users",
         configs: "/tdengine/meta/basic/configs",

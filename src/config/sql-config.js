@@ -50,5 +50,9 @@ export const sqlConfig = {
         func: "FIRST", name: 'ts', alias: 'ts', _key: 0, disabled: false, fillValue: null
     },
     selectClauseDefaultFunction: "AVG",
-    availableFunctionsInWindowClause: [].concat(tdengineFunctions.aggregate, tdengineFunctions.selection, ["IRATE"])
+    availableFunctionsInWindowClause: [].concat(tdengineFunctions.aggregate, tdengineFunctions.selection, ["IRATE"]),
+    tagClause: {
+        name: null, operator: "=", value: null
+    },
+    windowedQueryDefaultOrderColumn: "_wstart",
 }

@@ -28,6 +28,17 @@ export default function useTag() {
         })
     }
 
+    const queryTagValues = () => {
+        if(mode.value === "normalTable") return
+        httpGet(apis.meta.tagValues, {
+            dbName: databaseStore.currentDatabase.name,
+            tableName: currentTableName.value,
+            tableType: mode.value
+        }).then(res => {
+            tagStore.allTags.values = res.data
+        })
+    }
+
     const registerListener = () => {
         watch([instanceReady, currentTableName], () => {
             if (!instanceReady.value || !currentTableName.value) return
@@ -37,6 +48,7 @@ export default function useTag() {
 
     return {
         queryTags,
+        queryTagValues,
         registerListener,
     }
 }

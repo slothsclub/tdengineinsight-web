@@ -7,11 +7,13 @@ import {sqlConfig} from "../config/sql-config.js";
 import i18n from "../locale/i18n.js";
 import {typeDefine} from "../config/type.js";
 import dayjs from "dayjs";
+import {useTagStore} from "./tag.js";
 
 
 export const useQueryBuilderStore = defineStore('query-builder', () => {
     const databaseStore = useDatabaseStore()
     const tableStore = useTableStore()
+    const tagStore = useTagStore()
 
     const sql = ref()
     const queryCount = ref(0)
@@ -27,12 +29,15 @@ export const useQueryBuilderStore = defineStore('query-builder', () => {
         end: dayjs()
     })
     const orderBy = reactive({
-        column: "ts",
+        column: "_wstart",
         direction: "ASC"
     })
     const limitOptions = ref([100, 500, 1000, 3000, 5000])
     const limit = ref(500)
     const windowClause = reactive({...sqlConfig.windowClause})
+    const whereTagClause = reactive({
+        tags: [{...sqlConfig.tagClause}]
+    })
 
     const formatFunctionsForSelect = computed(() => {
         let options = []
@@ -73,6 +78,7 @@ export const useQueryBuilderStore = defineStore('query-builder', () => {
         limitOptions,
         limit,
         windowClause,
+        whereTagClause,
         formatFunctionsForSelect,
         columnsTotal,
         tagClauseAvailable,

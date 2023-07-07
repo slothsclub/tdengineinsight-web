@@ -7,14 +7,22 @@ import {useColumnStore} from "../store/column.js";
 import useColumn from "./column.js";
 import {sqlConfig} from "../config/sql-config.js";
 import _ from "lodash"
+import {useTagStore} from "../store/tag.js";
+import {useAppStore} from "../store/app.js";
+import useTag from "./tag.js";
+import {storeToRefs} from "pinia";
 
 export default function useQueryBuilder() {
+    const appStore = useAppStore()
+    const {instanceReady} = storeToRefs(appStore)
     const queryBuilderStore = useQueryBuilderStore()
     const databaseStore = useDatabaseStore()
     const tableStore = useTableStore()
     const columnStore = useColumnStore()
     const {execSqlManually, setAdvancedMode, setRawSql, execSql, setCountSql} = useSql()
     const {setSelectedChartSeries} = useColumn()
+    const {queryTags, queryTagValues} = useTag()
+    const tagStore = useTagStore()
 
     const database = computed(() => {
         return databaseStore.currentDatabase.name
@@ -31,6 +39,9 @@ export default function useQueryBuilder() {
     const fillMode = computed(() => {
         return queryBuilderStore.windowClause.fillMode
     })
+    const tags = computed(() => {
+        return tagStore.allTags.items
+    })
 
     const addColumn = () => {
         let col = {...sqlConfig.selectClause}
@@ -42,6 +53,13 @@ export default function useQueryBuilder() {
     }
     const removeColumn = (index) => {
         queryBuilderStore.columns.items.splice(index, 1)
+    }
+
+    const addTagClause = () => {
+        queryBuilderStore.whereTagClause.tags.push({...sqlConfig.tagClause})
+    }
+    const removeTagClause = (index) => {
+        queryBuilderStore.whereTagClause.tags.splice(index, 1)
     }
 
     const handleFunctionChanged = () => {
@@ -62,12 +80,39 @@ export default function useQueryBuilder() {
         }
         return select.join(",")
     }
-    const buildWhereClause = () => {
+    const buildWhereTimeRangeClause = () => {
         let start = queryBuilderStore.timestamp ? queryBuilderStore.timestamp[0] : queryBuilderStore.defaultTimestampRange.start
         let end = queryBuilderStore.timestamp ? queryBuilderStore.timestamp[1] : queryBuilderStore.defaultTimestampRange.end
 
         return `ts BETWEEN '${start.format("YYYY-MM-DD HH:mm:ss")}' AND '${end.format("YYYY-MM-DD HH:mm:ss")}'`
     }
+    const buildWhereTagClause = () => {
+        let t = []
+        for (let i in queryBuilderStore.whereTagClause.tags) {
+            let tag = queryBuilderStore.whereTagClause.tags[i]
+            if (!tag.name || !tag.value) continue
+
+            switch (tag.operator) {
+                case "=":
+                    t.push(`${tag.name}='${tag.value}'`)
+                    break;
+                case "like":
+                    t.push(`${tag.name} LIKE '${tag.value}%'`)
+                    break;
+            }
+        }
+        return t.length > 0 ? t.join(" AND ") : null
+    }
+    const buildWhereClause = () => {
+        const where = []
+        where.push(buildWhereTimeRangeClause())
+
+        const _tag = buildWhereTagClause()
+        _tag && where.push(buildWhereTagClause())
+
+        return where.join(" AND ")
+    }
+
     const buildOrderClause = () => {
         return queryBuilderStore.orderBy.column === "none" ? "" : `ORDER BY ${queryBuilderStore.orderBy.column} ${queryBuilderStore.orderBy.direction}`
     }
@@ -141,7 +186,7 @@ export default function useQueryBuilder() {
                 title: col.alias ? `${col.alias} (${col.name})` : `${col.name}`,
                 dataIndex: col.alias || col.name
             }
-            if(["ts", "_wstart", "_wend"].includes(col.name)) opt['width'] = 200
+            if (["ts", "_wstart", "_wend"].includes(col.name)) opt['width'] = 200
             options.push(opt)
         }
         columnStore.columns.selected = options
@@ -197,7 +242,7 @@ export default function useQueryBuilder() {
         queryBuilderStore.queryCount = 0
         queryBuilderStore.sql = null
         queryBuilderStore.columns.items = [{...sqlConfig.selectClause}]
-        queryBuilderStore.orderBy.column = "ts"
+        queryBuilderStore.orderBy.column = sqlConfig.windowedQueryDefaultOrderColumn
         queryBuilderStore.orderBy.direction = "ASC"
     }
 
@@ -227,6 +272,11 @@ export default function useQueryBuilder() {
         watch(fillMode, () => {
             setFilledValueColumns()
         })
+        watch([table, instanceReady], () => {
+            if (!table.value || !instanceReady.value || !database.value) return
+            queryTags()
+            queryTagValues()
+        })
     }
 
     onMounted(() => {
@@ -239,5 +289,7 @@ export default function useQueryBuilder() {
         removeColumn,
         execAdvancedSql,
         resetQueryBuilderState,
+        addTagClause,
+        removeTagClause
     }
 }
