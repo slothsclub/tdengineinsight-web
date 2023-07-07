@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {computed, onMounted, reactive, ref, watch} from "vue";
 import {sqlConfig} from "../config/sql-config.js";
+import dayjs from "dayjs";
 
 export const useSqlStore = defineStore('sql', () => {
     const mode = ref("normal")
@@ -20,7 +21,9 @@ export const useSqlStore = defineStore('sql', () => {
     const pagination = reactive({...sqlConfig.pagination})
     const orderBy = reactive({...sqlConfig.orderBy})
     const where = reactive({
-        tsOffset: {...sqlConfig.tsOffset}
+        mode: "latest",
+        tsOffset: {...sqlConfig.tsOffset},
+        timeRange: [dayjs().subtract(1, 'day'), dayjs()]
     })
 
     const execResult = reactive({

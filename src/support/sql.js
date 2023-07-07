@@ -59,16 +59,29 @@ export default function useSql() {
     }
 
     const buildSimplePaginationSql = () => {
-        let tsOffset = ""
-        if (sqlStore.where.tsOffset.n > 0) {
-            tsOffset = ` WHERE ts > now - ${sqlStore.where.tsOffset.n}${sqlStore.where.tsOffset.unit}`
-        }
+        let where = buildTimeRangeClause()
         let orderBy = ` ORDER BY ${sqlStore.orderBy.field} ${sqlStore.orderBy.direction}`
         let offset = (sqlStore.pagination.current - 1) * sqlStore.pagination.limit
-        let countSql = `SELECT COUNT(*) FROM ${databaseStore.currentDatabase.name}.${table.value} ${tsOffset}`
-        let rawSql = `SELECT ${columns.value} FROM ${databaseStore.currentDatabase.name}.${table.value} ${tsOffset} ${orderBy} LIMIT ${offset},${sqlStore.pagination.limit}`
+        let countSql = `SELECT COUNT(*) FROM ${databaseStore.currentDatabase.name}.${table.value} ${where}`
+        let rawSql = `SELECT ${columns.value} FROM ${databaseStore.currentDatabase.name}.${table.value} ${where} ${orderBy} LIMIT ${offset},${sqlStore.pagination.limit}`
         setRawSql(rawSql.replace(/\s\s+/g, " "))
         setCountSql(countSql)
+    }
+    const buildTimeRangeClause = () => {
+        let sql = ""
+        switch (sqlStore.where.mode) {
+            case "latest":
+                sql = ` WHERE ts > now - ${sqlStore.where.tsOffset.n}${sqlStore.where.tsOffset.unit}`
+                break;
+            case "custom":
+                if(sqlStore.where.timeRange?.length === 2)
+                    sql = ` WHERE ts BETWEEN '${sqlStore.where.timeRange[0].format('YYYY-MM-DD HH:mm:ss')}' AND '${sqlStore.where.timeRange[1].format('YYYY-MM-DD HH:mm:ss')}'`
+                break;
+            case "all":
+                sql = ""
+                break;
+        }
+        return sql
     }
 
     const execSql = () => {

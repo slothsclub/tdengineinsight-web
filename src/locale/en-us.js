@@ -150,6 +150,9 @@ const enUS = {
         scale: "Scale",
         nullable: "Nullable",
         filledValue: "Filled value | Filled values",
+        timeRange: "Time Range",
+        custom: "Custom",
+        all: "All",
     },
     tdengine: {
         keywords: {
