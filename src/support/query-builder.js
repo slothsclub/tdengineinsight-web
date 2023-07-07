@@ -157,7 +157,7 @@ export default function useQueryBuilder() {
 
     const switchOrderBy = () => {
         if (queryBuilderStore.orderBy.column === "none") return
-        queryBuilderStore.orderBy.column = queryBuilderStore.windowClause.type === "none" ? "ts" : "_wstart"
+        queryBuilderStore.orderBy.column = ["none", "state", "session"].includes(queryBuilderStore.windowClause.type) ? "ts" : "_wstart"
     }
 
     const replaceTsColumnToPseudoColumns = () => {
@@ -217,11 +217,11 @@ export default function useQueryBuilder() {
             resetQueryBuilderState()
         })
         watch(selectColumns, (n) => {
-            switchOrderBy()
             disableColumnWithInvalidFunction()
             setFilledValueColumns()
         }, {deep: true})
         watch(windowClauseMode, () => {
+            switchOrderBy()
             disableColumnWithInvalidFunction()
         })
         watch(fillMode, () => {

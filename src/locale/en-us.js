@@ -294,6 +294,7 @@ const enUS = {
             noTableFound: "No tables found in the current database",
             addColumnToChart: "Select columns and compare data in charts",
             invalidFunctionInWindowQueryMode: "Only selection functions and aggregation functions are valid when using window mode.",
+            stateWindowSupportColumnType: "Only support STATE_WINDOW on integer/bool/varchar column",
         },
         title: {
             databaseSummary: "Database summary",

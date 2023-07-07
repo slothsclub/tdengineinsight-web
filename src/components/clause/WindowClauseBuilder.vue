@@ -2,6 +2,7 @@
 import {ref} from "vue";
 import {useColumnStore} from "../../store/column.js";
 import {useQueryBuilderStore} from "../../store/query-builder.js";
+import {InfoCircleOutlined} from "@ant-design/icons-vue";
 
 const columnStore = useColumnStore()
 const queryBuilderStore = useQueryBuilderStore()
@@ -60,8 +61,14 @@ const {windowClause} = queryBuilderStore
       <a-input-group compact v-if="windowClause.type === 'state'">
         <a-button disabled>{{ $t('common.column') }}</a-button>
         <a-select v-model:value="windowClause.stateColumn">
-          <a-select-option :value="col.colName" v-for="col in columnStore.filteredColumns" :disabled="col.colName === 'ts'">{{ col.colName }}</a-select-option>
+          <a-select-option :value="col.colName" v-for="col in columnStore.filteredColumns" :disabled="col.colName === 'ts' || !['INTEGER','BOOL','VARCHAR'].includes(col.colType)">{{ col.colName }}</a-select-option>
         </a-select>
+      </a-input-group>
+      <a-input-group v-if="windowClause.type === 'state'">
+        <a-tooltip>
+          <template #title>{{ $t('ui.tips.stateWindowSupportColumnType') }}</template>
+          <InfoCircleOutlined />
+        </a-tooltip>
       </a-input-group>
 
       <a-input-group compact v-if="windowClause.type === 'session'">
