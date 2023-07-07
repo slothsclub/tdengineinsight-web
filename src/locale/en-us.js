@@ -163,6 +163,8 @@ const enUS = {
             LINEAR: "LINEAR",
             NEXT: "NEXT",
             SMA: "SMA",
+            VALUE_F: "VALUE_F",
+            NULL_F: "NULL_F",
         },
         label: {
             mnodes: "MNodes",
@@ -290,6 +292,7 @@ const enUS = {
             noDatabaseFound: "No database found, so nothing shows here, would you like to check another one?",
             noTableFound: "No tables found in the current database",
             addColumnToChart: "Select columns and compare data in charts",
+            invalidFunctionInWindowQueryMode: "Only selection functions and aggregation functions are valid when using window mode.",
         },
         title: {
             databaseSummary: "Database summary",

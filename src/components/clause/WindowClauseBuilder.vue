@@ -43,6 +43,8 @@ const {windowClause} = queryBuilderStore
       <a-select-option value="null">{{ $t('tdengine.keywords.NULL') }}</a-select-option>
       <a-select-option value="linear">{{ $t('tdengine.keywords.LINEAR') }}</a-select-option>
       <a-select-option value="next">{{ $t('tdengine.keywords.NEXT') }}</a-select-option>
+      <a-select-option value="null_f">{{ $t('tdengine.keywords.NULL_F') }}</a-select-option>
+      <a-select-option value="value_f">{{ $t('tdengine.keywords.VALUE_F') }}</a-select-option>
     </a-select>
     <a-input v-model:value="windowClause.fillValue" placeholder="" v-if="windowClause.fillMode === 'value'" />
 

@@ -21,6 +21,12 @@ export default function useQueryBuilder() {
     const table = computed(() => {
         return tableStore.currentTableName
     })
+    const windowClauseMode = computed(() => {
+        return queryBuilderStore.windowClause.type
+    })
+    const selectColumns = computed(() => {
+        return queryBuilderStore.columns.items
+    })
 
     const addColumn = () => {
         queryBuilderStore.columns.items.push({func: "AVG", name: null, alias: null, _key: Date.now()})
@@ -37,7 +43,7 @@ export default function useQueryBuilder() {
         let select = []
         for (let i in queryBuilderStore.columns.items) {
             let col = queryBuilderStore.columns.items[i]
-            if (!col.name) continue
+            if (!col.name || col.disabled) continue
             if (col.func === "none") {
                 select.push(col.name)
             } else {
@@ -111,7 +117,7 @@ export default function useQueryBuilder() {
         let options = []
         for (let i in queryBuilderStore.columns.items) {
             let col = queryBuilderStore.columns.items[i]
-            if (!col.name) continue
+            if (!col.name || col.disabled) continue
             options.push({
                 title: col.alias ? `${col.alias} (${col.name})` : `${col.name}`,
                 dataIndex: col.alias || col.name
@@ -121,10 +127,17 @@ export default function useQueryBuilder() {
         setSelectedChartSeries()
     }
 
+    const disableColumnWithInvalidFunction = () => {
+        for (let i in queryBuilderStore.columns.items) {
+            let c = queryBuilderStore.columns.items[i]
+            queryBuilderStore.columns.items[i].disabled = queryBuilderStore.windowClause.type === "none" ? false : !sqlConfig.availableFunctionsInWindowClause.includes(c.func.toUpperCase())
+        }
+    }
+
     const resetQueryBuilderState = () => {
         queryBuilderStore.queryCount = 0
         queryBuilderStore.sql = null
-        queryBuilderStore.columns.items = [{func: "first", name: 'ts', alias: 'ts', _key: 0}]
+        queryBuilderStore.columns.items = [{...sqlConfig.selectClause}]
         queryBuilderStore.orderBy.column = "ts"
         queryBuilderStore.orderBy.direction = "ASC"
     }
@@ -138,13 +151,15 @@ export default function useQueryBuilder() {
         setCountSql(null)
         queryBuilderStore.queryCount = queryBuilderStore.queryCount + 1
         //execSql()
-        console.log(sql)
     }
 
     const registerListener = () => {
         watch([database, table], () => {
             resetQueryBuilderState()
         })
+        watch([windowClauseMode, selectColumns], (n) => {
+            disableColumnWithInvalidFunction()
+        }, {deep: true})
     }
 
     onMounted(() => {

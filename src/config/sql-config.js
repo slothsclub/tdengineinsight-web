@@ -1,3 +1,5 @@
+import tdengineFunctions from "./tdengine-functions.js";
+
 export const sqlConfig = {
     pagination: {
         offset: 0,
@@ -43,5 +45,9 @@ export const sqlConfig = {
         stateColumn: null,
         sessionTime: "10",
         sessionTimeUnit: "s",
-    }
+    },
+    selectClause: {
+        func: "first", name: 'ts', alias: 'ts', _key: 0, disabled: false
+    },
+    availableFunctionsInWindowClause: [].concat(tdengineFunctions.aggregate, tdengineFunctions.selection, ["IRATE"])
 }

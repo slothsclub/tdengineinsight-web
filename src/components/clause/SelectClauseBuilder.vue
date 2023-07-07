@@ -1,7 +1,7 @@
 <script setup>
 import {ref} from "vue";
 import useQueryBuilder from "../../support/query-builder.js";
-import {PlusOutlined, DeleteOutlined} from "@ant-design/icons-vue";
+import {PlusOutlined, DeleteOutlined, InfoCircleOutlined} from "@ant-design/icons-vue";
 import {useColumnStore} from "../../store/column.js";
 import {useQueryBuilderStore} from "../../store/query-builder.js";
 
@@ -17,7 +17,7 @@ const {formatFunctionsForSelect, columns, columnsTotal } = queryBuilderStore
 
 <template>
   <a-row class="select-clause-container">
-    <a-col :span="24" v-for="(column, index) in columns.items" :key="column._key">
+    <a-col class="query-builder-column-item" :span="24" v-for="(column, index) in columns.items" :key="column._key" :class="{disabled: column.disabled}">
       <a-space>
         <a-input-group compact>
           <a-button disabled>{{ $t('common.function') }}</a-button>
@@ -43,11 +43,16 @@ const {formatFunctionsForSelect, columns, columnsTotal } = queryBuilderStore
           <a-input v-model:value="column.alias" :placeholder="column.name"/>
         </a-input-group>
 
-        <a-button size="small" type="link" danger @click="removeColumn(index)" v-show="columnsTotal > 1">
+        <a-button size="small" type="link" danger @click="removeColumn(index)" v-show="queryBuilderStore.columnsTotal > 1">
           <template #icon>
             <DeleteOutlined/>
           </template>
         </a-button>
+
+        <a-tooltip>
+          <template #title>{{ $t('ui.tips.invalidFunctionInWindowQueryMode') }}</template>
+          <InfoCircleOutlined v-show="column.disabled" />
+        </a-tooltip>
       </a-space>
     </a-col>
     <a-col :span="24">

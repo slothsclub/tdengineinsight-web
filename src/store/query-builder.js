@@ -18,7 +18,7 @@ export const useQueryBuilderStore = defineStore('query-builder', () => {
     const functions = reactive({...tdengineFunctions})
     const columns = reactive({
         items: [
-            {func: "first", name: 'ts', alias: 'ts', _key: 0}
+            {...sqlConfig.selectClause}
         ]
     })
     const timestamp = ref()
