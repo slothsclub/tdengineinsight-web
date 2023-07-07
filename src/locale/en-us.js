@@ -149,6 +149,7 @@ const enUS = {
         value: "Value",
         scale: "Scale",
         nullable: "Nullable",
+        filledValue: "Filled value | Filled values",
     },
     tdengine: {
         keywords: {

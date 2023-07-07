@@ -58,6 +58,9 @@ export const useQueryBuilderStore = defineStore('query-builder', () => {
         return tableStore.mode === typeDefine.table.SUPER_TABLE
     })
 
+    const filledValuesVisible = computed(() => {
+        return windowClause.fillMode === "value" || windowClause.fillMode === "value_f"
+    })
 
     return {
         sql,
@@ -73,5 +76,6 @@ export const useQueryBuilderStore = defineStore('query-builder', () => {
         formatFunctionsForSelect,
         columnsTotal,
         tagClauseAvailable,
+        filledValuesVisible,
     }
 })

@@ -6,6 +6,7 @@ import useSql from "./sql.js";
 import {useColumnStore} from "../store/column.js";
 import useColumn from "./column.js";
 import {sqlConfig} from "../config/sql-config.js";
+import _ from "lodash"
 
 export default function useQueryBuilder() {
     const queryBuilderStore = useQueryBuilderStore()
@@ -27,9 +28,15 @@ export default function useQueryBuilder() {
     const selectColumns = computed(() => {
         return queryBuilderStore.columns.items
     })
+    const fillMode = computed(() => {
+        return queryBuilderStore.windowClause.fillMode
+    })
 
     const addColumn = () => {
-        queryBuilderStore.columns.items.push({func: "AVG", name: null, alias: null, _key: Date.now(), disabled: false})
+        let col = {...sqlConfig.selectClause}
+        col.func = sqlConfig.selectClauseDefaultFunction
+        col.alias = null
+        queryBuilderStore.columns.items.push(col)
     }
     const removeColumn = (index) => {
         queryBuilderStore.columns.items.splice(index, 1)
@@ -82,9 +89,8 @@ export default function useQueryBuilder() {
             case "fill":
                 let mode = queryBuilderStore.windowClause.fillMode.toUpperCase()
                 let fill = `FILL(${mode})`
-                if (mode === "VALUE") {
-                    if (!queryBuilderStore.windowClause.fillValue) return ""
-                    fill = `FILL(${mode}, ${queryBuilderStore.windowClause.fillValue})`
+                if (mode === "VALUE" || mode === "VALUE_F") {
+                    fill = `FILL(${mode}, ${buildFilledValues()})`
                 }
                 return `INTERVAL(${queryBuilderStore.windowClause.interval}${queryBuilderStore.windowClause.intervalUnit}) ${fill}`
             case "sliding":
@@ -93,6 +99,15 @@ export default function useQueryBuilder() {
                 return ""
         }
     }
+    const buildFilledValues = () => {
+        let n = []
+        for (let i in queryBuilderStore.windowClause.filledValueColumn) {
+            let col = queryBuilderStore.windowClause.filledValueColumn[i]
+            n.push(col.fillValue || 0)
+        }
+        return n.join(",")
+    }
+
     const buildStateWindowClause = () => {
         if (!queryBuilderStore.windowClause.stateColumn) return ""
         return `STATE_WINDOW(${queryBuilderStore.windowClause.stateColumn})`
@@ -137,7 +152,7 @@ export default function useQueryBuilder() {
     }
 
     const switchOrderBy = () => {
-        if(queryBuilderStore.orderBy.column === "none") return
+        if (queryBuilderStore.orderBy.column === "none") return
         queryBuilderStore.orderBy.column = queryBuilderStore.windowClause.type === "none" ? "ts" : "_wstart"
     }
 
@@ -153,6 +168,25 @@ export default function useQueryBuilder() {
             }
         }
         return result
+    }
+    const setFilledValueColumns = () => {
+        if (!["value_f", "value"].includes(queryBuilderStore.windowClause.fillMode)) {
+            queryBuilderStore.windowClause.filledValueColumn = []
+            return
+        }
+        let result = []
+        for (let i in queryBuilderStore.columns.items) {
+            let col = queryBuilderStore.columns.items[i]
+            if (!col.name) continue
+            if (col.name === "ts" || col.name.startsWith("_") || col.disabled) {
+                continue
+            }
+            let oldCol = _.find(queryBuilderStore.windowClause.filledValueColumn, {name: col.name})
+            let newCol = {...col}
+            if (oldCol) newCol.fillValue = oldCol.fillValue
+            result.push(newCol)
+        }
+        queryBuilderStore.windowClause.filledValueColumn = result
     }
 
     const resetQueryBuilderState = () => {
@@ -178,10 +212,17 @@ export default function useQueryBuilder() {
         watch([database, table], () => {
             resetQueryBuilderState()
         })
-        watch([windowClauseMode, selectColumns], (n) => {
-            disableColumnWithInvalidFunction()
+        watch(selectColumns, (n) => {
             switchOrderBy()
+            disableColumnWithInvalidFunction()
+            setFilledValueColumns()
         }, {deep: true})
+        watch(windowClauseMode, () => {
+            disableColumnWithInvalidFunction()
+        })
+        watch(fillMode, () => {
+            setFilledValueColumns()
+        })
     }
 
     onMounted(() => {

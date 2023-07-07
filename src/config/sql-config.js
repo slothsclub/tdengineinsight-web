@@ -39,7 +39,7 @@ export const sqlConfig = {
         intervalUnit: "s",
         intervalMode: "fill",
         fillMode: "none",
-        fillValue: "",
+        filledValueColumn: [],
         slidingVal: "10",
         slidingValUnit: "s",
         stateColumn: null,
@@ -47,7 +47,8 @@ export const sqlConfig = {
         sessionTimeUnit: "s",
     },
     selectClause: {
-        func: "first", name: 'ts', alias: 'ts', _key: 0, disabled: false
+        func: "FIRST", name: 'ts', alias: 'ts', _key: 0, disabled: false, fillValue: null
     },
+    selectClauseDefaultFunction: "AVG",
     availableFunctionsInWindowClause: [].concat(tdengineFunctions.aggregate, tdengineFunctions.selection, ["IRATE"])
 }
