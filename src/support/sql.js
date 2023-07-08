@@ -10,6 +10,7 @@ import {useColumnStore} from "../store/column.js";
 import emitter from "./emitter.js";
 import {sqlConfig} from "../config/sql-config.js";
 import {typeDefine} from "../config/type.js";
+import {useTagStore} from "../store/tag.js";
 
 export default function useSql() {
     const {httpPost} = useHttpClient()
@@ -19,6 +20,7 @@ export default function useSql() {
     const tableStore = useTableStore()
     const sqlStore = useSqlStore()
     const columnStore = useColumnStore()
+    const tagStore = useTagStore()
 
     const db = computed(() => {
         return databaseStore.currentDatabase.name
@@ -51,6 +53,8 @@ export default function useSql() {
         sqlStore.orderBy = {...sqlConfig.orderBy}
         sqlStore.where.tsOffset = {...sqlConfig.tsOffset}
         sqlStore.viewMode = "table"
+        sqlStore.where.tag.name = null
+        sqlStore.where.tag.values = []
     }
     const cleanSqlResult = () => {
         sqlStore.execResult.data = null
@@ -59,7 +63,7 @@ export default function useSql() {
     }
 
     const buildSimplePaginationSql = () => {
-        let where = buildTimeRangeClause()
+        let where = buildWhereClause()
         let orderBy = ` ORDER BY ${sqlStore.orderBy.field} ${sqlStore.orderBy.direction}`
         let offset = (sqlStore.pagination.current - 1) * sqlStore.pagination.limit
         let countSql = `SELECT COUNT(*) FROM ${databaseStore.currentDatabase.name}.${table.value} ${where}`
@@ -67,21 +71,38 @@ export default function useSql() {
         setRawSql(rawSql.replace(/\s\s+/g, " "))
         setCountSql(countSql)
     }
+    const buildWhereClause = () => {
+        let sql = []
+        let time = buildTimeRangeClause()
+        time && sql.push(time)
+        let tag = buildTagSelectClause()
+        tag && sql.push(tag)
+
+        return sql.length > 0 ? " WHERE " + sql.join(" AND ") : ""
+    }
     const buildTimeRangeClause = () => {
         let sql = ""
         switch (sqlStore.where.mode) {
             case "latest":
-                sql = ` WHERE ts > now - ${sqlStore.where.tsOffset.n}${sqlStore.where.tsOffset.unit}`
+                sql = ` ts > now - ${sqlStore.where.tsOffset.n}${sqlStore.where.tsOffset.unit}`
                 break;
             case "custom":
-                if(sqlStore.where.timeRange?.length === 2)
-                    sql = ` WHERE ts BETWEEN '${sqlStore.where.timeRange[0].format('YYYY-MM-DD HH:mm:ss')}' AND '${sqlStore.where.timeRange[1].format('YYYY-MM-DD HH:mm:ss')}'`
+                if (sqlStore.where.timeRange?.length === 2)
+                    sql = ` ts BETWEEN '${sqlStore.where.timeRange[0].format('YYYY-MM-DD HH:mm:ss')}' AND '${sqlStore.where.timeRange[1].format('YYYY-MM-DD HH:mm:ss')}'`
                 break;
             case "all":
                 sql = ""
                 break;
         }
         return sql
+    }
+    const buildTagSelectClause = () => {
+        if (tableStore.mode !== typeDefine.table.SUPER_TABLE) return ""
+        const tags = []
+        for (let i in sqlStore.where.tag.values) {
+            tags.push(`${sqlStore.where.tag.name}='${sqlStore.where.tag.values[i]}'`)
+        }
+        return tags.length > 0 ? `(${tags.join(" OR ")})` : ""
     }
 
     const execSql = () => {
@@ -114,7 +135,7 @@ export default function useSql() {
     }
 
     const setStateToTableView = () => {
-        if(sqlStore.mode === "advanced") {
+        if (sqlStore.mode === "advanced") {
             execSql()
             return
         }
@@ -123,7 +144,7 @@ export default function useSql() {
         sqlStore.orderBy.direction = sqlConfig.tableDefaultConfig.orderBy.direction
     }
     const setStateToChartView = () => {
-        if(sqlStore.mode === "advanced") {
+        if (sqlStore.mode === "advanced") {
             execSql()
             return
         }

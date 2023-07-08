@@ -23,7 +23,11 @@ export const useSqlStore = defineStore('sql', () => {
     const where = reactive({
         mode: "latest",
         tsOffset: {...sqlConfig.tsOffset},
-        timeRange: [dayjs().subtract(1, 'day'), dayjs()]
+        timeRange: [dayjs().subtract(1, 'day'), dayjs()],
+        tag: {
+            name: null,
+            values: []
+        }
     })
 
     const execResult = reactive({
