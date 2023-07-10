@@ -2,7 +2,7 @@ import _ from "lodash"
 
 export default function useSchemaDatabaseBuilder() {
 
-    const buildCreateSql = (props) => {
+    const buildCreateDatabaseSql = (props) => {
         const template = ["CREATE DATABASE"]
         const clauses = {
             "ifNotExists": ifNotExistsClause,
@@ -145,7 +145,7 @@ export default function useSchemaDatabaseBuilder() {
         return table.length > 0 ? table.join(" ") : null
     }
 
-    const buildAlterSql = (props) => {
+    const buildAlterDatabaseSql = (props) => {
         const template = ["ALTER DATABASE"]
         const clauses = {
             "name": nameClause,
@@ -166,13 +166,13 @@ export default function useSchemaDatabaseBuilder() {
         return template.join(" ")
     }
 
-    const buildDropSql = (name) => {
+    const buildDropDatabaseSql = (name) => {
         return `DROP DATABASE IF EXISTS ${name}`
     }
 
     return {
-        buildCreateSql,
-        buildAlterSql,
-        buildDropSql
+        buildCreateDatabaseSql,
+        buildAlterDatabaseSql,
+        buildDropDatabaseSql
     }
 }

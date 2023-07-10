@@ -4,32 +4,23 @@ import {reactive, ref} from "vue";
 import CreateSubtableForm from "../../components/form/CreateSubtableForm.vue";
 import {EditOutlined, TableOutlined, DeleteOutlined, InfoOutlined} from "@ant-design/icons-vue"
 import i18n from "../../locale/i18n.js";
+import {useTableStore} from "../../store/table.js";
 
 const emit = defineEmits(['update:stable'])
+const tableStore = useTableStore()
+
 const alterTableFormRef = ref()
 const createSubtableFormRef = ref()
 
-const data = [{
-  stable_name: "Stable 1",
-  db_name: "",
-  create_time: "",
-  columns: "",
-  tags: "",
-  last_update: "",
-  table_comment: "",
-  watermark: "",
-  max_delay: "",
-  rollup: ""
-}];
 const columns = [{
   title: i18n.global.t('tdengine.database.stableName'),
-  dataIndex: 'stable_name'
+  dataIndex: 'stableName'
 }, {
   title: i18n.global.t('common.database'),
-  dataIndex: 'db_name'
+  dataIndex: 'dbName'
 }, {
   title: i18n.global.t('common.created'),
-  dataIndex: 'create_time'
+  dataIndex: 'createTime'
 }, {
   title: i18n.global.tc('common.column', 2),
   dataIndex: 'columns'
@@ -38,16 +29,16 @@ const columns = [{
   dataIndex: 'tags'
 }, {
   title: i18n.global.t('common.lastUpdate'),
-  dataIndex: 'last_update'
+  dataIndex: 'lastUpdate'
 }, {
   title: i18n.global.t('common.comment'),
-  dataIndex: 'table_comment'
+  dataIndex: 'tableComment'
 }, {
   title: i18n.global.t('tdengine.database.watermark'),
   dataIndex: 'watermark'
 }, {
   title: i18n.global.t('common.maxDelay'),
-  dataIndex: 'max_delay'
+  dataIndex: 'maxDelay'
 }, {
   title: i18n.global.t('common.rollup'),
   dataIndex: 'rollup'
@@ -71,7 +62,7 @@ const tags = reactive([
 
 <template>
   <div>
-    <a-table class="schema-stable-list" :columns="columns" :data-source="data" :pagination="false" size="small">
+    <a-table class="schema-stable-list" :columns="columns" :data-source="tableStore.allTables.stable" :pagination="false" size="small" :loading="tableStore.loadingState.stable">
       <template #bodyCell="{ column, text }">
         <template v-if="column.key === 'action'">
           <a-space>

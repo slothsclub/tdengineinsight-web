@@ -1,8 +1,10 @@
 <script setup>
 import {computed, reactive, ref, toRaw} from "vue";
-import {SettingOutlined, TableOutlined, TagsOutlined} from "@ant-design/icons-vue";
+import {SettingOutlined, TableOutlined, TagsOutlined, DeleteOutlined} from "@ant-design/icons-vue";
 import {PlusOutlined} from "@ant-design/icons-vue"
 import DataType from "../DataType.vue";
+import {useSchemaStore} from "../../store/schema.js";
+import useSchema from "../../support/schema.js";
 
 const props = defineProps({
   mode: {
@@ -14,47 +16,16 @@ const props = defineProps({
 })
 const mode = computed(() => props.mode)
 const visible = ref(false);
+
+const schemaStore = useSchemaStore()
+const {createStable} = useSchema()
+
 const loading = ref(false);
 const retentionsEnabled = ref(true);
-const formState = reactive({
-  name: "",
-  ifNotExists: true,
-  comment: "",
-  watermarks: [
-    {
-      val: null,
-      period: "s"
-    },
-    {
-      val: null,
-      period: "s"
-    },
-    {
-      val: null,
-      period: "s"
-    }
-  ],
-  maxDelay: null,
-  maxDelayPeriod: "s",
-  rollup: "none",
-  sma: "none",
-  ttl: 0,
 
-  columns: [
-    {
-      name: null,
-      type: "FLOAT",
-      length: null
-    }
-  ],
-  tags: [
-    {
-      name: null,
-      type: "NCHAR",
-      length: 4
-    }
-  ]
-});
+const formState = computed(() => {
+  return schemaStore.stableStruct.create
+})
 const activeKey = ref("options")
 const title = computed(() => {
   return "Create " + mode.value
@@ -62,54 +33,45 @@ const title = computed(() => {
 const show = () => {
   visible.value = true
 };
-const handleOk = () => {
-  loading.value = true;
-  setTimeout(() => {
-    loading.value = false;
-    visible.value = false;
-  }, 2000);
-
-  console.log(JSON.stringify(formState))
-};
-const handleCancel = () => {
-  visible.value = false;
-};
-
-
-const onSubmit = () => {
-  console.log('submit!', toRaw(formState));
-};
+const hide = () => {
+  visible.value = false
+}
 
 const addColumn = () => {
-  formState.columns.push({
+  schemaStore.stableStruct.create.columns.push({
     name: null,
     type: "FLOAT",
-    length: null
+    length: null,
+    _key: Date.now()
   })
+}
+const removeColumn = (index) => {
+  schemaStore.stableStruct.create.columns.splice(index, 1)
 }
 const addTag = () => {
-  formState.tags.push({
+  schemaStore.stableStruct.create.tags.push({
     name: null,
     type: "NCHAR",
-    length: 4
+    length: 4,
+    _key: Date.now()
   })
 }
-
-const reset = () => {
-
+const removeTag = (index) => {
+  schemaStore.stableStruct.create.tags.splice(index, 1)
 }
+
 defineExpose({
   show,
-  reset
+  hide
 })
 </script>
 
 <template>
-  <a-modal v-model:visible="visible" :title="title" @ok="handleOk" :width="800"
+  <a-modal v-model:visible="visible" :title="title" @ok="createStable" :width="900"
            :bodyStyle="{height: '650px', 'overflow-y': 'auto'}">
     <template #footer>
-      <a-button key="back" @click="handleCancel">{{ $t('ui.btn.cancel') }}</a-button>
-      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">{{ $t('ui.btn.createStable') }}</a-button>
+      <a-button key="back" @click="hide">{{ $t('ui.btn.cancel') }}</a-button>
+      <a-button key="submit" type="primary" :loading="schemaStore.state.table.creating" @click="createStable">{{ $t('ui.btn.createStable') }}</a-button>
     </template>
 
     <a-form :model="formState" :label-col="{ span: 6 }" :wrapper-col="{span: 18}" labelAlign="left">
@@ -163,7 +125,7 @@ defineExpose({
           <a-form-item :label="$t('common.rollup')" v-if="retentionsEnabled">
             <a-input-group compact>
               <a-select v-model:value="formState.rollup">
-                <a-select-option value="none">{{ $t('common.none') }}</a-select-option>
+                <a-select-option value="">{{ $t('common.none') }}</a-select-option>
                 <a-select-option value="avg">AVG</a-select-option>
                 <a-select-option value="sum">SUM</a-select-option>
                 <a-select-option value="min">MIN</a-select-option>
@@ -174,10 +136,10 @@ defineExpose({
             </a-input-group>
           </a-form-item>
 
-          <a-form-item :label="$t('tdengine.keywords.SMA')">
+          <a-form-item :label="$t('tdengine.keywords.SMA')" v-if="false">
             <a-input-group compact>
               <a-select v-model:value="formState.sma">
-                <a-select-option value="none">{{ $t('common.none') }}</a-select-option>
+                <a-select-option value="">{{ $t('common.none') }}</a-select-option>
                 <a-select-option value="col1">Column 1</a-select-option>
                 <a-select-option value="col2">Column 2</a-select-option>
               </a-select>
@@ -200,7 +162,7 @@ defineExpose({
             </span>
           </template>
 
-          <a-row v-for="col in formState.columns" :gutter="[20, 0]" class="mrg-btm">
+          <a-row v-for="(col, index) in formState.columns" :gutter="[20, 0]" class="mrg-btm" :key="col._key">
             <a-col :span="12">
               <a-input-group compact>
                 <a-button disabled>{{ $t('common.name') }}: </a-button>
@@ -208,10 +170,17 @@ defineExpose({
               </a-input-group>
             </a-col>
             <a-col :span="12">
-              <a-input-group compact>
-                <a-button disabled>{{ $t('common.type') }}: </a-button>
-                <DataType v-model:type="col.type" v-model:length="col.length"></DataType>
-              </a-input-group>
+              <a-space>
+                <a-input-group compact>
+                  <a-button disabled>{{ $t('common.type') }}: </a-button>
+                  <DataType v-model:type="col.type" v-model:length="col.length"></DataType>
+                </a-input-group>
+                <a-button @click="removeColumn(index)" type="link" danger>
+                  <template #icon>
+                    <DeleteOutlined />
+                  </template>
+                </a-button>
+              </a-space>
             </a-col>
           </a-row>
           <a-row justify="center" class="mrg-top">
@@ -231,18 +200,25 @@ defineExpose({
             </span>
           </template>
 
-          <a-row v-for="tag in formState.tags" :gutter="[20, 0]" class="mrg-btm">
-            <a-col :span="12">
+          <a-row v-for="(tag, index) in formState.tags" :gutter="[20, 0]" class="mrg-btm" :key="tag._key">
+            <a-col :span="10">
               <a-input-group compact>
                 <a-button disabled>{{ $t('common.name') }}: </a-button>
                 <a-input v-model:value="tag.name" placeholder=""/>
               </a-input-group>
             </a-col>
-            <a-col :span="12">
-              <a-input-group compact>
-                <a-button disabled>{{ $t('common.type') }}: </a-button>
-                <DataType v-model:type="tag.type" v-model:length="tag.length"></DataType>
-              </a-input-group>
+            <a-col :span="14">
+              <a-space>
+                <a-input-group compact>
+                  <a-button disabled>{{ $t('common.type') }}: </a-button>
+                  <DataType v-model:type="tag.type" v-model:length="tag.length"></DataType>
+                </a-input-group>
+                <a-button @click="removeTag(index)" type="link" danger>
+                  <template #icon>
+                    <DeleteOutlined />
+                  </template>
+                </a-button>
+              </a-space>
             </a-col>
           </a-row>
           <a-row justify="center" class="mrg-top">

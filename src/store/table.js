@@ -7,7 +7,8 @@ export const useTableStore = defineStore('table', () => {
     const allTables = reactive({
         stable: [],
         childTables: [],
-        normalTables: []
+        normalTables: [],
+        childAndNormalTables: []
     })
     const loadingState = reactive({
         stable: false,
@@ -19,7 +20,7 @@ export const useTableStore = defineStore('table', () => {
         childTableKeyword: null,
         normalTableKeyword: null
     })
-    const mode = ref(typeDefine.table.SUPER_TABLE)
+    const mode = ref(typeDefine.table.SUPER_TABLE) //One of stable, childTable, normalTable, childAndNormalTable
 
     const currentStable = reactive({
         name: null
@@ -77,6 +78,12 @@ export const useTableStore = defineStore('table', () => {
         })
         return filtered.length > 100 ? filtered.slice(0, 100) : filtered
     })
+    const childAndNormalTables = computed(() => {
+        if (!filter.normalTableKeyword) return allTables.childAndNormalTables
+        return _.filter(allTables.childAndNormalTables, n => {
+            return n.tableName?.indexOf(filter.normalTableKeyword) >= 0 || n.tableComment?.indexOf(filter.normalTableKeyword) >= 0
+        })
+    })
 
     const isTooMuchChildTables = computed(() => {
         return mode.value === typeDefine.table.CHILD_TABLE && allTables.childTables.length > 100
@@ -110,6 +117,7 @@ export const useTableStore = defineStore('table', () => {
         stables,
         childTables,
         normalTables,
+        childAndNormalTables,
         isTooMuchChildTables,
         hasTables,
     }

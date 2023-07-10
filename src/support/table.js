@@ -77,6 +77,15 @@ export default function useTable() {
             tableStore.loadingState.normalTable = false
         })
     }
+    const queryChildAndNormalTables = () => {
+        if (!currentDatabase.value || !instanceReady.value) return
+        tableStore.loadingState.childTable = true
+        httpGet(apis.meta.tables, {dbName: currentDatabase.value, tableType: tableStore.mode}).then(res => {
+            tableStore.allTables.childAndNormalTables = res.data
+        }).finally(() => {
+            tableStore.loadingState.childTable = false
+        })
+    }
 
     const setCurrentStable = (name) => {
         tableStore.currentStable.name = name
@@ -86,6 +95,10 @@ export default function useTable() {
     }
     const setCurrentNormalTable = (name) => {
         tableStore.currentNormalTable.name = name
+    }
+
+    const setTableMode = (mode) => {
+        tableStore.mode = mode
     }
 
     const loadTables = () => {
@@ -180,7 +193,7 @@ export default function useTable() {
         nextTick(() => {
             const h = document.getElementsByClassName("sider")[0].clientHeight
             const dom = document.getElementsByClassName("table-list")
-            Array.prototype.forEach.call(dom, function(el) {
+            Array.prototype.forEach.call(dom, function (el) {
                 el.style.maxHeight = (h - el.getBoundingClientRect().top - 60) + 'px'
             })
         })
@@ -201,6 +214,7 @@ export default function useTable() {
         queryStables,
         queryChildTables,
         queryNormalTables,
+        queryChildAndNormalTables,
         userSelectedStable,
         resetTableState,
         registerListener,
@@ -212,5 +226,6 @@ export default function useTable() {
         handleNormalTableSelect,
         handleTabsChange,
         backToStable,
+        setTableMode,
     }
 }

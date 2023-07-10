@@ -120,7 +120,47 @@ export const sqlConfig = {
             }
         },
         stable: {
-            create: {},
+            create: {
+                name: "",
+                ifNotExists: true,
+                comment: "",
+                watermarks: [
+                    {
+                        val: null,
+                        period: "s"
+                    },
+                    {
+                        val: null,
+                        period: "s"
+                    },
+                    {
+                        val: null,
+                        period: "s"
+                    }
+                ],
+                maxDelay: null,
+                maxDelayPeriod: "s",
+                rollup: "",
+                sma: "",
+                ttl: 0,
+
+                columns: [
+                    {
+                        _key: Date.now(),
+                        name: null,
+                        type: "FLOAT",
+                        length: null
+                    }
+                ],
+                tags: [
+                    {
+                        _key: Date.now(),
+                        name: null,
+                        type: "NCHAR",
+                        length: 4
+                    }
+                ]
+            },
             alter: {}
         },
         childTable: {

@@ -50,6 +50,7 @@ export default function useDatabase() {
     return {
         queryDatabases,
         resetDatabaseStore,
-        registerListener
+        registerListener,
+        setCurrentDatabase
     }
 }

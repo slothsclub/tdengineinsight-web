@@ -4,58 +4,35 @@ import {ref} from "vue";
 import AlterSubtableForm from "../../components/form/AlterSubtableForm.vue";
 import {DeleteOutlined, EditOutlined, InfoOutlined, TableOutlined} from "@ant-design/icons-vue";
 import i18n from "../../locale/i18n.js";
+import {useTableStore} from "../../store/table.js";
 
 const emit = defineEmits(['update:table'])
+const tableStore = useTableStore()
+
 const alterTableFormRef = ref()
 const alterSubtableFormRef = ref()
 
-const data = [{
-  table_name: "table 1",
-  db_name: "",
-  create_time: "",
-  columns: "",
-  stable_name: "",
-  uid: "",
-  table_comment: "",
-  vgroup_id: "",
-  ttl: "",
-  type: "table"
-},{
-  table_name: "Subtable 1",
-  db_name: "",
-  create_time: "",
-  columns: "",
-  stable_name: "",
-  uid: "",
-  table_comment: "",
-  vgroup_id: "",
-  ttl: "",
-  type: "subtable"
-}];
 const columns = [{
   title: i18n.global.t('common.name'),
-  dataIndex: 'table_name'
-}, {
-  title: i18n.global.t('common.database'),
-  dataIndex: 'db_name'
+  dataIndex: 'tableName'
 }, {
   title: i18n.global.t('common.created'),
-  dataIndex: 'create_time'
+  dataIndex: 'createTime'
 }, {
   title: i18n.global.tc('common.column', 2),
   dataIndex: 'columns'
 }, {
   title: i18n.global.t('common.stable'),
-  dataIndex: 'stable_name'
+  dataIndex: 'stableName'
 }, {
   title: i18n.global.t('common.uid'),
   dataIndex: 'uid'
 }, {
   title: i18n.global.t('common.comment'),
-  dataIndex: 'table_comment'
+  dataIndex: 'tableComment'
 }, {
   title: i18n.global.t('tdengine.database.vGroupId'),
-  dataIndex: 'vgroup_id'
+  dataIndex: 'vgroupId'
 }, {
   title: i18n.global.t('common.ttl'),
   dataIndex: 'ttl'
@@ -79,7 +56,7 @@ const handleEdit = (column) => {
 
 <template>
   <div>
-    <a-table class="schema-table-list" :columns="columns" :data-source="data" :pagination="false" size="small">
+    <a-table class="schema-table-list" :columns="columns" :data-source="tableStore.childAndNormalTables" :pagination="true" size="small" :loading="tableStore.loadingState.childTable">
       <template #bodyCell="{ text, record, index, column }">
         <template v-if="column.key === 'action'">
           <a-space>

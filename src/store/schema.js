@@ -1,9 +1,10 @@
 import {defineStore} from "pinia";
-import {reactive, ref} from "vue";
+import {computed, reactive, ref} from "vue";
 import {sqlConfig} from "../config/sql-config.js";
+import {useRoute} from "vue-router";
 
 export const useSchemaStore = defineStore('schema', () => {
-    const currentDatabase = ref()
+    const route = useRoute()
     const state = reactive({
         database: {
             creating: false,
@@ -34,7 +35,10 @@ export const useSchemaStore = defineStore('schema', () => {
 
     const createDatabaseFormRef = ref()
     const alterDatabaseFormRef = ref()
+    const createTableFormRef = ref()
 
+
+    const currentDatabase = ref()
 
     return {
         state,
@@ -45,6 +49,7 @@ export const useSchemaStore = defineStore('schema', () => {
         normalTableStruct,
 
         createDatabaseFormRef,
-        alterDatabaseFormRef
+        alterDatabaseFormRef,
+        createTableFormRef,
     }
 })

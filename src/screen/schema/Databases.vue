@@ -63,7 +63,7 @@ const columns = [{
 ]
 
 const handleSelectDatabase = (name) => {
-  router.push({name: "schema", query: {db: name}})
+  router.push({name: "schema", query: {dbName: name}})
 }
 const handleShowDatabaseMoreInfo = (database) => {
   selectedDatabase.value = database
