@@ -153,6 +153,7 @@ const enUS = {
         timeRange: "Time Range",
         custom: "Custom",
         all: "All",
+        cacheModel: "Cache Model",
     },
     tdengine: {
         keywords: {
@@ -242,6 +243,7 @@ const enUS = {
             cancel: "Cancel",
             addInstance: "Add TDengine database",
             createDatabase: "Create Database",
+            alterDatabase: "Alter Database",
             createSubtables: "Create Subtables",
             createNewTable: "Create new {0}",
             alterSubtable: "Alter Subtable",

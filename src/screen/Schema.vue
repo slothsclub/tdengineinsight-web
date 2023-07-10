@@ -6,10 +6,16 @@ import {computed, ref} from "vue";
 import CreateDatabaseForm from "../components/form/CreateDatabaseForm.vue";
 import {useRoute, useRouter} from "vue-router";
 import i18n from "../locale/i18n.js";
+import useSchema from "../support/schema.js";
+import {useSchemaStore} from "../store/schema.js";
+import {storeToRefs} from "pinia";
 const route = useRoute()
 const router = useRouter()
 
-const createDatabaseFormRef = ref()
+const {registerListener, showCreateDatabaseForm} = useSchema()
+const schemaStore = useSchemaStore()
+const {createDatabaseFormRef} = storeToRefs(schemaStore)
+
 const selectedDatabase = computed(() => {
   return route.query.db
 })
@@ -34,6 +40,8 @@ const onSearch = () => {
 const gotoDatabaseView = () => {
   router.push({name: "schema"})
 }
+
+registerListener()
 </script>
 
 <template>
@@ -49,7 +57,7 @@ const gotoDatabaseView = () => {
       </a-space>
     </a-col>
     <a-col :span="24" class="mrg-top" v-if="!selectedDatabase">
-      <a-button type="primary" @click="createDatabaseFormRef.show()">{{ $t('ui.btn.createDatabase') }}</a-button>
+      <a-button type="primary" @click="showCreateDatabaseForm">{{ $t('ui.btn.createDatabase') }}</a-button>
       <CreateDatabaseForm ref="createDatabaseFormRef" />
     </a-col>
     <a-col :span="24" class="mrg-top" v-if="!!selectedDatabase">

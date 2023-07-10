@@ -55,4 +55,81 @@ export const sqlConfig = {
         name: null, operator: "=", value: null
     },
     windowedQueryDefaultOrderColumn: "_wstart",
+
+    schema: {
+        database: {
+            create: {
+                name: null,
+                ifNotExists: true,
+                cachemodel: "none",
+                cacheSize: 1,
+                precision: "ms",
+                keep: 3650,
+                buffer: 96,
+                comp: "2",
+
+                durationVal: null,
+                durationPeriod: "d",
+                walLevel: 2,
+                walFsyncPeriod: null,
+                maxRows: null,
+                minRows: null,
+                pages: null,
+                pageSize: null,
+                replica: "1",
+                retentions: [
+                    {
+                        val: null,
+                        period: "s",
+                        keep: null
+                    },
+                    {
+                        val: null,
+                        period: "m",
+                        keep: null
+                    },
+                    {
+                        val: null,
+                        period: "m",
+                        keep: null
+                    }
+                ],
+                vGroups: null,
+                singleStable: "0",
+                sttTrigger: null,
+                tablePrefix: null,
+                tableSuffix: null,
+                tsdbPageSize: null,
+                walRetentionPeriod: null,
+                walRetentionSize: null,
+                walRollPeriod: null,
+                walSegmentSize: null,
+            },
+            alter: {
+                cachemodel: "none",
+                cacheSize: 1,
+                buffer: 96,
+                pages: null,
+                replica: null,
+                sttTrigger: null,
+                walLevel: 2,
+                walFsyncPeriod: null,
+                keep: 3650,
+                walRetentionPeriod: null,
+                walRetentionSize: null,
+            }
+        },
+        stable: {
+            create: {},
+            alter: {}
+        },
+        childTable: {
+            create: {},
+            alter: {}
+        },
+        normalTable: {
+            create: {},
+            alter: {}
+        }
+    }
 }

@@ -1,87 +1,36 @@
 <script setup>
 import {computed, reactive, ref, toRaw} from "vue";
+import {useSchemaStore} from "../../store/schema.js";
+import useSchema from "../../support/schema.js";
 
 const visible = ref(false);
-const loading = ref(false);
-const formState = reactive({
-  name: "",
-  ifNotExists: true,
-  cacheModel: "none",
-  cacheSize: 1,
-  precision: "ms",
-  keep: 3650,
-  buffer: 96,
-  comp: "2",
 
-  durationVal: null,
-  durationPeriod: "d",
-  walLevel: "2",
-  walFsyncPeriod: null,
-  maxRows: null,
-  minRows: null,
-  pages: null,
-  pageSize: null,
-  replica: null,
-  retentions: [
-    {
-      val: null,
-      period: "s",
-      keep: null
-    },
-    {
-      val: null,
-      period: "m",
-      keep: null
-    },
-    {
-      val: null,
-      period: "m",
-      keep: null
-    }
-  ],
-  vGroups: null,
-  singleStable: "0",
-  sttTrigger: null,
-  tablePrefix: null,
-  tableSuffix: null,
-  tsdbPageSize: null,
-  walRetentionPeriod: null,
-  walRetentionSize: null,
-  walRollPeriod: null,
-  walSegmentSize: null,
-});
 const activeKey = ref("0")
+
+const {createDatabase} = useSchema()
+const schemaStore = useSchemaStore()
+const formState = computed(() => {
+  return schemaStore.databaseStruct.create
+})
 
 const show = () => {
   visible.value = true
 };
-const handleOk = () => {
-  loading.value = true;
-  setTimeout(() => {
-    loading.value = false;
-    visible.value = false;
-  }, 2000);
-};
-const handleCancel = () => {
-  visible.value = false;
-};
-
-
-const onSubmit = () => {
-  console.log('submit!', toRaw(formState));
-};
-
+const hide = () => {
+  visible.value = false
+}
 defineExpose({
-  show
+  show,
+  hide
 })
 </script>
 
 <template>
-  <a-modal v-model:visible="visible" :title="$t('ui.label.form.createDatabase')" @ok="handleOk" :width="800"
+  <a-modal v-model:visible="visible" :title="$t('ui.label.form.createDatabase')" @ok="createDatabase" :width="800"
            :bodyStyle="{height: '500px', 'overflow-y': 'auto'}">
     <template #footer>
-      <a-button key="back" @click="handleCancel">{{ $t('ui.btn.cancel') }}</a-button>
-      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">{{ $t('ui.btn.createDatabase') }}</a-button>
+      <a-button key="back" @click="hide">{{ $t('ui.btn.cancel') }}</a-button>
+      <a-button key="submit" type="primary" :loading="schemaStore.state.database.creating" @click="createDatabase" :disabled="!formState.name">{{ $t('ui.btn.createDatabase') }}</a-button>
     </template>
 
     <a-form :model="formState" :label-col="{ span: 8 }" :wrapper-col="{span: 14}" labelAlign="left">
@@ -97,7 +46,7 @@ defineExpose({
       </a-form-item>
 
       <a-form-item :label="$t('tdengine.cache.model')">
-        <a-radio-group v-model:value="formState.cacheModel" button-style="solid">
+        <a-radio-group v-model:value="formState.cachemodel" button-style="solid">
           <a-radio-button value="none">{{ $t('common.none') }}</a-radio-button>
           <a-radio-button value="last_row">{{ $t('tdengine.cache.lastRow') }}</a-radio-button>
           <a-radio-button value="last_value">{{ $t('tdengine.cache.lastValue') }}</a-radio-button>
@@ -105,9 +54,9 @@ defineExpose({
         </a-radio-group>
       </a-form-item>
 
-      <a-form-item :label="$t('tdengine.cache.size')" v-if="formState.cacheModel !== 'none'">
+      <a-form-item :label="$t('tdengine.cache.size')" v-if="formState.cachemodel !== 'none'">
         <a-input-group compact>
-          <a-input-number v-model:value="formState.cacheSize" :min="1" :max="65536" placeholder="1"/>
+          <a-input-number v-model:value="formState.cachesize" :min="1" :max="65536" placeholder="1"/>
           <a-button disabled>MB</a-button>
         </a-input-group>
       </a-form-item>
