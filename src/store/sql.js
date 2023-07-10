@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 export const useSqlStore = defineStore('sql', () => {
     const mode = ref("normal")
     const state = reactive({
-        executing: true
+        executing: false
     })
     const pageSizeOptions = reactive({...sqlConfig.pageSizeOptions})
     const pageSizes = computed(() => {

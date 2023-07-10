@@ -34,6 +34,12 @@ export default function useColumn() {
         })
     }
 
+    const setColumns = (columns) => {
+        columnStore.columns.items = columns
+        columnStore.columns.count = columns.length
+        setSelectedColumns()
+    }
+
     const setDefaultSelectedColumns = () => {
         for (let i in columnStore.columns.items) {
             columnStore.columns.items[i].checked = i < 11
@@ -92,6 +98,7 @@ export default function useColumn() {
 
     return {
         queryColumns,
+        setColumns,
         columnSelectorVisible,
         toggleColumnSelectorVisible,
         registerListener,

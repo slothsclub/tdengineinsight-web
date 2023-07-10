@@ -41,12 +41,11 @@ export function useInstances() {
     })
 
     const queryInstances = () => {
-        const {data, isFinished, isLoading} = httpGet(apis.instances.query)
-        instanceStore.$patch({
-            allInstances: {
-                data: data,
-                loading: isLoading
-            }
+        instanceStore.allInstances.data.loading = true
+        httpGet(apis.instances.query).then(res => {
+            instanceStore.allInstances.data = res.data
+        }).finally(() => {
+            instanceStore.allInstances.data.loading = false
         })
     }
 

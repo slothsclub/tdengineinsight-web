@@ -1,9 +1,15 @@
 <script setup>
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import autoComplete from "@tarekraafat/autocomplete.js";
 import tdengineKeys from "../config/tdengine-keys.js";
 import getCaretCoordinates from "textarea-caret"
-
+const props = defineProps({
+  rows: {
+    type: Number,
+    default() {return 7}
+  }
+})
+const emit = defineEmits(['update:modelValue'])
 const autoCompleteJS = ref()
 const autoCompleteList = ref()
 const sql = ref()
@@ -57,7 +63,9 @@ const config = {
     },
   },
 }
-
+watch(sql, () => {
+  emit('update:modelValue', sql.value)
+})
 onMounted(() => {
   autoCompleteJS.value = new autoComplete(config);
 })
@@ -77,7 +85,7 @@ const updateCaretCoordinates = (evt) => {
 <template>
   <a-row>
     <a-col :span="24">
-      <a-textarea id="autoComplete" v-model:value="sql" placeholder="" :rows="10" @keyup="updateCaretCoordinates"/>
+      <a-textarea id="autoComplete" v-model:value="sql" placeholder="" :rows="props.rows" @keyup="updateCaretCoordinates"/>
     </a-col>
     <a-col :span="24"></a-col>
   </a-row>
