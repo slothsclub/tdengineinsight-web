@@ -5,11 +5,16 @@ import CreateSubtableForm from "../../components/form/CreateSubtableForm.vue";
 import {EditOutlined, TableOutlined, DeleteOutlined, InfoOutlined} from "@ant-design/icons-vue"
 import i18n from "../../locale/i18n.js";
 import {useTableStore} from "../../store/table.js";
+import {useSchemaStore} from "../../store/schema.js";
+import {storeToRefs} from "pinia";
+import useSchema from "../../support/schema.js";
 
 const emit = defineEmits(['update:stable'])
 const tableStore = useTableStore()
+const schemaStore = useSchemaStore()
+const {alterTableFormRef} = storeToRefs(schemaStore)
+const {handleOpenAlterTableForm} = useSchema()
 
-const alterTableFormRef = ref()
 const createSubtableFormRef = ref()
 
 const columns = [{
@@ -63,7 +68,7 @@ const tags = reactive([
 <template>
   <div>
     <a-table class="schema-stable-list" :columns="columns" :data-source="tableStore.allTables.stable" :pagination="false" size="small" :loading="tableStore.loadingState.stable">
-      <template #bodyCell="{ column, text }">
+      <template #bodyCell="{ text, record, index, column }">
         <template v-if="column.key === 'action'">
           <a-space>
             <a-button shape="circle" size="small">
@@ -71,7 +76,7 @@ const tags = reactive([
                 <InfoOutlined />
               </template>
             </a-button>
-            <a-button shape="circle" size="small" @click="alterTableFormRef.show()">
+            <a-button shape="circle" size="small" @click="handleOpenAlterTableForm(record)">
               <template #icon>
                 <EditOutlined />
               </template>

@@ -161,7 +161,18 @@ export const sqlConfig = {
                     }
                 ]
             },
-            alter: {}
+            alter: {
+                comment: "",
+                columns: [],
+                tags: []
+            }
+        },
+        defaultStableColumnStruct: {
+            name: null,
+            type: null,
+            length: null,
+            minLength: null,
+            state: "KEEP", //ADD, DROP, MODIFY, RENAME, KEEP
         },
         childTable: {
             create: {},

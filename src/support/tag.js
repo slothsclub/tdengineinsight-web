@@ -17,14 +17,17 @@ export default function useTag() {
     const tagStore = useTagStore()
 
     const queryTags = () => {
-        if(mode.value === "normalTable") return
-        httpGet(apis.meta.tags, {
-            dbName: databaseStore.currentDatabase.name,
-            tableName: currentTableName.value,
-            tableType: mode.value
-        }).then(res => {
-            tagStore.allTags.items = res.data
-            tagStore.allTags.count = res.data.length
+        if(mode.value === "normalTable") return Promise.resolve()
+        return new Promise((resolve, reject) => {
+            httpGet(apis.meta.tags, {
+                dbName: databaseStore.currentDatabase.name,
+                tableName: currentTableName.value,
+                tableType: mode.value
+            }).then(res => {
+                tagStore.allTags.items = res.data
+                tagStore.allTags.count = res.data.length
+                resolve(res.data)
+            }, reject)
         })
     }
 

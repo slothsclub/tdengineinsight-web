@@ -79,7 +79,66 @@ export default function useSchemaTableBuilder() {
         return ["NCHAR", "VARCHAR", "BINARY"].includes(type.toUpperCase())
     }
 
+    const buildStableAlterSql = (props) => {
+        let template = []
+        const clauses = {
+            "comment": alterCommentClause,
+            "column": alterColumnClause,
+            "tag": alterTagClause,
+        }
+        for (let k in clauses) {
+            let clause = clauses[k](props)
+            if (!clause) continue
+            template = template.concat(clause)
+        }
+        let table = nameClause(props)
+        return template.length > 0 ? template.map(i => {
+            return `ALTER STABLE ${table} ${i}`
+        }) : null
+    }
+    const alterCommentClause = (props) => {
+        return props.comment && props.comment !== props.origin.comment ? [`COMMENT '${props.comment}'`] : null
+    }
+    const alterColumnClause = (props) => {
+        const columns = []
+        for (let i in props.columns) {
+            let col = props.columns[i]
+
+            if (col.state === "DROP" && col.origin.name) {
+                columns.push(`DROP COLUMN ${col.origin.name}`)
+            }
+            if (col.state === "KEEP" && isStringColumnType(col.type) && col.length > col.minLength) {
+                columns.push(`MODIFY COLUMN ${col.col.origin.name} ${col.type}(${col.length})`)
+            }
+            if (col.state === "ADD" && col.name) {
+                isStringColumnType(col.type) ? columns.push(`ADD COLUMN ${col.name} ${col.type}(${col.length})`) : columns.push(`ADD COLUMN ${col.name} ${col.type}`)
+            }
+        }
+        return columns.length > 0 ? columns : null
+    }
+    const alterTagClause = (props) => {
+        const tags = []
+        for (let i in props.tags) {
+            let tag = props.tags[i]
+
+            if (tag.state === "DROP" && tag.origin.name) {
+                tags.push(`DROP TAG ${tag.origin.name}`)
+            }
+            if (tag.state === "KEEP" && isStringColumnType(tag.type) && tag.length > tag.minLength) {
+                tags.push(`MODIFY TAG ${tag.origin.name} ${tag.type}(${tag.length})`)
+            }
+            if (tag.state === "KEEP" && tag.name !== tag.origin.name) {
+                tags.push(`RENAME TAG ${tag.origin.name} ${tag.name}`)
+            }
+            if (tag.state === "ADD" && tag.name) {
+                isStringColumnType(tag.type) ? tags.push(`ADD TAG ${tag.name} ${tag.type}(${tag.length})`) : tags.push(`ADD TAG ${tag.name} ${tag.type}`)
+            }
+        }
+        return tags.length > 0 ? tags : null
+    }
+
     return {
-        buildStableCreateSql
+        buildStableCreateSql,
+        buildStableAlterSql
     }
 }

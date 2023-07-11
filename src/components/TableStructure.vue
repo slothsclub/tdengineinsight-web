@@ -43,6 +43,10 @@ const stableTagColumns = [
     title: i18n.global.t('common.type'),
     dataIndex: 'tagType'
   },
+  {
+    title: i18n.global.t('common.length'),
+    dataIndex: 'tagLength'
+  },
 ]
 
 const childTableTagColumns = [

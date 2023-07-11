@@ -23,11 +23,18 @@ export default function useSchema() {
     const databaseStore = useDatabaseStore()
 
     const {queryDatabases, setCurrentDatabase} = useDatabase()
-    const {queryStables, queryChildTables, queryNormalTables, queryChildAndNormalTables, setTableMode} = useTable()
+    const {
+        queryStables,
+        queryChildTables,
+        queryNormalTables,
+        queryChildAndNormalTables,
+        setTableMode,
+        setCurrentStable
+    } = useTable()
     const {queryColumns} = useColumn()
     const {queryTags} = useTag()
     const {buildCreateDatabaseSql, buildDropDatabaseSql, buildAlterDatabaseSql} = useSchemaDatabaseBuilder()
-    const {buildStableCreateSql} = useSchemaTableBuilder()
+    const {buildStableCreateSql, buildStableAlterSql} = useSchemaTableBuilder()
 
     const databaseInQuery = computed(() => {
         return route.query.dbName
@@ -50,6 +57,12 @@ export default function useSchema() {
     }
     const hideCreateTableForm = () => {
         schemaStore.createTableFormRef.hide()
+    }
+    const showAlterTableForm = () => {
+        schemaStore.alterTableFormRef.show()
+    }
+    const hideAlterTableForm = () => {
+        schemaStore.alterTableFormRef.hide()
     }
 
     const createDatabase = () => {
@@ -117,8 +130,47 @@ export default function useSchema() {
             schemaStore.state.table.creating = false
         })
     }
-    const alterStable = () => {
 
+    const handleOpenAlterTableForm = (table) => {
+        setCurrentStable(table.stableName)
+        showAlterTableForm()
+        Promise.all([queryColumns(), queryTags()]).then((columns, tags) => {
+            setAlterStableFormState(table)
+        })
+    }
+    const setAlterStableFormState = (table) => {
+        schemaStore.stableStruct.alter = {
+            database: databaseStore.currentDatabase.name,
+            name: table.stableName,
+            comment: table.tableComment,
+            columns: schemaStore.alterColumns,
+            tags: schemaStore.alterTags,
+            origin: {
+                comment: table.tableComment
+            }
+        }
+    }
+    const alterStable = async () => {
+        const sql = buildStableAlterSql(schemaStore.stableStruct.alter)
+        if (!sql) return
+
+        const tasks = []
+        sql.forEach(s => {
+            tasks.push(() => {
+                return new Promise((resolve, reject) => {
+                    httpPost(apis.sql.exec, {rawSql: s}).then(res => {
+                        setTimeout(resolve, 1000)
+                    }, reject)
+                })
+            })
+        })
+        schemaStore.state.table.altering = true
+        for (let i in tasks) {
+            await tasks[i]()
+        }
+        schemaStore.state.table.altering = false
+        queryStables()
+        hideAlterTableForm()
     }
     const createChildTable = () => {
 
@@ -181,7 +233,7 @@ export default function useSchema() {
     }
 
     onMounted(() => {
-        if(route.query.dbName) {
+        if (route.query.dbName) {
             schemaStore.currentDatabase = route.query.dbName
             setCurrentDatabase(route.query.dbName)
         }
@@ -206,6 +258,7 @@ export default function useSchema() {
         showCreateDatabaseForm,
         handleTableViewChanged,
         showCreateTableForm,
-        hideCreateTableForm
+        hideCreateTableForm,
+        handleOpenAlterTableForm,
     }
 }

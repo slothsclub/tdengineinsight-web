@@ -25,12 +25,15 @@ export default function useColumn() {
     const columnSelectorVisible = ref(false)
 
     const queryColumns = () => {
-        if (!table.value || !db.value || !instanceReady.value) return
-        httpGet(apis.meta.columns, {dbName: db.value, tableName: table.value}, {type: "columns"}).then(res => {
-            columnStore.columns.count = res.data.length
-            columnStore.columns.items = res.data
-            setDefaultSelectedColumns()
-            setSelectedColumns()
+        if (!table.value || !db.value || !instanceReady.value) return Promise.resolve()
+        return new Promise((resolve, reject) => {
+            httpGet(apis.meta.columns, {dbName: db.value, tableName: table.value}, {type: "columns"}).then(res => {
+                columnStore.columns.count = res.data.length
+                columnStore.columns.items = res.data
+                setDefaultSelectedColumns()
+                setSelectedColumns()
+                resolve(res.data)
+            }, reject)
         })
     }
 

@@ -218,6 +218,7 @@ export default function useTable() {
         userSelectedStable,
         resetTableState,
         registerListener,
+        setCurrentStable,
 
         activeTab,
         switchToChildTablesView,

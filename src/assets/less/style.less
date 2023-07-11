@@ -425,3 +425,12 @@ a.logo {
     }
   }
 }
+
+.alter-table-column.dropped, .alter-table-tag.dropped {
+  .ant-input,.ant-btn:not(.restore),.ant-input-number {
+    pointer-events: none;
+    background-color: @modal-header-background;
+    border: none;
+    color: rgba(0,0,0,.2);
+  }
+}
