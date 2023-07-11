@@ -8,16 +8,15 @@ import {useSchemaStore} from "../../store/schema.js";
 import {storeToRefs} from "pinia";
 import useSchema from "../../support/schema.js";
 
-const activeKey = ref("stable");
 const schemaStore = useSchemaStore()
-const {createTableFormRef} = storeToRefs(schemaStore)
+const {createTableFormRef, tableView} = storeToRefs(schemaStore)
 const {handleTableViewChanged, showCreateTableForm, hideCreateTableForm} = useSchema()
 </script>
 
 <template>
   <a-row :gutter="[10, 0]" class="config-container">
     <a-col :span="24">
-      <a-tabs v-model:activeKey="activeKey" type="card" class="tabs min-h" @change="handleTableViewChanged">
+      <a-tabs v-model:activeKey="tableView" type="card" class="tabs min-h" @change="handleTableViewChanged">
         <a-tab-pane key="stable">
           <template #tab>
             <span>
@@ -37,12 +36,12 @@ const {handleTableViewChanged, showCreateTableForm, hideCreateTableForm} = useSc
           <InsTables />
         </a-tab-pane>
         <template #rightExtra>
-          <a-button class="outline-primary" @click="showCreateTableForm">{{ $t('ui.btn.createNewTable', [activeKey==='stable' ? $t('common.stable') : $t('common.normalTable')]) }}</a-button>
+          <a-button class="outline-primary" @click="showCreateTableForm">{{ $t('ui.btn.createNewTable', [tableView==='stable' ? $t('common.stable') : $t('common.normalTable')]) }}</a-button>
         </template>
       </a-tabs>
     </a-col>
 
-    <CreateTableForm ref="createTableFormRef" :mode="activeKey" />
+    <CreateTableForm ref="createTableFormRef" :mode="tableView" />
   </a-row>
 </template>
 

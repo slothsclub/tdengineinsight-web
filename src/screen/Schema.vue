@@ -9,10 +9,11 @@ import i18n from "../locale/i18n.js";
 import useSchema from "../support/schema.js";
 import {useSchemaStore} from "../store/schema.js";
 import {storeToRefs} from "pinia";
+
 const route = useRoute()
 const router = useRouter()
 
-const {registerListener, showCreateDatabaseForm} = useSchema()
+const {registerListener, showCreateDatabaseForm, setSearchKeyword} = useSchema()
 const schemaStore = useSchemaStore()
 const {createDatabaseFormRef, currentDatabase} = storeToRefs(schemaStore)
 
@@ -32,7 +33,15 @@ const title = computed(() => {
   return i18n.global.t('ui.title.tablesWithDatabase', [currentDatabase.value])
 })
 const onSearch = () => {
-
+  setSearchKeyword(schemaStore.tableSearchKeyword)
+}
+const onFocus = (evt) => {
+  evt.target.setSelectionRange(0, evt.target.value.length)
+}
+const onChange = () => {
+  if (!schemaStore.tableSearchKeyword) {
+    setSearchKeyword(null)
+  }
 }
 const gotoDatabaseView = () => {
   router.push({name: "schema"})
@@ -62,10 +71,12 @@ registerListener()
         <a-input-group compact>
           <a-button disabled>{{ $tc('common.filter', 2) }}</a-button>
           <a-input-search
-              v-model:value="value"
+              v-model:value="schemaStore.tableSearchKeyword"
               :placeholder="$t('ui.placeholder.searchTables')"
               style="width: 300px"
               @search="onSearch"
+              @focusin="onFocus"
+              @change="onChange"
           />
         </a-input-group>
       </a-card>

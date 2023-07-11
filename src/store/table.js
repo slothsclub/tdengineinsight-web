@@ -18,7 +18,8 @@ export const useTableStore = defineStore('table', () => {
     const filter = reactive({
         stableKeyword: null,
         childTableKeyword: null,
-        normalTableKeyword: null
+        normalTableKeyword: null,
+        childAndNormalKeyword: null
     })
     const mode = ref(typeDefine.table.SUPER_TABLE) //One of stable, childTable, normalTable, childAndNormalTable
 
@@ -79,9 +80,10 @@ export const useTableStore = defineStore('table', () => {
         return filtered.length > 100 ? filtered.slice(0, 100) : filtered
     })
     const childAndNormalTables = computed(() => {
-        if (!filter.normalTableKeyword) return allTables.childAndNormalTables
+        if (!filter.childAndNormalKeyword) return allTables.childAndNormalTables
         return _.filter(allTables.childAndNormalTables, n => {
-            return n.tableName?.indexOf(filter.normalTableKeyword) >= 0 || n.tableComment?.indexOf(filter.normalTableKeyword) >= 0
+            if (filter.childAndNormalKeyword.startsWith("stable:")) return n.stableName === filter.childAndNormalKeyword.split(":")[1]
+            return n.tableName?.indexOf(filter.childAndNormalKeyword) >= 0 || n.tableComment?.indexOf(filter.childAndNormalKeyword) >= 0
         })
     })
 

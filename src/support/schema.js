@@ -15,6 +15,7 @@ import useSchemaTableBuilder from "./schema-table-builder.js";
 import {useDatabaseStore} from "../store/database.js";
 import {typeDefine} from "../config/type.js";
 import _ from "lodash"
+import {useTableStore} from "../store/table.js";
 
 export default function useSchema() {
     const {httpPost} = useHttpClient()
@@ -23,6 +24,7 @@ export default function useSchema() {
     const {instanceReady} = storeToRefs(appStore)
     const schemaStore = useSchemaStore()
     const databaseStore = useDatabaseStore()
+    const tableStore = useTableStore()
 
     const {queryDatabases, setCurrentDatabase} = useDatabase()
     const {
@@ -310,6 +312,16 @@ export default function useSchema() {
                 break;
         }
     }
+    const setSearchKeyword = (keyword) => {
+        tableStore.filter.childAndNormalKeyword = keyword
+        tableStore.filter.stableKeyword = keyword
+    }
+    const gotoTablesViewWithSearch = (keyword) => {
+        tableStore.filter.childAndNormalKeyword = `stable:${keyword}`
+        schemaStore.tableSearchKeyword = `stable:${keyword}`
+        schemaStore.tableView = "childAndNormalTable"
+        handleTableViewChanged('childAndNormalTable')
+    }
 
     const resetSchemaState = () => {
         resetCreateDatabaseForm()
@@ -384,5 +396,8 @@ export default function useSchema() {
         handleOpenAlterChildTableForm,
         addChildTable,
         removeChildTable,
+
+        setSearchKeyword,
+        gotoTablesViewWithSearch
     }
 }

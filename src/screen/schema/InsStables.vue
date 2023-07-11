@@ -13,7 +13,7 @@ const emit = defineEmits(['update:stable'])
 const tableStore = useTableStore()
 const schemaStore = useSchemaStore()
 const {alterTableFormRef, createChildTableFormRef} = storeToRefs(schemaStore)
-const {handleOpenAlterStableForm, handleOpenCreateChildTableForm} = useSchema()
+const {handleOpenAlterStableForm, handleOpenCreateChildTableForm, gotoTablesViewWithSearch} = useSchema()
 
 const columns = [{
   title: i18n.global.t('tdengine.database.stableName'),
@@ -55,8 +55,11 @@ const columns = [{
 
 <template>
   <div>
-    <a-table class="schema-stable-list" :columns="columns" :data-source="tableStore.allTables.stable" :pagination="false" size="small" :loading="tableStore.loadingState.stable">
+    <a-table class="schema-stable-list" :columns="columns" :data-source="tableStore.stables" :pagination="false" size="small" :loading="tableStore.loadingState.stable">
       <template #bodyCell="{ text, record, index, column }">
+        <template v-if="column.dataIndex === 'stableName'">
+          <a @click="gotoTablesViewWithSearch(text)">{{ text }}</a>
+        </template>
         <template v-if="column.key === 'action'">
           <a-space>
             <a-button size="small" @click="handleOpenAlterStableForm(record)">

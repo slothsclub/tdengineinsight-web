@@ -102,6 +102,8 @@ export const useSchemaStore = defineStore('schema', () => {
     const selectedChildTable = ref()
 
     const currentDatabase = ref()
+    const tableSearchKeyword = ref()
+    const tableView = ref('stable')
 
     return {
         state,
@@ -122,5 +124,7 @@ export const useSchemaStore = defineStore('schema', () => {
         childTableTags,
         childTableCount,
         selectedChildTable,
+        tableSearchKeyword,
+        tableView
     }
 })
