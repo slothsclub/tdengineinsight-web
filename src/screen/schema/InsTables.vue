@@ -11,7 +11,7 @@ import {storeToRefs} from "pinia";
 
 const emit = defineEmits(['update:table'])
 const tableStore = useTableStore()
-const {handleOpenAlterNormalTableForm, handleOpenAlterChildTableForm} = useSchema()
+const {handleOpenAlterNormalTableForm, handleOpenAlterChildTableForm, dropTable} = useSchema()
 const schemaStore = useSchemaStore()
 const {alterTableFormRef, alterChildTableFormRef} = storeToRefs(schemaStore)
 
@@ -68,7 +68,7 @@ const handleEdit = (table) => {
                 <EditOutlined />
               </template>
             </a-button>
-            <a-button size="small" danger>
+            <a-button size="small" danger @click="dropTable(record)">
               <template #icon>
                 <DeleteOutlined />
               </template>

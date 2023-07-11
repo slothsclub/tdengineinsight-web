@@ -208,12 +208,17 @@ export default function useSchemaTableBuilder() {
         props.table.tableComment && sql.push(`${alter} COMMENT '${props.table.tableComment}'`)
         props.table.ttl && sql.push(`${alter} TTL ${props.table.ttl}`)
 
-        for(let i in props.tags) {
+        for (let i in props.tags) {
             let tag = props.tags[i]
-            if(tag.value === tag.origin.value) continue
+            if (tag.value === tag.origin.value) continue
             sql.push(isStringColumnType(tag.type) ? `${alter} SET TAG ${tag.name}='${tag.value}'` : `${alter} SET TAG ${tag.name}=${tag.value}`)
         }
         return sql
+    }
+
+    const buildDropTableSql = (type, db, table) => {
+        if (type === "stable") return `DROP STABLE IF EXISTS ${db}.${table}`
+        return `DROP TABLE IF EXISTS ${db}.${table}`
     }
 
     return {
@@ -223,5 +228,6 @@ export default function useSchemaTableBuilder() {
         buildNormalTableAlterSql,
         buildChildTableAlterSql,
         buildChildTableCreateSql,
+        buildDropTableSql,
     }
 }

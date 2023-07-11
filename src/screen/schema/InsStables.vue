@@ -13,7 +13,7 @@ const emit = defineEmits(['update:stable'])
 const tableStore = useTableStore()
 const schemaStore = useSchemaStore()
 const {alterTableFormRef, createChildTableFormRef} = storeToRefs(schemaStore)
-const {handleOpenAlterStableForm, handleOpenCreateChildTableForm, gotoTablesViewWithSearch} = useSchema()
+const {handleOpenAlterStableForm, handleOpenCreateChildTableForm, gotoTablesViewWithSearch, dropTable} = useSchema()
 
 const columns = [{
   title: i18n.global.t('tdengine.database.stableName'),
@@ -75,7 +75,7 @@ const columns = [{
                 </template>
               </a-button>
             </a-tooltip>
-            <a-button size="small" danger>
+            <a-button size="small" danger @click="dropTable(record)">
               <template #icon>
                 <DeleteOutlined />
               </template>

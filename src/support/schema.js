@@ -5,7 +5,7 @@ import useColumn from "./column.js";
 import useTag from "./tag.js";
 import {useAppStore} from "../store/app.js";
 import {storeToRefs} from "pinia";
-import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {computed, createVNode, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {useSchemaStore} from "../store/schema.js";
 import useSchemaDatabaseBuilder from "./schema-database-builder.js";
 import {apis} from "../config/apis.js";
@@ -16,6 +16,9 @@ import {useDatabaseStore} from "../store/database.js";
 import {typeDefine} from "../config/type.js";
 import _ from "lodash"
 import {useTableStore} from "../store/table.js";
+import {Modal} from "ant-design-vue";
+import i18n from "../locale/i18n.js";
+import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 
 export default function useSchema() {
     const {httpPost} = useHttpClient()
@@ -47,6 +50,7 @@ export default function useSchema() {
         buildNormalTableAlterSql,
         buildChildTableCreateSql,
         buildChildTableAlterSql,
+        buildDropTableSql,
     } = useSchemaTableBuilder()
 
     const databaseInQuery = computed(() => {
@@ -358,6 +362,42 @@ export default function useSchema() {
         })
     }
 
+    const dropTable = (table) => {
+        let sql = null
+        let refresh = () => { }
+        if (table.type === "CHILD_TABLE" || table.type === "NORMAL_TABLE") {
+            sql = buildDropTableSql('child', table.dbName, table.tableName)
+            refresh = queryChildAndNormalTables
+        } else {
+            sql = buildDropTableSql('stable', table.dbName, table.stableName)
+            refresh = queryStables
+        }
+        Modal.confirm({
+            title: i18n.global.t("ui.label.deleteTable"),
+            icon: createVNode(ExclamationCircleOutlined),
+            content: i18n.global.t("ui.tips.deleteTable", [table.tableName || table.stableName]),
+            onOk() {
+                return new Promise((resolve, reject) => {
+                    httpPost(apis.sql.exec, {rawSql: sql}).then(() => {
+                        refresh()
+                        resolve()
+                    }, () => {
+                        reject()
+                    })
+                })
+            },
+            onCancel() {
+            },
+            centered: true,
+            maskClosable: true,
+            width: 800,
+            cancelText: i18n.global.t("common.no"),
+            okText: i18n.global.t("common.yes"),
+            okType: "primary",
+            okButtonProps: {danger: "danger"}
+        })
+    }
+
     const handleTableViewChanged = (type) => {
         setTableMode(type)
         switch (type) {
@@ -445,6 +485,7 @@ export default function useSchema() {
         alterChildTable,
         createNormalTable,
         alterNormalTable,
+        dropTable,
 
         showCreateDatabaseForm,
         handleTableViewChanged,
