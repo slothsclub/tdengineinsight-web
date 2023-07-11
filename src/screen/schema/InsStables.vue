@@ -13,7 +13,7 @@ const emit = defineEmits(['update:stable'])
 const tableStore = useTableStore()
 const schemaStore = useSchemaStore()
 const {alterTableFormRef} = storeToRefs(schemaStore)
-const {handleOpenAlterTableForm} = useSchema()
+const {handleOpenAlterStableForm} = useSchema()
 
 const createSubtableFormRef = ref()
 
@@ -76,7 +76,7 @@ const tags = reactive([
                 <InfoOutlined />
               </template>
             </a-button>
-            <a-button shape="circle" size="small" @click="handleOpenAlterTableForm(record)">
+            <a-button shape="circle" size="small" @click="handleOpenAlterStableForm(record)">
               <template #icon>
                 <EditOutlined />
               </template>

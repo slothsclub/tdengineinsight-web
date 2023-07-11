@@ -47,6 +47,7 @@ const enUS = {
         package: "Package",
         time: "Time",
         uptime: "Uptime",
+        create: "Create",
         created: "Created Time",
         refresh: "Refresh",
         table: "Table | Tables",
@@ -155,6 +156,7 @@ const enUS = {
         custom: "Custom",
         all: "All",
         cacheModel: "Cache Model",
+        childAndNormalTable: "Table",
     },
     tdengine: {
         keywords: {

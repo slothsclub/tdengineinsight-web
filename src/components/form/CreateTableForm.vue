@@ -5,6 +5,7 @@ import {PlusOutlined} from "@ant-design/icons-vue"
 import DataType from "../DataType.vue";
 import {useSchemaStore} from "../../store/schema.js";
 import useSchema from "../../support/schema.js";
+import i18n from "../../locale/i18n.js";
 
 const props = defineProps({
   mode: {
@@ -18,17 +19,17 @@ const mode = computed(() => props.mode)
 const visible = ref(false);
 
 const schemaStore = useSchemaStore()
-const {createStable} = useSchema()
+const {createStable, createNormalTable} = useSchema()
 
 const loading = ref(false);
 const retentionsEnabled = ref(true);
 
 const formState = computed(() => {
-  return schemaStore.stableStruct.create
+  return schemaStore.stableAndNormalStruct.create
 })
 const activeKey = ref("options")
 const title = computed(() => {
-  return "Create " + mode.value
+  return i18n.global.t("common.create") + " " + i18n.global.t(`common.${mode.value}`)
 })
 const show = () => {
   visible.value = true
@@ -38,7 +39,7 @@ const hide = () => {
 }
 
 const addColumn = () => {
-  schemaStore.stableStruct.create.columns.push({
+  schemaStore.stableAndNormalStruct.create.columns.push({
     name: null,
     type: "FLOAT",
     length: null,
@@ -46,10 +47,10 @@ const addColumn = () => {
   })
 }
 const removeColumn = (index) => {
-  schemaStore.stableStruct.create.columns.splice(index, 1)
+  schemaStore.stableAndNormalStruct.create.columns.splice(index, 1)
 }
 const addTag = () => {
-  schemaStore.stableStruct.create.tags.push({
+  schemaStore.stableAndNormalStruct.create.tags.push({
     name: null,
     type: "NCHAR",
     length: 4,
@@ -57,7 +58,12 @@ const addTag = () => {
   })
 }
 const removeTag = (index) => {
-  schemaStore.stableStruct.create.tags.splice(index, 1)
+  schemaStore.stableAndNormalStruct.create.tags.splice(index, 1)
+}
+
+const handleCreateTable = () => {
+  if (mode.value === "stable") createStable()
+  if (mode.value === "childAndNormalTable") createNormalTable()
 }
 
 defineExpose({
@@ -67,11 +73,11 @@ defineExpose({
 </script>
 
 <template>
-  <a-modal v-model:visible="visible" :title="title" @ok="createStable" :width="900"
+  <a-modal v-model:visible="visible" :title="title" @ok="handleCreateTable" :width="900"
            :bodyStyle="{height: '650px', 'overflow-y': 'auto'}">
     <template #footer>
       <a-button key="back" @click="hide">{{ $t('ui.btn.cancel') }}</a-button>
-      <a-button key="submit" type="primary" :loading="schemaStore.state.table.creating" @click="createStable">{{ $t('ui.btn.createStable') }}</a-button>
+      <a-button key="submit" type="primary" :loading="schemaStore.state.table.creating" @click="handleCreateTable" :disabled="!formState.name">{{ $t('ui.btn.createStable') }}</a-button>
     </template>
 
     <a-form :model="formState" :label-col="{ span: 6 }" :wrapper-col="{span: 18}" labelAlign="left">

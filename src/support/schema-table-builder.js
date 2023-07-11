@@ -136,9 +136,53 @@ export default function useSchemaTableBuilder() {
         }
         return tags.length > 0 ? tags : null
     }
+    const alterTTLClause = (props) => {
+        return props.ttl && props.ttl !== props.origin.ttl ? [`TTL ${props.ttl}`] : null
+    }
+
+    const buildNormalTableCreateSql = (props) => {
+        const template = ["CREATE TABLE"]
+        const clauses = {
+            "ifNotExists": ifNotExistsClause,
+            "name": nameClause,
+            "column": columnClause,
+            "comment": commentClause,
+            "watermark": watermarkClause,
+            "maxDelay": maxDelayClause,
+            "rollup": rollupClause,
+            "sma": smaClause,
+            "ttl": ttlClause,
+        }
+        for (let k in clauses) {
+            let clause = clauses[k](props)
+            if (!clause) continue
+            template.push(clause)
+        }
+        return template.join(" ")
+    }
+
+    const buildNormalTableAlterSql = (props) => {
+        let template = []
+        const clauses = {
+            "comment": alterCommentClause,
+            "ttl": alterTTLClause,
+            "column": alterColumnClause
+        }
+        for (let k in clauses) {
+            let clause = clauses[k](props)
+            if (!clause) continue
+            template = template.concat(clause)
+        }
+        let table = nameClause(props)
+        return template.length > 0 ? template.map(i => {
+            return `ALTER TABLE ${table} ${i}`
+        }) : null
+    }
 
     return {
         buildStableCreateSql,
-        buildStableAlterSql
+        buildStableAlterSql,
+        buildNormalTableCreateSql,
+        buildNormalTableAlterSql
     }
 }

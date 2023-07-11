@@ -13,6 +13,7 @@ import {sqlConfig} from "../config/sql-config.js";
 import {useRoute} from "vue-router";
 import useSchemaTableBuilder from "./schema-table-builder.js";
 import {useDatabaseStore} from "../store/database.js";
+import {typeDefine} from "../config/type.js";
 
 export default function useSchema() {
     const {httpPost} = useHttpClient()
@@ -29,12 +30,18 @@ export default function useSchema() {
         queryNormalTables,
         queryChildAndNormalTables,
         setTableMode,
-        setCurrentStable
+        setCurrentStable,
+        setCurrentNormalTable,
     } = useTable()
     const {queryColumns} = useColumn()
     const {queryTags} = useTag()
     const {buildCreateDatabaseSql, buildDropDatabaseSql, buildAlterDatabaseSql} = useSchemaDatabaseBuilder()
-    const {buildStableCreateSql, buildStableAlterSql} = useSchemaTableBuilder()
+    const {
+        buildStableCreateSql,
+        buildStableAlterSql,
+        buildNormalTableCreateSql,
+        buildNormalTableAlterSql
+    } = useSchemaTableBuilder()
 
     const databaseInQuery = computed(() => {
         return route.query.dbName
@@ -116,7 +123,7 @@ export default function useSchema() {
     }
 
     const createStable = () => {
-        const props = {...schemaStore.stableStruct.create}
+        const props = {...schemaStore.stableAndNormalStruct.create}
         props['database'] = databaseStore.currentDatabase.name
         const sql = buildStableCreateSql(props)
         schemaStore.state.table.creating = true
@@ -125,33 +132,89 @@ export default function useSchema() {
         }).then(res => {
             handleTableViewChanged('stable')
             hideCreateTableForm()
-            resetCreateStableForm()
+            resetCreateTableForm()
         }).finally(() => {
             schemaStore.state.table.creating = false
         })
     }
 
-    const handleOpenAlterTableForm = (table) => {
+    const handleOpenAlterStableForm = (table) => {
         setCurrentStable(table.stableName)
         showAlterTableForm()
         Promise.all([queryColumns(), queryTags()]).then((columns, tags) => {
-            setAlterStableFormState(table)
+            setAlterStableAndNormalFormState(table, true)
         })
     }
-    const setAlterStableFormState = (table) => {
-        schemaStore.stableStruct.alter = {
+    const setAlterStableAndNormalFormState = (table, stable) => {
+        schemaStore.stableAndNormalStruct.alter = {
             database: databaseStore.currentDatabase.name,
-            name: table.stableName,
+            name: stable ? table.stableName : table.tableName,
             comment: table.tableComment,
             columns: schemaStore.alterColumns,
             tags: schemaStore.alterTags,
+            ttl: stable ? null : table.ttl,
             origin: {
-                comment: table.tableComment
+                comment: table.tableComment,
+                ttl: stable ? null : table.ttl
             }
         }
     }
-    const alterStable = async () => {
-        const sql = buildStableAlterSql(schemaStore.stableStruct.alter)
+    const alterStable = () => {
+        const sql = buildStableAlterSql(schemaStore.stableAndNormalStruct.alter)
+        if (!sql) return
+
+        const tasks = []
+        sql.forEach(s => {
+            tasks.push(() => {
+                return new Promise((resolve, reject) => {
+                    httpPost(apis.sql.exec, {rawSql: s}).then(res => {
+                        setTimeout(resolve, 1000)
+                    })
+                })
+            })
+        })
+        schemaStore.state.table.altering = true
+        const exec = async () => {
+            for (let i in tasks) {
+                await tasks[i]()
+            }
+        }
+        exec()
+        schemaStore.state.table.altering = false
+        queryStables()
+        hideAlterTableForm()
+    }
+    const createChildTable = () => {
+
+    }
+    const alterChildTable = () => {
+
+    }
+    const createNormalTable = () => {
+        const props = {...schemaStore.stableAndNormalStruct.create}
+        props['database'] = databaseStore.currentDatabase.name
+        const sql = buildNormalTableCreateSql(props)
+        schemaStore.state.table.creating = true
+        httpPost(apis.sql.exec, {
+            rawSql: sql
+        }).then(res => {
+            handleTableViewChanged('childAndNormalTable')
+            hideCreateTableForm()
+            resetCreateTableForm()
+        }).finally(() => {
+            schemaStore.state.table.creating = false
+        })
+    }
+    const handleOpenAlterNormalTableForm = (table) => {
+        setTableMode(typeDefine.table.NORMAL_TABLE)
+        setCurrentNormalTable(table.tableName)
+        showAlterTableForm()
+        Promise.all([queryColumns()]).then((columns, tags) => {
+            setAlterStableAndNormalFormState(table, false)
+        })
+    }
+    const alterNormalTable = () => {
+        const sql = buildNormalTableAlterSql(schemaStore.stableAndNormalStruct.alter)
         if (!sql) return
 
         const tasks = []
@@ -165,24 +228,15 @@ export default function useSchema() {
             })
         })
         schemaStore.state.table.altering = true
-        for (let i in tasks) {
-            await tasks[i]()
+        const exec = async () => {
+            for (let i in tasks) {
+                await tasks[i]()
+            }
         }
+        exec()
         schemaStore.state.table.altering = false
-        queryStables()
+        queryChildAndNormalTables()
         hideAlterTableForm()
-    }
-    const createChildTable = () => {
-
-    }
-    const alterChildTable = () => {
-
-    }
-    const createNormalTable = () => {
-
-    }
-    const alterNormalTable = () => {
-
     }
 
     const handleTableViewChanged = (type) => {
@@ -203,15 +257,15 @@ export default function useSchema() {
     const resetCreateDatabaseForm = () => {
         schemaStore.databaseStruct.create = {...sqlConfig.schema.database.create}
     }
-    const resetCreateStableForm = () => {
-        schemaStore.stableStruct.create = {...sqlConfig.schema.stable.create}
-        schemaStore.stableStruct.create.columns = [{
+    const resetCreateTableForm = () => {
+        schemaStore.stableAndNormalStruct.create = {...sqlConfig.schema.stable.create}
+        schemaStore.stableAndNormalStruct.create.columns = [{
             _key: Date.now(),
             name: null,
             type: "FLOAT",
             length: null
         }]
-        schemaStore.stableStruct.create.tags = [{
+        schemaStore.stableAndNormalStruct.create.tags = [{
             _key: Date.now(),
             name: null,
             type: "NCHAR",
@@ -259,6 +313,7 @@ export default function useSchema() {
         handleTableViewChanged,
         showCreateTableForm,
         hideCreateTableForm,
-        handleOpenAlterTableForm,
+        handleOpenAlterStableForm,
+        handleOpenAlterNormalTableForm,
     }
 }

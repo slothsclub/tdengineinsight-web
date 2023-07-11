@@ -15,11 +15,11 @@ const props = defineProps({
 })
 const mode = computed(() => props.mode)
 const schemaStore = useSchemaStore()
-const {alterStable} = useSchema()
+const {alterStable, alterNormalTable} = useSchema()
 
 const visible = ref(false)
 const formState = computed(() => {
-  return schemaStore.stableStruct.alter
+  return schemaStore.stableAndNormalStruct.alter
 })
 
 const activeKey = ref("options")
@@ -34,7 +34,7 @@ const hide = () => {
 }
 
 const addColumn = () => {
-  schemaStore.stableStruct.alter.columns.push({
+  schemaStore.stableAndNormalStruct.alter.columns.push({
     name: null,
     type: "FLOAT",
     length: null,
@@ -50,13 +50,13 @@ const addColumn = () => {
 }
 const dropColumn = (col, i) => {
   if(col.state === "KEEP") col.state = "DROP"
-  if(col.state === "ADD") schemaStore.stableStruct.alter.columns.splice(i, 1)
+  if(col.state === "ADD") schemaStore.stableAndNormalStruct.alter.columns.splice(i, 1)
 }
 const restoreColumn = (col, i) => {
   col.state = "KEEP"
 }
 const addTag = () => {
-  schemaStore.stableStruct.alter.tags.push({
+  schemaStore.stableAndNormalStruct.alter.tags.push({
     name: null,
     type: "NCHAR",
     length: 4,
@@ -72,7 +72,7 @@ const addTag = () => {
 }
 const dropTag = (tag, i) => {
   if(tag.state === "KEEP") tag.state = "DROP"
-  if(tag.state === "ADD") schemaStore.stableStruct.alter.tags.splice(i, 1)
+  if(tag.state === "ADD") schemaStore.stableAndNormalStruct.alter.tags.splice(i, 1)
 }
 const restoreTag = (tag, i) => {
   tag.state = "KEEP"
@@ -80,6 +80,10 @@ const restoreTag = (tag, i) => {
 
 const dropVisible = (mix) => {
   return ["KEEP", "ADD"].includes(mix.state)
+}
+const handleAlter = ()=> {
+  if (mode.value === "stable") alterStable()
+  if (mode.value === "table") alterNormalTable()
 }
 
 defineExpose({
@@ -89,11 +93,11 @@ defineExpose({
 </script>
 
 <template>
-  <a-modal v-model:visible="visible" :title="title" @ok="alterStable" :width="900"
+  <a-modal v-model:visible="visible" :title="title" @ok="handleAlter" :width="900"
            :bodyStyle="{height: '650px', 'overflow-y': 'auto'}">
     <template #footer>
       <a-button key="back" @click="hide">{{ $t('ui.btn.cancel') }}</a-button>
-      <a-button key="submit" type="primary" :loading="schemaStore.state.table.altering" @click="alterStable">{{  title }}</a-button>
+      <a-button key="submit" type="primary" :loading="schemaStore.state.table.altering" @click="handleAlter">{{  title }}</a-button>
     </template>
 
     <a-form :model="formState" :label-col="{ span: 6 }" :wrapper-col="{span: 18}" labelAlign="left">

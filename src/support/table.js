@@ -80,7 +80,7 @@ export default function useTable() {
     const queryChildAndNormalTables = () => {
         if (!currentDatabase.value || !instanceReady.value) return
         tableStore.loadingState.childTable = true
-        httpGet(apis.meta.tables, {dbName: currentDatabase.value, tableType: tableStore.mode}).then(res => {
+        httpGet(apis.meta.tables, {dbName: currentDatabase.value, tableType: "childAndNormalTable"}).then(res => {
             tableStore.allTables.childAndNormalTables = res.data
         }).finally(() => {
             tableStore.loadingState.childTable = false
@@ -219,6 +219,7 @@ export default function useTable() {
         resetTableState,
         registerListener,
         setCurrentStable,
+        setCurrentNormalTable,
 
         activeTab,
         switchToChildTablesView,

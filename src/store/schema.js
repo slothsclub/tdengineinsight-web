@@ -22,17 +22,13 @@ export const useSchemaStore = defineStore('schema', () => {
         create: {...sqlConfig.schema.database.create},
         alter: {...sqlConfig.schema.database.alter}
     })
-    const stableStruct = reactive({
+    const stableAndNormalStruct = reactive({
         create: {...sqlConfig.schema.stable.create},
         alter: {...sqlConfig.schema.stable.alter}
     })
     const childTableStruct = reactive({
         create: {...sqlConfig.schema.childTable.create},
         alter: {...sqlConfig.schema.childTable.alter}
-    })
-    const normalTableStruct = reactive({
-        create: {...sqlConfig.schema.normalTable.create},
-        alter: {...sqlConfig.schema.normalTable.alter}
     })
 
     const alterColumns = computed(() => {
@@ -91,9 +87,8 @@ export const useSchemaStore = defineStore('schema', () => {
         state,
         currentDatabase,
         databaseStruct,
-        stableStruct,
+        stableAndNormalStruct,
         childTableStruct,
-        normalTableStruct,
 
         createDatabaseFormRef,
         alterDatabaseFormRef,

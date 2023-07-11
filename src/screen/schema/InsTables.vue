@@ -5,11 +5,16 @@ import AlterSubtableForm from "../../components/form/AlterSubtableForm.vue";
 import {DeleteOutlined, EditOutlined, InfoOutlined, TableOutlined} from "@ant-design/icons-vue";
 import i18n from "../../locale/i18n.js";
 import {useTableStore} from "../../store/table.js";
+import useSchema from "../../support/schema.js";
+import {useSchemaStore} from "../../store/schema.js";
+import {storeToRefs} from "pinia";
 
 const emit = defineEmits(['update:table'])
 const tableStore = useTableStore()
+const {handleOpenAlterNormalTableForm} = useSchema()
+const schemaStore = useSchemaStore()
+const {alterTableFormRef} = storeToRefs(schemaStore)
 
-const alterTableFormRef = ref()
 const alterSubtableFormRef = ref()
 
 const columns = [{
@@ -45,11 +50,11 @@ const columns = [{
 }
 ];
 
-const handleEdit = (column) => {
-  if(column.type === 'subtable') {
+const handleEdit = (table) => {
+  if(table.type === 'CHILD_TABLE') {
     alterSubtableFormRef.value.show()
   } else {
-    alterTableFormRef.value.show()
+    handleOpenAlterNormalTableForm(table)
   }
 }
 </script>
