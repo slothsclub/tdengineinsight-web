@@ -202,8 +202,18 @@ export default function useSchemaTableBuilder() {
         }
         return clauses.length > 0 ? "CREATE TABLE " + clauses.join(" ") : null
     }
-    const buildChildTableAlterSql = () => {
+    const buildChildTableAlterSql = (props) => {
+        const sql = []
+        const alter = `ALTER TABLE ${props.table.dbName}.${props.table.tableName}`
+        props.table.tableComment && sql.push(`${alter} COMMENT '${props.table.tableComment}'`)
+        props.table.ttl && sql.push(`${alter} TTL ${props.table.ttl}`)
 
+        for(let i in props.tags) {
+            let tag = props.tags[i]
+            if(tag.value === tag.origin.value) continue
+            sql.push(isStringColumnType(tag.type) ? `${alter} SET TAG ${tag.name}='${tag.value}'` : `${alter} SET TAG ${tag.name}=${tag.value}`)
+        }
+        return sql
     }
 
     return {

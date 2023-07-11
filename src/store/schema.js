@@ -78,14 +78,15 @@ export const useSchemaStore = defineStore('schema', () => {
         const tags = []
         for (let i in tagStore.tags) {
             const tag = tagStore.tags[i]
+            let type = tag.tagType.replace(/(\(\d+\))/, "")
             tags.push({
                 name: tag.tagName,
                 value: tag.tagValue,
-                type: tag.tagType,
+                type: type,
                 origin: {
                     name: tag.tagName,
                     value: tag.tagValue,
-                    type: tag.tagType,
+                    type: type,
                 }
             })
         }

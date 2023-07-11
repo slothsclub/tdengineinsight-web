@@ -11,11 +11,9 @@ import {storeToRefs} from "pinia";
 
 const emit = defineEmits(['update:table'])
 const tableStore = useTableStore()
-const {handleOpenAlterNormalTableForm} = useSchema()
+const {handleOpenAlterNormalTableForm, handleOpenAlterChildTableForm} = useSchema()
 const schemaStore = useSchemaStore()
-const {alterTableFormRef} = storeToRefs(schemaStore)
-
-const alterChildTableFormRef = ref()
+const {alterTableFormRef, alterChildTableFormRef} = storeToRefs(schemaStore)
 
 const columns = [{
   title: i18n.global.t('common.name'),
@@ -52,7 +50,7 @@ const columns = [{
 
 const handleEdit = (table) => {
   if(table.type === 'CHILD_TABLE') {
-    alterChildTableFormRef.value.show()
+    handleOpenAlterChildTableForm(table)
   } else {
     handleOpenAlterNormalTableForm(table)
   }

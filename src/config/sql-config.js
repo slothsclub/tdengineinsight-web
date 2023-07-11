@@ -183,11 +183,8 @@ export const sqlConfig = {
                 ]
             },
             alter: {
-                ifNotExists: true,
-                name: null,
-                tags: [
-                    {name: null, value: null, origin: {}}
-                ]
+                table: {tableName: null, dbName: null, ttl: null},
+                tags: []
             }
         },
     }

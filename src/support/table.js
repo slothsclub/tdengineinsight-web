@@ -220,6 +220,7 @@ export default function useTable() {
         registerListener,
         setCurrentStable,
         setCurrentNormalTable,
+        setCurrentChildTable,
 
         activeTab,
         switchToChildTablesView,

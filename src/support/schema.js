@@ -35,6 +35,7 @@ export default function useSchema() {
         setTableMode,
         setCurrentStable,
         setCurrentNormalTable,
+        setCurrentChildTable,
     } = useTable()
     const {queryColumns} = useColumn()
     const {queryTags} = useTag()
@@ -83,10 +84,10 @@ export default function useSchema() {
         schemaStore.createChildTableFormRef.hide()
     }
     const showAlterChildTableForm = () => {
-
+        schemaStore.alterChildTableFormRef.show()
     }
     const hideAlterChildTableForm = () => {
-
+        schemaStore.alterChildTableFormRef.hide()
     }
 
     const createDatabase = () => {
@@ -191,27 +192,44 @@ export default function useSchema() {
             })
         })
         schemaStore.state.table.altering = true
-        const exec = async () => {
-            for (let i in tasks) {
-                await tasks[i]()
+        const exec = async (success, fail) => {
+            for await (let task of tasks) {
+                try {
+                    await task()
+                } catch (e) {
+                    fail()
+                }
             }
+            success()
         }
-        exec()
-        schemaStore.state.table.altering = false
-        queryStables()
-        hideAlterTableForm()
+        exec(() => {
+            schemaStore.state.table.altering = false
+            queryStables()
+            hideAlterTableForm()
+        }, () => {
+            schemaStore.state.table.altering = false
+        })
     }
 
     const handleOpenCreateChildTableForm = (stable) => {
         showCreateChildTableForm()
         setCurrentStable(stable.stableName)
         queryTags().then(res => {
-            schemaStore.childTableStruct.create = {stable: stable.stableName, tables: [], database: databaseStore.currentDatabase.name}
+            schemaStore.childTableStruct.create = {
+                stable: stable.stableName,
+                tables: [],
+                database: databaseStore.currentDatabase.name
+            }
             addChildTable()
         })
     }
-    const handleOpenAlterChildTableForm = (stable) => {
-
+    const handleOpenAlterChildTableForm = (childTable) => {
+        showAlterChildTableForm()
+        setTableMode("childTable")
+        setCurrentChildTable(childTable.tableName)
+        queryTags().then(res => {
+            schemaStore.childTableStruct.alter = {table: {...childTable}, tags: _.cloneDeep(schemaStore.childTableTags)}
+        })
     }
 
     const addChildTable = () => {
@@ -237,7 +255,7 @@ export default function useSchema() {
 
     const createChildTable = () => {
         const sql = buildChildTableCreateSql(schemaStore.childTableStruct.create)
-        if(!sql) return
+        if (!sql) return
         schemaStore.state.table.creating = true
         httpPost(apis.sql.exec, {
             rawSql: sql
@@ -250,7 +268,38 @@ export default function useSchema() {
         })
     }
     const alterChildTable = () => {
+        const sql = buildChildTableAlterSql(schemaStore.childTableStruct.alter)
+        if (sql.length === 0) return
 
+        const tasks = []
+        sql.forEach(s => {
+            tasks.push(() => {
+                return new Promise((resolve, reject) => {
+                    httpPost(apis.sql.exec, {rawSql: s}).then(res => {
+                        setTimeout(resolve, 1000)
+                    }).catch(reject)
+                })
+            })
+        })
+        schemaStore.state.table.altering = true
+        const exec = async (success, fail) => {
+            for await (let task of tasks) {
+                try {
+                    await task()
+                } catch (e) {
+                    fail()
+                }
+            }
+            success()
+        }
+        exec(() => {
+            schemaStore.state.table.altering = false
+            handleTableViewChanged('childAndNormalTable')
+            hideAlterChildTableForm()
+            resetAlterChildTableForm()
+        }, () => {
+            schemaStore.state.table.altering = false
+        })
     }
     const createNormalTable = () => {
         const props = {...schemaStore.stableAndNormalStruct.create}
@@ -290,15 +339,23 @@ export default function useSchema() {
             })
         })
         schemaStore.state.table.altering = true
-        const exec = async () => {
-            for (let i in tasks) {
-                await tasks[i]()
+        const exec = async (success, fail) => {
+            for await (let task of tasks) {
+                try {
+                    await task()
+                } catch (e) {
+                    fail()
+                }
             }
+            success()
         }
-        exec()
-        schemaStore.state.table.altering = false
-        queryChildAndNormalTables()
-        hideAlterTableForm()
+        exec(() => {
+            schemaStore.state.table.altering = false
+            queryChildAndNormalTables()
+            hideAlterTableForm()
+        }, () => {
+            schemaStore.state.table.altering = false
+        })
     }
 
     const handleTableViewChanged = (type) => {
@@ -348,6 +405,9 @@ export default function useSchema() {
         schemaStore.childTableStruct.create = {tables: [], stable: null}
         schemaStore.childTableCount = 1
     }
+    const resetAlterChildTableForm = () => {
+        schemaStore.childTableStruct.alter = {table: {}, tags: []}
+    }
 
     const registerListener = () => {
         watch(instanceReady, () => {
@@ -396,6 +456,8 @@ export default function useSchema() {
         handleOpenAlterChildTableForm,
         addChildTable,
         removeChildTable,
+        showAlterChildTableForm,
+        hideAlterChildTableForm,
 
         setSearchKeyword,
         gotoTablesViewWithSearch
