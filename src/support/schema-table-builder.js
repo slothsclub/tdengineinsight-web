@@ -179,10 +179,39 @@ export default function useSchemaTableBuilder() {
         }) : null
     }
 
+    const buildChildTableCreateSql = (props) => {
+        const tables = _.filter(props.tables, (t) => {
+            return !t.name.startsWith("New child table")
+        })
+        const clauses = []
+        for (let i in tables) {
+            let ifNotExists = tables[i].ifNotExists ? `IF NOT EXISTS` : ''
+            let tags = _.filter(tables[i].tags, (t) => {
+                return !!t.value
+            })
+            if (tags.length === 0) continue
+            let tagKeys = tags.reduce((r, t) => {
+                r.push(t.name)
+                return r
+            }, [])
+            let tagValues = tags.reduce((r, t) => {
+                r.push(isStringColumnType(t.type) ? `'${t.value}'` : t.value)
+                return r
+            }, [])
+            clauses.push(`${ifNotExists} ${props.database}.${tables[i].name} USING ${props.database}.${props.stable}(${tagKeys.join(",")}) TAGS (${tagValues.join(",")})`)
+        }
+        return clauses.length > 0 ? "CREATE TABLE " + clauses.join(" ") : null
+    }
+    const buildChildTableAlterSql = () => {
+
+    }
+
     return {
         buildStableCreateSql,
         buildStableAlterSql,
         buildNormalTableCreateSql,
-        buildNormalTableAlterSql
+        buildNormalTableAlterSql,
+        buildChildTableAlterSql,
+        buildChildTableCreateSql,
     }
 }

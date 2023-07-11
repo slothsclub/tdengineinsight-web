@@ -1,7 +1,7 @@
 <script setup>
 import AlterTableForm from "../../components/form/AlterTableForm.vue";
 import {ref} from "vue";
-import AlterSubtableForm from "../../components/form/AlterSubtableForm.vue";
+import AlterChildTableForm from "../../components/form/AlterChildTableForm.vue";
 import {DeleteOutlined, EditOutlined, InfoOutlined, TableOutlined} from "@ant-design/icons-vue";
 import i18n from "../../locale/i18n.js";
 import {useTableStore} from "../../store/table.js";
@@ -15,7 +15,7 @@ const {handleOpenAlterNormalTableForm} = useSchema()
 const schemaStore = useSchemaStore()
 const {alterTableFormRef} = storeToRefs(schemaStore)
 
-const alterSubtableFormRef = ref()
+const alterChildTableFormRef = ref()
 
 const columns = [{
   title: i18n.global.t('common.name'),
@@ -52,7 +52,7 @@ const columns = [{
 
 const handleEdit = (table) => {
   if(table.type === 'CHILD_TABLE') {
-    alterSubtableFormRef.value.show()
+    alterChildTableFormRef.value.show()
   } else {
     handleOpenAlterNormalTableForm(table)
   }
@@ -65,17 +65,12 @@ const handleEdit = (table) => {
       <template #bodyCell="{ text, record, index, column }">
         <template v-if="column.key === 'action'">
           <a-space>
-            <a-button shape="circle" size="small">
-              <template #icon>
-                <InfoOutlined />
-              </template>
-            </a-button>
-            <a-button shape="circle" size="small" @click="handleEdit(record)">
+            <a-button size="small" @click="handleEdit(record)">
               <template #icon>
                 <EditOutlined />
               </template>
             </a-button>
-            <a-button shape="circle" size="small" danger>
+            <a-button size="small" danger>
               <template #icon>
                 <DeleteOutlined />
               </template>
@@ -86,7 +81,7 @@ const handleEdit = (table) => {
     </a-table>
 
     <AlterTableForm ref="alterTableFormRef" mode="table" />
-    <AlterSubtableForm ref="alterSubtableFormRef" />
+    <AlterChildTableForm ref="alterChildTableFormRef" />
   </div>
 </template>
 

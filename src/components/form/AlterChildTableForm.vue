@@ -24,7 +24,7 @@ const formState = reactive({
 });
 
 const title = computed(() => {
-  return i18n.global.t("ui.label.form.alterSubtable")
+  return i18n.global.t("ui.label.form.alterChildTable")
 })
 const show = () => {
   visible.value = true
@@ -60,7 +60,7 @@ defineExpose({
            :bodyStyle="{height: '650px', 'overflow-y': 'auto'}">
     <template #footer>
       <a-button key="back" @click="handleCancel">{{ $t('ui.btn.cancel') }}</a-button>
-      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">{{ $t('ui.btn.alterSubtable') }}</a-button>
+      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">{{ $t('ui.btn.alterChildTable') }}</a-button>
     </template>
 
     <a-form :model="formState" :label-col="{ span: 6 }" :wrapper-col="{span: 18}" labelAlign="left">

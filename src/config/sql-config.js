@@ -175,12 +175,20 @@ export const sqlConfig = {
             state: "KEEP", //ADD, DROP, MODIFY, RENAME, KEEP
         },
         childTable: {
-            create: {},
-            alter: {}
+            create: {
+                ifNotExists: true,
+                name: null,
+                tags: [
+                    {name: null, value: null}
+                ]
+            },
+            alter: {
+                ifNotExists: true,
+                name: null,
+                tags: [
+                    {name: null, value: null, origin: {}}
+                ]
+            }
         },
-        normalTable: {
-            create: {},
-            alter: {}
-        }
     }
 }

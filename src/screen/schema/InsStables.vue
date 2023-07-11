@@ -1,7 +1,7 @@
 <script setup>
 import AlterTableForm from "../../components/form/AlterTableForm.vue";
 import {reactive, ref} from "vue";
-import CreateSubtableForm from "../../components/form/CreateSubtableForm.vue";
+import CreateChildTableForm from "../../components/form/CreateChildTableForm.vue";
 import {EditOutlined, TableOutlined, DeleteOutlined, InfoOutlined} from "@ant-design/icons-vue"
 import i18n from "../../locale/i18n.js";
 import {useTableStore} from "../../store/table.js";
@@ -12,10 +12,8 @@ import useSchema from "../../support/schema.js";
 const emit = defineEmits(['update:stable'])
 const tableStore = useTableStore()
 const schemaStore = useSchemaStore()
-const {alterTableFormRef} = storeToRefs(schemaStore)
-const {handleOpenAlterStableForm} = useSchema()
-
-const createSubtableFormRef = ref()
+const {alterTableFormRef, createChildTableFormRef} = storeToRefs(schemaStore)
+const {handleOpenAlterStableForm, handleOpenCreateChildTableForm} = useSchema()
 
 const columns = [{
   title: i18n.global.t('tdengine.database.stableName'),
@@ -52,17 +50,7 @@ const columns = [{
   key: 'action',
 }
 ];
-const tags = reactive([
-  {
-    name: "tag1"
-  },
-  {
-    name: "tag2"
-  },
-  {
-    name: "tag3"
-  }
-])
+
 </script>
 
 <template>
@@ -71,25 +59,20 @@ const tags = reactive([
       <template #bodyCell="{ text, record, index, column }">
         <template v-if="column.key === 'action'">
           <a-space>
-            <a-button shape="circle" size="small">
-              <template #icon>
-                <InfoOutlined />
-              </template>
-            </a-button>
-            <a-button shape="circle" size="small" @click="handleOpenAlterStableForm(record)">
+            <a-button size="small" @click="handleOpenAlterStableForm(record)">
               <template #icon>
                 <EditOutlined />
               </template>
             </a-button>
             <a-tooltip>
-              <template #title>{{ $t('ui.btn.createSubtables') }}</template>
-              <a-button shape="circle" size="small" @click="createSubtableFormRef.show()">
+              <template #title>{{ $t('ui.btn.createChildTables') }}</template>
+              <a-button size="small" @click="handleOpenCreateChildTableForm(record)">
                 <template #icon>
                   <TableOutlined />
                 </template>
               </a-button>
             </a-tooltip>
-            <a-button shape="circle" size="small" danger>
+            <a-button size="small" danger>
               <template #icon>
                 <DeleteOutlined />
               </template>
@@ -99,7 +82,7 @@ const tags = reactive([
       </template>
     </a-table>
     <AlterTableForm ref="alterTableFormRef" />
-    <CreateSubtableForm ref="createSubtableFormRef" :tags="tags" />
+    <CreateChildTableForm ref="createChildTableFormRef" />
   </div>
 </template>
 

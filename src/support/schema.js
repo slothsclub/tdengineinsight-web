@@ -14,6 +14,7 @@ import {useRoute} from "vue-router";
 import useSchemaTableBuilder from "./schema-table-builder.js";
 import {useDatabaseStore} from "../store/database.js";
 import {typeDefine} from "../config/type.js";
+import _ from "lodash"
 
 export default function useSchema() {
     const {httpPost} = useHttpClient()
@@ -40,7 +41,9 @@ export default function useSchema() {
         buildStableCreateSql,
         buildStableAlterSql,
         buildNormalTableCreateSql,
-        buildNormalTableAlterSql
+        buildNormalTableAlterSql,
+        buildChildTableCreateSql,
+        buildChildTableAlterSql,
     } = useSchemaTableBuilder()
 
     const databaseInQuery = computed(() => {
@@ -70,6 +73,18 @@ export default function useSchema() {
     }
     const hideAlterTableForm = () => {
         schemaStore.alterTableFormRef.hide()
+    }
+    const showCreateChildTableForm = () => {
+        schemaStore.createChildTableFormRef.show()
+    }
+    const hideCreateChildTableForm = () => {
+        schemaStore.createChildTableFormRef.hide()
+    }
+    const showAlterChildTableForm = () => {
+
+    }
+    const hideAlterChildTableForm = () => {
+
     }
 
     const createDatabase = () => {
@@ -184,8 +199,53 @@ export default function useSchema() {
         queryStables()
         hideAlterTableForm()
     }
-    const createChildTable = () => {
 
+    const handleOpenCreateChildTableForm = (stable) => {
+        showCreateChildTableForm()
+        setCurrentStable(stable.stableName)
+        queryTags().then(res => {
+            schemaStore.childTableStruct.create = {stable: stable.stableName, tables: [], database: databaseStore.currentDatabase.name}
+            addChildTable()
+        })
+    }
+    const handleOpenAlterChildTableForm = (stable) => {
+
+    }
+
+    const addChildTable = () => {
+        schemaStore.childTableStruct.create.tables.push({
+            ifNotExists: true,
+            id: "tab" + schemaStore.childTableCount,
+            name: "New child table " + schemaStore.childTableCount,
+            tags: _.cloneDeep(schemaStore.childTableTags)
+        })
+        schemaStore.childTableCount += 1
+    }
+    const removeChildTable = (targetKey) => {
+        let index = 0
+        schemaStore.childTableStruct.create.tables.forEach((tab, i) => {
+            if (tab.id === targetKey) {
+                index = i
+            }
+        })
+        schemaStore.childTableStruct.create.tables.splice(index, 1)
+        let prev = Math.max(0, index - 1)
+        schemaStore.selectedChildTable = schemaStore.childTableStruct.create.tables[prev].id
+    }
+
+    const createChildTable = () => {
+        const sql = buildChildTableCreateSql(schemaStore.childTableStruct.create)
+        if(!sql) return
+        schemaStore.state.table.creating = true
+        httpPost(apis.sql.exec, {
+            rawSql: sql
+        }).then(res => {
+            handleTableViewChanged('stable')
+            hideCreateChildTableForm()
+            resetCreateChildTableForm()
+        }).finally(() => {
+            schemaStore.state.table.creating = false
+        })
     }
     const alterChildTable = () => {
 
@@ -272,6 +332,10 @@ export default function useSchema() {
             length: 4
         }]
     }
+    const resetCreateChildTableForm = () => {
+        schemaStore.childTableStruct.create = {tables: [], stable: null}
+        schemaStore.childTableCount = 1
+    }
 
     const registerListener = () => {
         watch(instanceReady, () => {
@@ -299,6 +363,7 @@ export default function useSchema() {
         registerListener,
         createDatabase,
         resetSchemaState,
+        resetCreateChildTableForm,
         dropDatabase,
         setAlterDatabaseState,
         alterDatabase,
@@ -315,5 +380,9 @@ export default function useSchema() {
         hideCreateTableForm,
         handleOpenAlterStableForm,
         handleOpenAlterNormalTableForm,
+        handleOpenCreateChildTableForm,
+        handleOpenAlterChildTableForm,
+        addChildTable,
+        removeChildTable,
     }
 }

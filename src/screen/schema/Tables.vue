@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {TableOutlined} from "@ant-design/icons-vue";
 import InsStables from "./InsStables.vue";
 import InsTables from "./InsTables.vue";
@@ -12,7 +12,6 @@ const activeKey = ref("stable");
 const schemaStore = useSchemaStore()
 const {createTableFormRef} = storeToRefs(schemaStore)
 const {handleTableViewChanged, showCreateTableForm, hideCreateTableForm} = useSchema()
-
 </script>
 
 <template>

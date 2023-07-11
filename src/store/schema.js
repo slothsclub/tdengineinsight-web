@@ -27,7 +27,7 @@ export const useSchemaStore = defineStore('schema', () => {
         alter: {...sqlConfig.schema.stable.alter}
     })
     const childTableStruct = reactive({
-        create: {...sqlConfig.schema.childTable.create},
+        create: [{...sqlConfig.schema.childTable.create}],
         alter: {...sqlConfig.schema.childTable.alter}
     })
 
@@ -74,12 +74,32 @@ export const useSchemaStore = defineStore('schema', () => {
         }
         return tags
     })
+    const childTableTags = computed(() => {
+        const tags = []
+        for (let i in tagStore.tags) {
+            const tag = tagStore.tags[i]
+            tags.push({
+                name: tag.tagName,
+                value: tag.tagValue,
+                type: tag.tagType,
+                origin: {
+                    name: tag.tagName,
+                    value: tag.tagValue,
+                    type: tag.tagType,
+                }
+            })
+        }
+        return tags
+    })
 
     const createDatabaseFormRef = ref()
     const alterDatabaseFormRef = ref()
     const createTableFormRef = ref()
     const alterTableFormRef = ref()
-
+    const createChildTableFormRef = ref()
+    const alterChildTableFormRef = ref()
+    const childTableCount = ref(1)
+    const selectedChildTable = ref()
 
     const currentDatabase = ref()
 
@@ -94,8 +114,13 @@ export const useSchemaStore = defineStore('schema', () => {
         alterDatabaseFormRef,
         createTableFormRef,
         alterTableFormRef,
+        createChildTableFormRef,
+        alterChildTableFormRef,
 
         alterColumns,
         alterTags,
+        childTableTags,
+        childTableCount,
+        selectedChildTable,
     }
 })
