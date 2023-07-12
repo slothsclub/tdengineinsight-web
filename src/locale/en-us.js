@@ -9,6 +9,7 @@ const enUS = {
             cluster: "Cluster",
             subscribe: "Subscribe",
             schema: "Schema",
+            stream: "Stream Processing",
             privileges: "Privileges",
             configuration: "Configuration",
             clientList: "Client List",
@@ -22,6 +23,7 @@ const enUS = {
             cluster: "View your TDengine cluster info",
             subscribe: "Manage subscriptions and consumers in your database",
             schema: "Manage your databases and tables",
+            stream: "Manage your stream processing",
             privileges: "Manage your users and permissions",
             configuration: "List of configurations in your TDengine database",
             clientList: "List of clients connected to TDengine database",
@@ -36,6 +38,7 @@ const enUS = {
         cluster: "Cluster",
         action: "Action",
         schema: "Schema",
+        stream: "Stream",
         subscribe: "Subscribe",
         database: "Database | Databases",
         configuration: "Configuration",
@@ -160,7 +163,13 @@ const enUS = {
         topicName: "Topic name",
         vgroupId: "vGroup ID",
         offset: "Offset",
-        row: "Row | Rows"
+        row: "Row | Rows",
+        sourceDb: "Source DB",
+        targetDb: "Target DB",
+        targetTable: "Target Table",
+        watermark: "Watermark",
+        trigger: "Trigger",
+        sql: "SQL",
     },
     tdengine: {
         keywords: {
@@ -259,6 +268,8 @@ const enUS = {
             addDatabase: "Add Database",
             updateDatabase: "Update Database",
             backupToStables: "Back to stables",
+            createTopic: "Create Topic",
+            createStream: "Create Stream",
         },
         label: {
             status: {
@@ -291,6 +302,7 @@ const enUS = {
             deleteDatabase: "Delete Database",
             deleteTable: "Delete Table",
             deleteTopic: "Delete Topic",
+            deleteStream: "Delete Stream",
             deleteConsumer: "Delete Consumer",
             showOrHideColumnSelector: "Show / Hide Columns",
         },
@@ -304,6 +316,7 @@ const enUS = {
             deleteDatabase: "Are you sure you want to delete {0} ?",
             deleteTable: "Are you sure you want to delete {0} ?",
             deleteTopic: "Are you sure you want to delete {0} ?",
+            deleteStream: "Are you sure you want to delete {0} ?",
             deleteConsumer: "Are you sure you want to delete {0} ?",
             missingDatasource: "The datasource may be disconnected, please return to the select instances page and try again",
             tooMuchChildTables: "Too much data, showing 0 - {0} of the total data.",

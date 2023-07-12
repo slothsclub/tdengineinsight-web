@@ -50,6 +50,11 @@ const menus = [
         label: "common.subscribe"
     },
     {
+        type: "item",
+        name: "stream",
+        label: "common.stream"
+    },
+    {
         type: "hr",
         name: "",
         label: ""

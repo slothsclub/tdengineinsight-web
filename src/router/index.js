@@ -12,6 +12,7 @@ import usePageTitle from "../support/pageTitle.js";
 import Schema from "../screen/Schema.vue";
 import Connections from "../screen/Connections.vue";
 import Instances from "../screen/Instances.vue";
+import Stream from "../screen/Stream.vue";
 
 const routes = [
     {
@@ -28,6 +29,7 @@ const routes = [
             {path: 'query', component: Query, name: "query"},
             {path: 'cluster', component: Cluster, name: "cluster"},
             {path: 'schema', component: Schema, name: "schema"},
+            {path: 'stream', component: Stream, name: "stream"},
             {path: 'subscribe', component: Subscribe, name: "subscribe"},
             {path: 'configuration', component: Configuration, name: "configuration"},
             {path: 'client-list', component: ClientList, name: "clientList"},

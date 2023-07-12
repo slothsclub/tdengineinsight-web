@@ -107,7 +107,7 @@ const columns = [{
       </a-row>
     </a-col>
 
-    <a-modal v-model:visible="subscribeStore.createTopicFormVisible" title="Create topic" @ok="createTopic" :width="800" :okText="$t('common.create')" :confirm-loading="subscribeStore.loadingState.creatingTopic">
+    <a-modal v-model:visible="subscribeStore.createTopicFormVisible" :title="$t('ui.btn.createTopic')" @ok="createTopic" :width="800" :okText="$t('common.create')" :confirm-loading="subscribeStore.loadingState.creatingTopic">
       <SqlEditor v-model="subscribeStore.sql.topic" :rows="5" placeholder="CREATE TOPIC [IF NOT EXISTS] topic_name AS subquery;"></SqlEditor>
     </a-modal>
   </a-row>
