@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from "vue-router"
+import {createRouter, createWebHistory, createWebHashHistory} from "vue-router"
 import Overview from "../screen/Overview.vue";
 import InstanceLayout from "../layout/InstanceLayout.vue";
 import DefaultLayout from "../layout/DefaultLayout.vue";
@@ -38,7 +38,7 @@ const routes = [
     },
 ]
 const router = createRouter({
-    history: createWebHistory(),
+    history: import.meta.env.VITE_ROUTE_MODE === "hash" ? createWebHashHistory() : createWebHistory(),
     routes
 })
 

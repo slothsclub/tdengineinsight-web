@@ -12,6 +12,8 @@ export default defineConfig({
         })
     ],
     build: {
+        outDir: process.env.VITE_OUT_DIR || "dist",
+        assetsDir: process.env.VITE_ASSETS_DIR || "assets",
         rollupOptions: {
             output: {
                 manualChunks(id, {getModuleInfo, getModuleIds}) {
