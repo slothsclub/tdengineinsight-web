@@ -26,7 +26,7 @@ export const apis = {
         users: "/tdengine/meta/basic/users",
         configs: "/tdengine/meta/basic/configs",
         dnode_variables: "/tdengine/meta/basic/dnode_variables",
-        topics: "/tdengine/meta/query/topics",
+        topics: "/tdengine/meta/basic/topics",
         subscriptions: "/tdengine/meta/basic/subscriptions",
         query: "/tdengine/meta/query",
         version: "/tdengine/meta/version",

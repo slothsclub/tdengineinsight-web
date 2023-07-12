@@ -157,6 +157,10 @@ const enUS = {
         all: "All",
         cacheModel: "Cache Model",
         childAndNormalTable: "Table",
+        topicName: "Topic name",
+        vgroupId: "vGroup ID",
+        offset: "Offset",
+        row: "Row | Rows"
     },
     tdengine: {
         keywords: {
@@ -286,6 +290,8 @@ const enUS = {
             allDatabase: "All Database",
             deleteDatabase: "Delete Database",
             deleteTable: "Delete Table",
+            deleteTopic: "Delete Topic",
+            deleteConsumer: "Delete Consumer",
             showOrHideColumnSelector: "Show / Hide Columns",
         },
         placeholder: {
@@ -297,6 +303,8 @@ const enUS = {
             createTDengine: "Create a new TDengine database?",
             deleteDatabase: "Are you sure you want to delete {0} ?",
             deleteTable: "Are you sure you want to delete {0} ?",
+            deleteTopic: "Are you sure you want to delete {0} ?",
+            deleteConsumer: "Are you sure you want to delete {0} ?",
             missingDatasource: "The datasource may be disconnected, please return to the select instances page and try again",
             tooMuchChildTables: "Too much data, showing 0 - {0} of the total data.",
             viewChildTables: "View child tables",

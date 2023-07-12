@@ -7,6 +7,10 @@ const props = defineProps({
   rows: {
     type: Number,
     default() {return 7}
+  },
+  placeholder: {
+    type: String,
+    default() {return "SELECT * FROM ..."}
   }
 })
 const emit = defineEmits(['update:modelValue'])
@@ -16,7 +20,7 @@ const sql = ref()
 
 const config = {
   selector: "#autoComplete",
-  placeHolder: "SELECT * FROM ...",
+  placeHolder: props.placeholder,
   data: {
     src: tdengineKeys,
     cache: false,
