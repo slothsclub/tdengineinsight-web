@@ -23,12 +23,12 @@
 import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
 import { defineComponent, ref } from 'vue';
 import Logo from "../components/Logo.vue";
-import DatabaseSelector from "../components/DatabaseSelector.vue";
+import InstanceSelector from "../components/InstanceSelector.vue";
 import PageTitle from "../components/PageTitle.vue";
 export default defineComponent({
   components: {
     PageTitle,
-    DatabaseSelector,
+    InstanceSelector,
     Logo,
     UserOutlined,
     LaptopOutlined,

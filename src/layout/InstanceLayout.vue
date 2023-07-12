@@ -1,7 +1,7 @@
 <script setup>
 
 import PageTitle from "../components/PageTitle.vue";
-import DatabaseSelector from "../components/DatabaseSelector.vue";
+import InstanceSelector from "../components/InstanceSelector.vue";
 import Logo from "../components/Logo.vue";
 import Menu from "../components/Menu.vue";
 import Separator from "../components/Separator.vue";
@@ -16,7 +16,7 @@ import About from "../components/About.vue";
           <Logo class=""></Logo>
         </a-col>
         <a-col class="dropdown-container flex-grow">
-          <DatabaseSelector />
+          <InstanceSelector />
           <Separator />
           <PageTitle></PageTitle>
         </a-col>
