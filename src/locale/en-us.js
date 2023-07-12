@@ -305,6 +305,7 @@ const enUS = {
             addColumnToChart: "Select columns and compare data in charts",
             invalidFunctionInWindowQueryMode: "Only selection functions and aggregation functions are valid when using window mode.",
             stateWindowSupportColumnType: "Only support STATE_WINDOW on integer/bool/varchar column",
+            watermarkNotSupport: "Only supported for create super table in databases configured with the 'RETENTIONS' option",
         },
         title: {
             databaseSummary: "Database summary",

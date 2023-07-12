@@ -469,7 +469,11 @@ export default function useSchema() {
         }
     })
     onBeforeUnmount(() => {
-
+        resetCreateChildTableForm()
+        resetAlterChildTableForm()
+        resetSchemaState()
+        resetCreateDatabaseForm()
+        resetCreateTableForm()
     })
     return {
         registerListener,

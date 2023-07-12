@@ -6,6 +6,7 @@ import DataType from "../DataType.vue";
 import {useSchemaStore} from "../../store/schema.js";
 import useSchema from "../../support/schema.js";
 import i18n from "../../locale/i18n.js";
+import {useDatabaseStore} from "../../store/database.js";
 
 const props = defineProps({
   mode: {
@@ -18,11 +19,14 @@ const props = defineProps({
 const mode = computed(() => props.mode)
 const visible = ref(false);
 
+const databaseStore = useDatabaseStore()
 const schemaStore = useSchemaStore()
 const {createStable, createNormalTable} = useSchema()
 
 const loading = ref(false);
-const retentionsEnabled = ref(true);
+const retentionsEnabled = computed(() => {
+  return databaseStore.retentionEnabled
+})
 
 const formState = computed(() => {
   return schemaStore.stableAndNormalStruct.create
@@ -106,31 +110,32 @@ defineExpose({
             <a-textarea v-model:value="formState.comment" placeholder="" :rows="3" />
           </a-form-item>
 
-          <a-form-item :label="$t('tdengine.database.watermark')" v-if="retentionsEnabled">
+          <a-form-item :label="$t('tdengine.database.watermark')">
             <a-space direction="vertical">
               <a-input-group compact v-for="watermark in formState.watermarks">
-                <a-input-number v-model:value="watermark.val" :min="1" placeholder="15"/>
-                <a-select v-model:value="watermark.period">
+                <a-input-number v-model:value="watermark.val" :min="1" placeholder="15" :disabled="!retentionsEnabled"/>
+                <a-select v-model:value="watermark.period" :disabled="!retentionsEnabled">
                   <a-select-option value="s">{{ $t('common.seconds') }}</a-select-option>
                   <a-select-option value="m">{{ $t('common.minutes') }}</a-select-option>
                 </a-select>
               </a-input-group>
+              <a-alert :message="$t('ui.tips.watermarkNotSupport')" type="warning" show-icon v-if="!retentionsEnabled" />
             </a-space>
           </a-form-item>
 
-          <a-form-item :label="$t('common.maxDelay')" v-if="retentionsEnabled">
+          <a-form-item :label="$t('common.maxDelay')">
             <a-input-group compact>
-              <a-input-number v-model:value="formState.maxDelay" :min="1" placeholder=""/>
-              <a-select v-model:value="formState.maxDelayPeriod">
+              <a-input-number v-model:value="formState.maxDelay" :min="1" placeholder="" :disabled="!retentionsEnabled"/>
+              <a-select v-model:value="formState.maxDelayPeriod" :disabled="!retentionsEnabled">
                 <a-select-option value="s">Seconds</a-select-option>
                 <a-select-option value="m">Minutes</a-select-option>
               </a-select>
             </a-input-group>
           </a-form-item>
 
-          <a-form-item :label="$t('common.rollup')" v-if="retentionsEnabled">
+          <a-form-item :label="$t('common.rollup')">
             <a-input-group compact>
-              <a-select v-model:value="formState.rollup">
+              <a-select v-model:value="formState.rollup" :disabled="!retentionsEnabled">
                 <a-select-option value="">{{ $t('common.none') }}</a-select-option>
                 <a-select-option value="avg">AVG</a-select-option>
                 <a-select-option value="sum">SUM</a-select-option>

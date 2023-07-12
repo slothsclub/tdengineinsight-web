@@ -37,11 +37,10 @@ export default function useSchemaTableBuilder() {
         const watermarks = _.filter(props.watermarks, (w) => {
             return !!w.val
         })
-        if (watermarks.length < 3) return null
         for (let i in watermarks) {
             wm.push(`${watermarks[i].val}${watermarks[i].period}`)
         }
-        return `WATERMARK ${wm.join(",")}`
+        return wm.length > 0 ? `WATERMARK ${wm.join(",")}` : null
     }
     const maxDelayClause = (props) => {
         return props.maxDelay ? `MAX_DELAY ${props.maxDelay}${props.maxDelayPeriod}` : null

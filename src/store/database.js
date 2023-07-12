@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import {computed, reactive} from "vue";
+import _ from "lodash"
 
 export const useDatabaseStore = defineStore('database', () => {
 
@@ -20,10 +21,17 @@ export const useDatabaseStore = defineStore('database', () => {
         return databases.userDefined.length > 0
     })
 
+    const retentionEnabled = computed(() => {
+        const db = _.find(databases.userDefined, {name: currentDatabase.name})
+        if (!db) return false
+        return !!db.retentions
+    })
+
     return {
         databases,
         hasDatabase,
         currentDatabase,
-        defaultDatabaseName
+        defaultDatabaseName,
+        retentionEnabled
     }
 })
