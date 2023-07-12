@@ -135,6 +135,8 @@ export default function useTable() {
         redirect()
     }
     const handleStableSelect = (stable) => {
+        resetColumnState()
+        resetSqlState()
         tableStore.currentStable.name = stable.stableName
         redirect()
     }

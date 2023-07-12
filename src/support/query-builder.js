@@ -75,7 +75,7 @@ export default function useQueryBuilder() {
             if (col.func === "none" || col.func === null) {
                 select.push(col.name)
             } else {
-                select.push(col.alias ? `${col.func}(${col.name}) AS ${col.alias}` : `${col.func}(${col.name}) AS ${col.name}`)
+                select.push(col.alias ? `${col.func}(\`${col.name}\`) AS \`${col.alias}\`` : `${col.func}(\`${col.name}\`) AS \`${col.name}\``)
             }
         }
         return select.join(",")
@@ -84,7 +84,7 @@ export default function useQueryBuilder() {
         let start = queryBuilderStore.timestamp ? queryBuilderStore.timestamp[0] : queryBuilderStore.defaultTimestampRange.start
         let end = queryBuilderStore.timestamp ? queryBuilderStore.timestamp[1] : queryBuilderStore.defaultTimestampRange.end
 
-        return `ts BETWEEN '${start.format("YYYY-MM-DD HH:mm:ss")}' AND '${end.format("YYYY-MM-DD HH:mm:ss")}'`
+        return `\`${queryBuilderStore.timestampField}\` BETWEEN '${start.format("YYYY-MM-DD HH:mm:ss")}' AND '${end.format("YYYY-MM-DD HH:mm:ss")}'`
     }
     const buildWhereTagClause = () => {
         let t = []
@@ -94,10 +94,10 @@ export default function useQueryBuilder() {
 
             switch (tag.operator) {
                 case "=":
-                    t.push(`${tag.name}='${tag.value}'`)
+                    t.push(`\`${tag.name}\`='${tag.value}'`)
                     break;
                 case "like":
-                    t.push(`${tag.name} LIKE '${tag.value}%'`)
+                    t.push(`\`${tag.name}\` LIKE '${tag.value}%'`)
                     break;
             }
         }
@@ -114,7 +114,7 @@ export default function useQueryBuilder() {
     }
 
     const buildOrderClause = () => {
-        return queryBuilderStore.orderBy.column === "none" ? "" : `ORDER BY ${queryBuilderStore.orderBy.column} ${queryBuilderStore.orderBy.direction}`
+        return queryBuilderStore.orderBy.column === "none" ? "" : `ORDER BY \`${queryBuilderStore.orderBy.column}\` ${queryBuilderStore.orderBy.direction}`
     }
     const buildLimitClause = () => {
         return `LIMIT ${queryBuilderStore.limit}`

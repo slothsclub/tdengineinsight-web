@@ -9,6 +9,7 @@ import TagClauseBuilder from "./clause/TagClauseBuilder.vue";
 
 const queryBuilderStore = useQueryBuilderStore()
 const {
+  timestampField,
   timestamp,
   orderBy,
   limitOptions,
@@ -28,6 +29,11 @@ const handleRangePickerChanged = () => {
     </a-descriptions-item>
 
     <a-descriptions-item :label="$t('common.timestamp')">
+      <a-select v-model:value="timestampField">
+        <a-select-option value="ts">ts</a-select-option>
+        <a-select-option value="_wstart">_WSTART</a-select-option>
+        <a-select-option value="_wend">_WEND</a-select-option>
+      </a-select>
       <a-range-picker v-model:value="timestamp" :show-time="{defaultValue: defaultTimestampRange.end}" @change="handleRangePickerChanged"
                       :default-value="[defaultTimestampRange.start, defaultTimestampRange.end]"/>
     </a-descriptions-item>

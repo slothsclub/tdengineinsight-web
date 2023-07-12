@@ -64,12 +64,18 @@ export default function useSql() {
 
     const buildSimplePaginationSql = () => {
         let where = buildWhereClause()
-        let orderBy = ` ORDER BY ${sqlStore.orderBy.field} ${sqlStore.orderBy.direction}`
+        let orderBy = buildOrderByClause()
         let offset = (sqlStore.pagination.current - 1) * sqlStore.pagination.limit
         let countSql = `SELECT COUNT(*) FROM ${databaseStore.currentDatabase.name}.${table.value} ${where}`
         let rawSql = `SELECT ${columns.value} FROM ${databaseStore.currentDatabase.name}.${table.value} ${where} ${orderBy} LIMIT ${offset},${sqlStore.pagination.limit}`
         setRawSql(rawSql.replace(/\s\s+/g, " "))
         setCountSql(countSql)
+    }
+    const buildOrderByClause = () => {
+        if (!columnStore.hasTsColumn && sqlStore.orderBy.field === "ts") {
+            return ""
+        }
+        return ` ORDER BY ${sqlStore.orderBy.field} ${sqlStore.orderBy.direction}`
     }
     const buildWhereClause = () => {
         let sql = []
@@ -82,6 +88,9 @@ export default function useSql() {
     }
     const buildTimeRangeClause = () => {
         let sql = ""
+        if (!columnStore.hasTsColumn) {
+            return sql
+        }
         switch (sqlStore.where.mode) {
             case "latest":
                 sql = ` ts > now - ${sqlStore.where.tsOffset.n}${sqlStore.where.tsOffset.unit}`

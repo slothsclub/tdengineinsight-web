@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import {computed, reactive, ref} from "vue";
+import _ from "lodash"
 
 export const useColumnStore = defineStore('column', () => {
     const keyword = ref(null)
@@ -24,7 +25,7 @@ export const useColumnStore = defineStore('column', () => {
     const columnsClause = computed(() => {
         let col = []
         for (let i in columns.selected) {
-            col.push(columns.selected[i].dataIndex)
+            col.push("`" + columns.selected[i].dataIndex + "`")
         }
         return col.join(",")
     })
@@ -37,6 +38,11 @@ export const useColumnStore = defineStore('column', () => {
         return columns.selected
     })
 
+    const hasTsColumn = computed(() => {
+        let col = _.filter(columns.items, {colName: "ts"})
+        return col.length > 0
+    })
+
     return {
         keyword,
         columns,
@@ -45,6 +51,7 @@ export const useColumnStore = defineStore('column', () => {
         columnsClause,
         selectedColumnsCount,
         chartSeries,
-        tsColumnName
+        tsColumnName,
+        hasTsColumn
     }
 })

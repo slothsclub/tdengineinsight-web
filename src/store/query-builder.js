@@ -23,6 +23,7 @@ export const useQueryBuilderStore = defineStore('query-builder', () => {
             {...sqlConfig.selectClause}
         ]
     })
+    const timestampField = ref("ts")
     const timestamp = ref()
     const defaultTimestampRange = reactive({
         start: dayjs().subtract(1, 'month'),
@@ -72,6 +73,7 @@ export const useQueryBuilderStore = defineStore('query-builder', () => {
         queryCount,
         columns,
         functions,
+        timestampField,
         timestamp,
         defaultTimestampRange,
         orderBy,
