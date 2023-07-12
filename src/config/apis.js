@@ -8,7 +8,8 @@ export const apis = {
         create: "/app/instance",
         update: "/app/instance/:id",
         delete: "/app/instance/:id",
-        open: "/app/instance/:id/open"
+        open: "/app/instance/:id/open",
+        close: "/app/instance/:id/close"
     },
     meta: {
         dnodes: "/tdengine/meta/basic/dnodes",

@@ -7,7 +7,7 @@ import {useInstanceStore} from "../store/instance.js";
 import {useInstances} from "../support/instance.js";
 
 const instanceStore = useInstanceStore()
-const {queryInstances, deleteInstance} = useInstances()
+const {queryInstances, deleteInstance, closeInstanceDatasource} = useInstances()
 
 const formRef = ref(null)
 

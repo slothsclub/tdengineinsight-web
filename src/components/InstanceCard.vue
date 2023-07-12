@@ -23,7 +23,7 @@ const props = defineProps(["instance"])
 const emit = defineEmits(["edit", "open"])
 const instance = reactive(props.instance)
 
-const {openInstance, deleteInstance, queryInstances} = useInstances()
+const {openInstance, deleteInstance, queryInstances, closeInstanceDatasource} = useInstances()
 const instanceStore = useInstanceStore()
 const isLoadingOther = computed(() => instanceStore.current.loading)
 const localLoading = ref(false)
@@ -44,6 +44,7 @@ const handleDelete = () => {
       return new Promise((resolve, reject) => {
         instanceStore.formState.deleting = true
         deleteInstance(instance).then(() => {
+          closeInstanceDatasource(instance)
           queryInstances()
           resolve()
         }, () => {

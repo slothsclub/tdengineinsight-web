@@ -68,6 +68,7 @@ export function useInstances() {
         const {data} = httpPut(apis.instances.update, instanceForm.state, {id: instanceForm.id}).then(() => {
             queryInstances()
             instanceForm.visible = false
+            closeInstanceDatasource(instanceForm)
         }, err => {
             instanceForm.validate = {...formatValidationErrors(err, fieldState)}
         }).finally(() => {
@@ -94,9 +95,11 @@ export function useInstances() {
             })
         })
     }
+    const closeInstanceDatasource = (instance) => {
+        httpPost(apis.instances.close, null, {id: instance.id}).then(res => {
 
-    //todo
-    const closeInstanceDatasource = () => {}
+        })
+    }
 
     const setFormState = (state) => {
         instanceForm.id = state.id
@@ -116,6 +119,7 @@ export function useInstances() {
         updateInstance,
         deleteInstance,
         openInstance,
+        closeInstanceDatasource,
         setFormState,
         resetFormState
     }
