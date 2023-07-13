@@ -51,6 +51,7 @@ export const sqlConfig = {
     },
     selectClauseDefaultFunction: "AVG",
     availableFunctionsInWindowClause: [].concat(tdengineFunctions.aggregate, tdengineFunctions.selection, ["IRATE"]),
+    availableDataTypeInWindowStateQueryClause: ["INT", "BIGINT", "TINYINT", "SMALLINT", "BOOL", "BINARY", "NCHAR", "VARCHAR"],
     tagClause: {
         name: null, operator: "=", value: null
     },
