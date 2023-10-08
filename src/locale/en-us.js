@@ -61,6 +61,7 @@ const enUS = {
         transaction: "Transactions",
         latest: "Latest",
         seconds: "Second | Seconds",
+        millisecond: "Millisecond | Milliseconds",
         minutes: "Minute | Minutes",
         hours: "Hours | Hours",
         days: "Day | Days",

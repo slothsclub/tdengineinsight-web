@@ -132,6 +132,10 @@ export default function useQueryBuilder() {
         }
     }
     const buildIntervalWindowClause = () => {
+        let offset = ""
+        if (queryBuilderStore.windowClause.intervalOffset > 0) {
+            offset = `, ${queryBuilderStore.windowClause.intervalOffset}${queryBuilderStore.windowClause.intervalOffsetUnit}`
+        }
         switch (queryBuilderStore.windowClause.intervalMode) {
             case "fill":
                 let mode = queryBuilderStore.windowClause.fillMode.toUpperCase()
@@ -139,9 +143,9 @@ export default function useQueryBuilder() {
                 if (mode === "VALUE" || mode === "VALUE_F") {
                     fill = `FILL(${mode}, ${buildFilledValues()})`
                 }
-                return `INTERVAL(${queryBuilderStore.windowClause.interval}${queryBuilderStore.windowClause.intervalUnit}) ${fill}`
+                return `INTERVAL(${queryBuilderStore.windowClause.interval}${queryBuilderStore.windowClause.intervalUnit}${offset}) ${fill}`
             case "sliding":
-                return `INTERVAL(${queryBuilderStore.windowClause.interval}${queryBuilderStore.windowClause.intervalUnit}) SLIDING(${queryBuilderStore.windowClause.slidingVal}${queryBuilderStore.windowClause.slidingValUnit})`
+                return `INTERVAL(${queryBuilderStore.windowClause.interval}${queryBuilderStore.windowClause.intervalUnit}${offset}) SLIDING(${queryBuilderStore.windowClause.slidingVal}${queryBuilderStore.windowClause.slidingValUnit})`
             default:
                 return ""
         }

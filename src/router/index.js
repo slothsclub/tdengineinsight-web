@@ -8,7 +8,7 @@ import Cluster from "../screen/Cluster.vue";
 import Subscribe from "../screen/Subscribe.vue";
 import Configuration from "../screen/Configuration.vue";
 import ClientList from "../screen/ClientList.vue";
-import usePageTitle from "../support/pageTitle.js";
+import usePageTitle from "../support/page-title.js";
 import Schema from "../screen/Schema.vue";
 import Connections from "../screen/Connections.vue";
 import Instances from "../screen/Instances.vue";

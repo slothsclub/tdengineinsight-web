@@ -37,6 +37,8 @@ export const sqlConfig = {
         type: "interval",
         interval: "3",
         intervalUnit: "s",
+        intervalOffset: null,
+        intervalOffsetUnit: "a",
         intervalMode: "fill",
         fillMode: "none",
         filledValueColumn: [],
